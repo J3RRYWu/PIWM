@@ -1,0 +1,49 @@
+# Data (external)
+data/*.npz
+data/*.npy
+data/raw/
+data/processed/
+
+# Model checkpoints (too large for GitHub)
+checkpoints/
+*.tar
+*.pt
+*.pth
+*.ckpt
+
+# Training logs
+*.log
+
+# Visualizations and generated reports
+vis/
+report*.pdf
+*.mp4
+*.gif
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# IDE / editor
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Claude / misc
+.claude/
+1.15.0
