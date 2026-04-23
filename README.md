@@ -16,52 +16,75 @@ frames_{t-2..t} ──► Encoder ──► physical state s_t ──► Dynamic
 
 ## Repository layout
 
+Top-level library modules stay at the root; every runnable script lives in a topic subfolder.
+
 ```
 piwm/
-├── config.py                         # device, paths, normalization stats, hparams
-├── data/dataset.py                   # RacingCarDataset (autoencoder / dynamics modes)
-├── utils.py                          # checkpoint + normalization helpers
-├── track_utils.py                    # CarRacing track geometry
-├── lane_utils.py                     # lane waypoint sampling + stats
-├── lane_preprocess.py                # offline lane feature extraction
-├── relative_coords.py                # relative-pose frame conversion
+├── config.py                # device, paths, normalization stats, hparams
+├── utils.py                 # checkpoint + normalization helpers
+├── track_utils.py           # CarRacing track geometry
+├── lane_utils.py            # lane waypoint sampling + stats
+├── relative_coords.py       # relative-pose frame conversion
 │
-├── models/
-│   ├── encoder.py / encoder_lane.py
-│   ├── decoder.py / decoder_lane.py
-│   ├── dynamics.py                   # v1 MLP dynamics
-│   ├── dynamics_bicycle.py           # v2 analytical bicycle
-│   ├── dynamics_bicycle_v2/v3/v4.py  # ablations (no slip / no drag / full)
-│   ├── dynamics_lane_v5.py           # + lane waypoints (rigid-body propagate)
-│   ├── dynamics_lane_v6.py           # + resample-based lane propagation
-│   ├── localization*.py              # frame→(x,y) localization variants
-│   ├── baseline.py                   # black-box baseline
-│   └── piwm_v3.py
+├── data/dataset.py          # RacingCarDataset (autoencoder / dynamics modes)
 │
-├── baselines/
+├── models/                  # encoders, decoders, dynamics (v1..v6), localization
+│   ├── encoder{,_lane}.py,  decoder{,_lane}.py
+│   ├── dynamics.py                 # v1 MLP
+│   ├── dynamics_bicycle{,_v2,_v3,_v4}.py   # v2..v4 bicycle ablations
+│   ├── dynamics_lane_v5.py         # + lane waypoints (rigid-body propagate)
+│   ├── dynamics_lane_v6.py         # + resample-based lane propagation
+│   ├── localization*.py            # frame→(x,y) variants
+│   ├── baseline.py,  piwm_v3.py
+│
+├── baselines/               # external baselines (same interface)
 │   ├── dvbf.py, goku.py, vid2param.py
-│   ├── sindyc.py / sindyc_lane.py    # SINDy-C
-│   └── shared_dynamics.py / shared_dynamics_lane.py
+│   ├── sindyc{,_lane}.py
+│   └── shared_dynamics{,_lane}.py  # shared-backbone fair-comparison wrappers
 │
-├── train_autoencoder.py              # Phase 1: frames + physics supervision
-├── train_dynamics.py                 # Phase 2: single-step dynamics
-├── train_dynamics_multistep.py       # Phase 2: k-step rollout
-├── train_localization*.py            # (x,y) localization variants
-├── train_piwm_rel.py                 # v2-rel (relative coords)
-├── train_piwm_bicycle.py             # v4 bicycle (full)
-├── train_piwm_bicycle_ablation.py    # v2/v3/v4 ablations
-├── train_piwm_lane_v5.py             # v5 lane (3-stage: AE → dyn → e2e)
-├── train_piwm_lane_v6.py             # v6 resample-based (reuses v5 AE)
-├── train_piwm_e2e.py
-├── train_piwm_v3.py
-├── train_baseline.py
-├── train_shared_baselines.py / _lane.py   # GOKU/DVBF/V2P with shared backbone
+├── train/                   # every train_*.py
+│   ├── train_autoencoder.py        # Phase 1: AE + physics supervision
+│   ├── train_dynamics.py           # Phase 2: single-step
+│   ├── train_dynamics_multistep.py # Phase 2: k-step rollout
+│   ├── train_localization*.py      # (x,y) heads (MLP / LSTM / +action / SD)
+│   ├── train_piwm_rel.py           # v2-rel (relative coords)
+│   ├── train_piwm_bicycle{,_ablation}.py   # v2/v3/v4 bicycle
+│   ├── train_piwm_lane_v5.py       # 3-stage lane (AE → dyn → E2E)
+│   ├── train_piwm_lane_v6.py       # resample-based (reuses v5 AE)
+│   ├── train_piwm_{e2e,v3}.py
+│   ├── train_baseline.py
+│   └── train_shared_baselines{,_lane}.py
 │
-├── compare_*.py                      # numerical comparison scripts
-├── visualize_*.py / animate_*.py / plot_*.py
-├── evaluate_by_time.py
-└── make_report_pdf.py / make_report_v2.py  # auto-generated PDF reports
+├── eval/                    # compare_*, plot_*, evaluate_by_time
+│   ├── compare_all_with_v5.py      # main multi-model comparison
+│   ├── compare_baselines_rel.py
+│   ├── compare_{all_shared,all_variants,bicycle_ablation,v5}.py
+│   ├── compare_{final_state,image}_mse.py
+│   ├── evaluate_by_time.py
+│   └── plot_{lane_only,v4_framework,v6_highlight,v6_vs_lane_baselines}.py
+│
+├── viz/                     # visualize_*, animate_* (qualitative)
+│   ├── visualize_{coarse,decoder,image_mse,rmse_curve,rmse_30steps}.py
+│   ├── visualize_{pipeline_100steps,pipeline_final,rollout}.py
+│   └── animate_{state_tracking,rolling_prediction,pipeline_rolling,pipeline_kalman}.py
+│
+├── reports/                 # PDF report generation (reportlab)
+│   └── make_report_{pdf,v2}.py
+│
+└── scripts/                 # one-off / shell helpers
+    ├── lane_preprocess.py          # offline lane feature extraction
+    └── run_pipeline_after_baselines.sh
 ```
+
+**Running scripts** — invoke from the repo root with the folder prefix, e.g.:
+
+```bash
+python train/train_piwm_lane_v6.py
+python eval/compare_all_with_v5.py
+python reports/make_report_v2.py
+```
+
+Each script in a subfolder begins with a small `sys.path` shim that inserts the repo root, so imports like `from config import DEVICE` and `from models.encoder_lane import …` resolve regardless of `cwd`.
 
 ## Version history (dynamics)
 
@@ -88,18 +111,18 @@ Normalization statistics (`PHYSICS_MEAN/STD`, `PHYSICS_MEAN_REL/STD_REL`) are al
 
 ```bash
 # Stage 1 — autoencoder
-python train_autoencoder.py
+python train/train_autoencoder.py
 
 # Stage 2+3 — lane-augmented v6 (reuses v5 AE checkpoint)
-python train_piwm_lane_v5.py        # produces checkpoints/piwm_lane_v5/ae.tar
-python train_piwm_lane_v6.py        # produces checkpoints/piwm_lane_v6/{dyn,best}.tar
+python train/train_piwm_lane_v5.py   # produces checkpoints/piwm_lane_v5/ae.tar
+python train/train_piwm_lane_v6.py   # produces checkpoints/piwm_lane_v6/{dyn,best}.tar
 
 # Baselines (shared backbone, fair comparison)
-python train_shared_baselines_lane.py
+python train/train_shared_baselines_lane.py
 
-# Compare everything
-python compare_all_with_v5.py
-python make_report_v2.py            # writes report_v2_{cn,en}.pdf
+# Compare everything + build the PDF
+python eval/compare_all_with_v5.py
+python reports/make_report_v2.py     # writes report_v2_{cn,en}.pdf
 ```
 
 Hyperparameters live in `config.py` and at the top of each `train_*.py`.
