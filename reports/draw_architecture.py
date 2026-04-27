@@ -1,6 +1,6 @@
-"""Publication-quality architecture figure for PIWM-v6.
+"""Publication-quality architecture figure for PIWM.
 
-Outputs reports/figures/architecture_v6.{png,pdf}.
+Outputs reports/figures/architecture.{png,pdf}.
 """
 
 # --- auto-added: make repo root importable when run as a script ---
@@ -81,7 +81,7 @@ gs = fig.add_gridspec(2, 1, height_ratios=[1.0, 2.45], hspace=0.10)
 # ============================================================
 axA = fig.add_subplot(gs[0, 0])
 axA.set_xlim(0, 16); axA.set_ylim(0, 5.0); axA.axis("off")
-axA.text(0.10, 4.65, "(a)  PIWM-v6 inference pipeline",
+axA.text(0.10, 4.65, "(a)  PIWM inference pipeline",
          fontsize=12.5, fontweight="bold")
 
 # stacked input frames
@@ -113,7 +113,7 @@ b_act = rbox(axA, (8.05, 0.55), 1.20, 0.70,
 
 # dynamics block
 b_dyn = rbox(axA, (7.85, 1.65), 3.05, 1.85,
-             "V6 Dynamics\n(bicycle + lane resample)",
+             "Dynamics\n(bicycle + lane resample)",
              fc=C_DYN, fontsize=11.5, weight="bold")
 
 # next latent
@@ -154,12 +154,12 @@ axA.text(10.65, 0.65, "auto-regressive\nrollout",
 
 
 # ============================================================
-# Panel (b): zoom-in on V6 dynamics
+# Panel (b): zoom-in on the dynamics block
 # ============================================================
 axB = fig.add_subplot(gs[1, 0])
 axB.set_xlim(0, 16); axB.set_ylim(0, 12.5); axB.axis("off")
 axB.text(0.10, 12.10,
-         "(b)  Inside the V6 dynamics block — analytic dynamic-bicycle"
+         "(b)  Inside the dynamics block — analytic dynamic-bicycle"
          " for the car branch, resample-based propagation for the lane branch",
          fontsize=12.5, fontweight="bold")
 
@@ -278,7 +278,7 @@ box_res = FancyBboxPatch(
     linewidth=1.8, edgecolor=ACCENT, facecolor="#FFE3E3", joinstyle="round")
 axB.add_patch(box_res)
 axB.text(b_res[0] + b_res[2] / 2, b_res[1] + b_res[3] - 0.30,
-         "Step 2 · RESAMPLE to fixed $s$    (V6 key fix)",
+         "Step 2 · RESAMPLE to fixed $s$    (key fix)",
          ha="center", fontsize=12, fontweight="bold", color=ACCENT)
 axB.text(b_res[0] + b_res[2] / 2, b_res[1] + b_res[3] / 2 - 0.15,
          r"$\alpha = \Delta y_b / \Delta s,\ \ \Delta s = 5$",
@@ -344,7 +344,7 @@ leg_handles = [
     Rectangle((0, 0), 1, 1, fc=C_PHYS,   ec=EDGE, lw=0.6,
               label="learnable physical params"),
     Rectangle((0, 0), 1, 1, fc="#FFE3E3", ec=ACCENT, lw=1.4,
-              label="V6's key contribution"),
+              label="key contribution"),
 ]
 fig.legend(handles=leg_handles, loc="lower center",
            bbox_to_anchor=(0.5, 0.005),
@@ -355,8 +355,8 @@ fig.legend(handles=leg_handles, loc="lower center",
 # ----- save -----
 out_dir = os.path.join(os.path.dirname(__file__), "figures")
 os.makedirs(out_dir, exist_ok=True)
-png_path = os.path.join(out_dir, "architecture_v6.png")
-pdf_path = os.path.join(out_dir, "architecture_v6.pdf")
+png_path = os.path.join(out_dir, "architecture.png")
+pdf_path = os.path.join(out_dir, "architecture.pdf")
 fig.savefig(png_path, bbox_inches="tight", dpi=300, facecolor="white")
 fig.savefig(pdf_path, bbox_inches="tight", facecolor="white")
 print(f"wrote {png_path}")
