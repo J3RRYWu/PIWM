@@ -23,6 +23,8 @@ report*.pdf
 # ...but DO keep static architecture / paper figures committed
 !reports/figures/
 !reports/figures/**
+# (re-ignore formula scratch dirs the PDF builders use as a cache)
+reports/figures/_formulas_*/
 
 # Python
 __pycache__/

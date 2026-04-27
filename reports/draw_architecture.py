@@ -80,7 +80,7 @@ gs = fig.add_gridspec(2, 1, height_ratios=[1.0, 2.45], hspace=0.10)
 # Panel (a): high-level pipeline
 # ============================================================
 axA = fig.add_subplot(gs[0, 0])
-axA.set_xlim(0, 16); axA.set_ylim(0, 5.0); axA.axis("off")
+axA.set_xlim(0, 17.2); axA.set_ylim(0, 5.0); axA.axis("off")
 axA.text(0.10, 4.65, "(a)  PIWM inference pipeline",
          fontsize=12.5, fontweight="bold")
 
@@ -157,7 +157,7 @@ axA.text(10.65, 0.65, "auto-regressive\nrollout",
 # Panel (b): zoom-in on the dynamics block
 # ============================================================
 axB = fig.add_subplot(gs[1, 0])
-axB.set_xlim(0, 16); axB.set_ylim(0, 12.5); axB.axis("off")
+axB.set_xlim(0, 17.2); axB.set_ylim(0, 12.5); axB.axis("off")
 axB.text(0.10, 12.10,
          "(b)  Inside the dynamics block — analytic dynamic-bicycle"
          " for the car branch, resample-based propagation for the lane branch",
