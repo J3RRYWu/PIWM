@@ -20,6 +20,10 @@ report*.pdf
 *.mp4
 *.gif
 
+# ...but DO keep static architecture / paper figures committed
+!reports/figures/
+!reports/figures/**
+
 # Python
 __pycache__/
 *.py[cod]
