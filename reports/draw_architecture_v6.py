@@ -186,13 +186,14 @@ b_zc_in = rbox(axB, (1.55, 10.30), 4.70, 0.85,
 axB.text(3.85, 9.85, "Dynamic Bicycle (V4)",
          ha="center", fontsize=11.5, fontweight="bold")
 
-b_bv = rbox(axB, (0.55, 5.85), 6.60, 3.65, "", fc="white", fontsize=10)
+b_bv = rbox(axB, (0.55, 5.30), 6.60, 4.20, "", fc="white", fontsize=10)
 
 eq = (
-    r"$\alpha_f = \delta - \arctan\!\dfrac{v_y + L_f\,\omega}{v_x},"
-    r"\ \ \ \alpha_r = -\arctan\!\dfrac{v_y - L_r\,\omega}{v_x}$"
+    r"$\alpha_f = \delta - \arctan\!\dfrac{v_y + L_f\,\omega}{v_x}$"
     "\n"
-    r"$F_{yf} = -\,C_f\,\alpha_f,\ \ \ F_{yr} = -\,C_r\,\alpha_r$"
+    r"$\alpha_r = -\arctan\!\dfrac{v_y - L_r\,\omega}{v_x}$"
+    "\n"
+    r"$F_{yf} = -C_f\,\alpha_f,\quad F_{yr} = -C_r\,\alpha_r$"
     "\n"
     r"$\dot v_x = a - \dfrac{F_{yf}\sin\delta}{m} + v_y\,\omega$"
     "\n"
@@ -201,16 +202,16 @@ eq = (
     r"$\dot \omega = \dfrac{L_f F_{yf}\cos\delta - L_r F_{yr}}{I_z}$"
 )
 axB.text(b_bv[0] + 2.10, b_bv[1] + b_bv[3] / 2, eq,
-         ha="center", va="center", fontsize=9.0, color="#222",
-         linespacing=1.7)
+         ha="center", va="center", fontsize=8.8, color="#222",
+         linespacing=1.45)
 
-# learnable physics params
-b_param = rbox(axB, (b_bv[0] + 4.55, b_bv[1] + 0.80), 1.85, 2.05,
-               "learnable\nphysical\nparameters\n\n"
+# learnable physics params (compact 4 lines so the box height is safely respected)
+b_param = rbox(axB, (b_bv[0] + 4.55, b_bv[1] + 0.65), 1.85, 2.30,
+               "learnable\nphysical params\n"
                r"$m,\ I_z$" + "\n" +
                r"$C_f,\ C_r$" + "\n" +
                r"$L_f,\ L_r$",
-               fc=C_PHYS, fontsize=9.5, lw=0.7)
+               fc=C_PHYS, fontsize=9.0, lw=0.7, linespacing=1.55)
 
 # Euler integrate band
 b_euler = rbox(axB, (0.55, 4.55), 6.60, 0.95,
@@ -262,11 +263,12 @@ b_motion = rbox(axB, (8.05, 8.05), 2.45, 2.10,
                 fc=C_BRIDGE, fontsize=8.8, linespacing=1.5)
 
 # Step 1: Rigid-body inverse transform
-b_rig = rbox(axB, (10.85, 8.20), 4.65, 1.85,
+b_rig = rbox(axB, (10.85, 8.05), 4.65, 2.10,
              "Step 1 · Rigid-body inverse transform\n"
-             r"shift each $w_i$ by $(-\Delta x_b,\,-\Delta y_b),$"
-             r" then rotate by $-\Delta\psi$",
-             fc="white", fontsize=10, weight="bold", linespacing=1.7)
+             r"shift each $w_i$ by $(-\Delta x_b,\,-\Delta y_b)$"
+             "\n"
+             r"then rotate by $-\Delta\psi$",
+             fc="white", fontsize=9.6, weight="bold", linespacing=1.6)
 
 # Step 2: RESAMPLE (highlighted) — full width on right side
 b_res = (8.05, 5.45, 7.45, 2.05)
