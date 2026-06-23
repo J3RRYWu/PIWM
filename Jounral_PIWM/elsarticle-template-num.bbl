@@ -1,0 +1,433 @@
+\begin{thebibliography}{10}
+\expandafter\ifx\csname url\endcsname\relax
+  \def\url#1{\texttt{#1}}\fi
+\expandafter\ifx\csname urlprefix\endcsname\relax\def\urlprefix{URL }\fi
+\expandafter\ifx\csname href\endcsname\relax
+  \def\href#1#2{#2} \def\path#1{#1}\fi
+
+\bibitem{ha2018world}
+D.~Ha, J.~Schmidhuber, World models, arXiv preprint arXiv:1803.10122 (2018).
+
+\bibitem{micheli2022transformers}
+V.~Micheli, E.~Alonso, F.~Fleuret, Transformers are sample-efficient world
+  models, arXiv preprint arXiv:2209.00588 (2022).
+
+\bibitem{hafner2023mastering}
+D.~Hafner, J.~Pasukonis, J.~Ba, T.~Lillicrap, Mastering diverse domains through
+  world models, arXiv preprint arXiv:2301.04104 (2023).
+
+\bibitem{seo2023masked}
+Y.~Seo, D.~Hafner, H.~Liu, F.~Liu, S.~James, K.~Lee, P.~Abbeel, Masked world
+  models for visual control, in: Conference on Robot Learning, PMLR, 2023, pp.
+  1332--1344.
+
+\bibitem{hasan2015formal}
+O.~Hasan, S.~Tahar, Formal verification methods, in: Encyclopedia of
+  Information Science and Technology, Third Edition, IGI global, 2015, pp.
+  7162--7170.
+
+\bibitem{katz2022verification}
+S.~M. Katz, A.~L. Corso, C.~A. Strong, M.~J. Kochenderfer, Verification of
+  image-based neural network controllers using generative models, Journal of
+  Aerospace Information Systems 19~(9) (2022) 574--584.
+
+\bibitem{alshiekh2018safe}
+M.~Alshiekh, R.~Bloem, R.~Ehlers, B.~K{\"o}nighofer, S.~Niekum, U.~Topcu, Safe
+  reinforcement learning via shielding, in: Proceedings of the AAAI conference
+  on artificial intelligence, Vol.~32, 2018.
+
+\bibitem{piwm_conf}
+Z.~Mao, M.~E. Umasudhan, I.~Ruchkin, Physically interpretable world models via
+  weakly supervised representation learning, arXiv preprint arXiv:2412.12870
+  (2026).
+
+\bibitem{fridovich2020confidence}
+D.~Fridovich-Keil, A.~Bajcsy, J.~F. Fisac, S.~L. Herbert, S.~Wang, A.~D.
+  Dragan, C.~J. Tomlin, Confidence-aware motion prediction for real-time
+  collision avoidance1, The International Journal of Robotics Research 39~(2-3)
+  (2020) 250--265.
+
+\bibitem{ammoun2009real}
+S.~Ammoun, F.~Nashashibi, Real time trajectory prediction for collision risk
+  estimation between vehicles, in: 2009 IEEE 5Th international conference on
+  intelligent computer communication and processing, IEEE, 2009, pp. 417--422.
+
+\bibitem{li2021prediction}
+A.~Li, L.~Sun, W.~Zhan, M.~Tomizuka, M.~Chen, Prediction-based reachability for
+  collision avoidance in autonomous driving, in: 2021 Intl. Conf. on Robotics
+  and Automation (ICRA), 2021.
+
+\bibitem{nakamura2023online}
+K.~Nakamura, S.~Bansal, Online update of safety assurances using
+  confidence-based predictions, in: 2023 IEEE International Conference on
+  Robotics and Automation (ICRA), IEEE, 2023, pp. 12765--12771.
+
+\bibitem{muthali2023multi}
+A.~Muthali, H.~Shen, S.~Deglurkar, M.~H. Lim, R.~Roelofs, A.~Faust, C.~Tomlin,
+  Multi-agent reachability calibration with conformal prediction, in: 2023 62nd
+  IEEE Conference on Decision and Control (CDC), IEEE, 2023, pp. 6596--6603.
+
+\bibitem{alahi2016social}
+A.~Alahi, K.~Goel, V.~Ramanathan, A.~Robicquet, L.~Fei-Fei, S.~Savarese, Social
+  lstm: Human trajectory prediction in crowded spaces, in: Proc. of the IEEE
+  conference on computer vision and pattern recognition, 2016.
+
+\bibitem{gupta2018social}
+A.~Gupta, J.~Johnson, L.~Fei-Fei, S.~Savarese, A.~Alahi, Social gan: Socially
+  acceptable trajectories with generative adversarial networks, in: Proc. of
+  the IEEE conference on computer vision and pattern recognition, 2018.
+
+\bibitem{wen2022social}
+S.~Wen, H.~Wang, D.~Metaxas, Social ode: Multi-agent trajectory forecasting
+  with neural ordinary differential equations, in: European Conference on
+  Computer Vision, Springer, 2022, pp. 217--233.
+
+\bibitem{salzmann2020trajectron++}
+T.~Salzmann, B.~Ivanovic, P.~Chakravarty, M.~Pavone, Trajectron++:
+  Dynamically-feasible trajectory forecasting with heterogeneous data, in:
+  Computer Vision--ECCV 2020: 16th European Conference, Glasgow, UK, August
+  23--28, 2020, Proceedings, Part XVIII 16, Springer, 2020, pp. 683--700.
+
+\bibitem{revach2022kalmannet}
+G.~Revach, N.~Shlezinger, X.~Ni, A.~L. Escoriza, R.~J. Van~Sloun, Y.~C. Eldar,
+  Kalmannet: Neural network aided kalman filtering for partially known
+  dynamics, IEEE Transactions on Signal Processing 70 (2022) 1532--1547.
+
+\bibitem{itkina2023interpretable}
+M.~Itkina, M.~Kochenderfer, Interpretable self-aware neural networks for robust
+  trajectory prediction, in: Conference on Robot Learning, PMLR, 2023, pp.
+  606--617.
+
+\bibitem{hsu2023interpretable}
+K.-C. Hsu, K.~Leung, Y.~Chen, J.~F. Fisac, M.~Pavone, Interpretable trajectory
+  prediction for autonomous vehicles via counterfactual responsibility, in:
+  2023 IEEE/RSJ International Conference on Intelligent Robots and Systems
+  (IROS), IEEE, 2023, pp. 5918--5925.
+
+\bibitem{lindemann2023conformal}
+L.~Lindemann, X.~Qin, J.~V. Deshmukh, G.~J. Pappas, Conformal prediction for
+  stl runtime verification, in: Proceedings of the ACM/IEEE 14th International
+  Conference on Cyber-Physical Systems (with CPS-IoT Week 2023), 2023, pp.
+  142--153.
+
+\bibitem{lu2024towards}
+J.~Lu, W.~Zhan, M.~Tomizuka, Y.~Hu, Towards generalizable and interpretable
+  motion prediction: A deep variational bayes approach, in: International
+  Conference on Artificial Intelligence and Statistics, PMLR, 2024, pp.
+  4717--4725.
+
+\bibitem{ruchkin2022confidence}
+I.~Ruchkin, M.~Cleaveland, R.~Ivanov, P.~Lu, T.~Carpenter, O.~Sokolsky, I.~Lee,
+  Confidence composition for monitors of verification assumptions, in: 2022
+  ACM/IEEE 13th International Conference on Cyber-Physical Systems (ICCPS),
+  IEEE, 2022, pp. 1--12.
+
+\bibitem{cleaveland2022risk}
+M.~Cleaveland, L.~Lindemann, R.~Ivanov, G.~J. Pappas, Risk verification of
+  stochastic systems with neural network controllers, Artificial Intelligence
+  313 (2022) 103782.
+
+\bibitem{qin2022statistical}
+X.~Qin, Y.~Xia, A.~Zutshi, C.~Fan, J.~V. Deshmukh, Statistical verification of
+  cyber-physical systems using surrogate models and conformal inference, in:
+  2022 ACM/IEEE 13th International Conference on Cyber-Physical Systems
+  (ICCPS), IEEE, 2022, pp. 116--126.
+
+\bibitem{zarei2020statistical}
+M.~Zarei, Y.~Wang, M.~Pajic, Statistical verification of learning-based
+  cyber-physical systems, in: Proceedings of the 23rd International Conference
+  on Hybrid Systems: Computation and Control, 2020, pp. 1--7.
+
+\bibitem{cairoli2021neural}
+F.~Cairoli, L.~Bortolussi, N.~Paoletti, Neural predictive monitoring under
+  partial observability, in: Runtime Verification: 21st International
+  Conference, RV 2021, Virtual Event, October 11--14, 2021, Proceedings 21,
+  Springer, 2021, pp. 121--141.
+
+\bibitem{waga2022dynamic}
+M.~Waga, E.~Castellano, S.~Pruekprasert, S.~Klikovits, T.~Takisaka, I.~Hasuo,
+  Dynamic shielding for reinforcement learning in black-box environments, in:
+  International Symposium on Automated Technology for Verification and
+  Analysis, Springer, 2022, pp. 25--41.
+
+\bibitem{stocco2020misbehaviour}
+A.~Stocco, M.~Weiss, M.~Calzana, P.~Tonella, Misbehaviour prediction for
+  autonomous driving systems, in: Proceedings of the ACM/IEEE 42nd
+  international conference on software engineering, 2020, pp. 359--371.
+
+\bibitem{ma2020stlnet}
+M.~Ma, J.~Gao, L.~Feng, J.~Stankovic, Stlnet: Signal temporal logic enforced
+  multivariate recurrent neural networks, Advances in Neural Information
+  Processing Systems 33 (2020) 14604--14614.
+
+\bibitem{mao2024safe}
+Z.~Mao, C.~Sobolewski, I.~Ruchkin, How safe am i given what i see? calibrated
+  prediction of safety chances for image-controlled autonomy, in: 6th Annual
+  Learning for Dynamics \& Control Conference, PMLR, 2024, pp. 1370--1387.
+
+\bibitem{mao2025safe}
+Z.~Mao, M.~E. Umasudhan, I.~Ruchkin, How safe will i be given what i saw?
+  calibrated prediction of safety chances for image-controlled autonomy, arXiv
+  preprint arXiv:2508.09346 (2025).
+
+\bibitem{Hinton06}
+G.~E. Hinton, S.~Osindero, Y.~W. Teh, A fast learning algorithm for deep belief
+  nets, Neural Computation 18 (2006) 1527--1554.
+
+\bibitem{kingma2013auto}
+D.~P. Kingma, Auto-encoding variational bayes, arXiv preprint arXiv:1312.6114
+  (2013).
+
+\bibitem{higgins2017beta}
+I.~Higgins, L.~Matthey, A.~Pal, C.~P. Burgess, X.~Glorot, M.~M. Botvinick,
+  S.~Mohamed, A.~Lerchner, beta-vae: Learning basic visual concepts with a
+  constrained variational framework., ICLR (Poster) 3 (2017).
+
+\bibitem{kim2018disentangling}
+H.~Kim, A.~Mnih, Disentangling by factorising, in: International conference on
+  machine learning, PMLR, 2018, pp. 2649--2658.
+
+\bibitem{chen2018isolating}
+R.~T. Chen, X.~Li, R.~B. Grosse, D.~K. Duvenaud, Isolating sources of
+  disentanglement in variational autoencoders, Advances in neural information
+  processing systems 31 (2018).
+
+\bibitem{yang2021causalvae}
+M.~Yang, F.~Liu, Z.~Chen, X.~Shen, J.~Hao, J.~Wang, Causalvae: Disentangled
+  representation learning via neural structural causal models, in: Proceedings
+  of the IEEE/CVF conference on computer vision and pattern recognition, 2021,
+  pp. 9593--9602.
+
+\bibitem{scholkopf2021toward}
+B.~Sch{\"o}lkopf, F.~Locatello, S.~Bauer, N.~R. Ke, N.~Kalchbrenner, A.~Goyal,
+  Y.~Bengio, Toward causal representation learning, Proceedings of the IEEE
+  109~(5) (2021) 612--634.
+
+\bibitem{mosbach2025soldslotobjectcentriclatent}
+M.~Mosbach, J.~N. Ewertz, A.~Villar-Corrales, S.~Behnke,
+  \href{https://arxiv.org/abs/2410.08822}{Sold: Slot object-centric latent
+  dynamics models for relational manipulation learning from pixels} (2025).
+\newblock \href {http://arxiv.org/abs/2410.08822} {\path{arXiv:2410.08822}}.
+\newline\urlprefix\url{https://arxiv.org/abs/2410.08822}
+
+\bibitem{van2017neural}
+A.~Van Den~Oord, O.~Vinyals, et~al., Neural discrete representation learning,
+  Advances in neural information processing systems 30 (2017).
+
+\bibitem{razavi2019generating}
+A.~Razavi, A.~Van~den Oord, O.~Vinyals, Generating diverse high-fidelity images
+  with vq-vae-2, Advances in neural information processing systems 32 (2019).
+
+\bibitem{linial_generative_2021}
+O.~Linial, N.~Ravid, D.~Eytan, U.~Shalit,
+  \href{https://dl.acm.org/doi/10.1145/3450439.3451866}{Generative {ODE}
+  modeling with known unknowns}, in: Proceedings of the {Conference} on
+  {Health}, {Inference}, and {Learning}, {CHIL} '21, Association for Computing
+  Machinery, New York, NY, USA, 2021, pp. 79--94.
+\newblock \href {https://doi.org/10.1145/3450439.3451866}
+  {\path{doi:10.1145/3450439.3451866}}.
+\newline\urlprefix\url{https://dl.acm.org/doi/10.1145/3450439.3451866}
+
+\bibitem{lei2024spartan}
+A.~Lei, B.~Sch{\"o}lkopf, I.~Posner, Spartan: A sparse transformer learning
+  local causation, arXiv preprint arXiv:2411.06890 (2024).
+
+\bibitem{karl2016deep}
+M.~Karl, M.~Soelch, J.~Bayer, P.~Van~der Smagt, Deep variational bayes filters:
+  Unsupervised learning of state space models from raw data, arXiv preprint
+  arXiv:1605.06432 (2016).
+
+\bibitem{chen2018neural}
+R.~T. Chen, Y.~Rubanova, J.~Bettencourt, D.~K. Duvenaud, Neural ordinary
+  differential equations, Advances in neural information processing systems 31
+  (2018).
+
+\bibitem{tomar2021learningrepresentationspixelbasedcontrol}
+M.~Tomar, U.~A. Mishra, A.~Zhang, M.~E. Taylor,
+  \href{https://arxiv.org/abs/2111.07775}{Learning representations for
+  pixel-based control: What matters and why?} (2021).
+\newblock \href {http://arxiv.org/abs/2111.07775} {\path{arXiv:2111.07775}}.
+\newline\urlprefix\url{https://arxiv.org/abs/2111.07775}
+
+\bibitem{hafner2019learning}
+D.~Hafner, T.~Lillicrap, I.~Fischer, R.~Villegas, D.~Ha, H.~Lee, J.~Davidson,
+  Learning latent dynamics for planning from pixels, in: International
+  conference on machine learning, PMLR, 2019, pp. 2555--2565.
+
+\bibitem{hafner2020mastering}
+D.~Hafner, T.~Lillicrap, M.~Norouzi, J.~Ba, Mastering atari with discrete world
+  models, arXiv preprint arXiv:2010.02193 (2020).
+
+\bibitem{wu2023daydreamer}
+P.~Wu, A.~Escontrela, D.~Hafner, P.~Abbeel, K.~Goldberg, Daydreamer: World
+  models for physical robot learning, in: Conference on robot learning, PMLR,
+  2023, pp. 2226--2240.
+
+\bibitem{zhang2021world}
+L.~Zhang, G.~Yang, B.~C. Stadie, World model as a graph: Learning latent
+  landmarks for planning, in: International conference on machine learning,
+  PMLR, 2021, pp. 12611--12620.
+
+\bibitem{zhao2024decomposed}
+Z.~Zhao, M.~Qi, H.~Ma, Decomposed vector-quantized variational autoencoder for
+  human grasp generation, in: European Conference on Computer Vision, Springer,
+  2024, pp. 447--463.
+
+\bibitem{zheng2024occworld}
+W.~Zheng, W.~Chen, Y.~Huang, B.~Zhang, Y.~Duan, J.~Lu, Occworld: Learning a 3d
+  occupancy world model for autonomous driving, in: European conference on
+  computer vision, Springer, 2024, pp. 55--72.
+
+\bibitem{min2023uniworld}
+C.~Min, D.~Zhao, L.~Xiao, Y.~Nie, B.~Dai, Uniworld: Autonomous driving
+  pre-training via world models, arXiv preprint arXiv:2308.07234 (2023).
+
+\bibitem{yan2024renderworld}
+Z.~Yan, W.~Dong, Y.~Shao, Y.~Lu, L.~Haiyang, J.~Liu, H.~Wang, Z.~Wang, Y.~Wang,
+  F.~Remondino, et~al., Renderworld: World model with self-supervised 3d label,
+  arXiv preprint arXiv:2409.11356 (2024).
+
+\bibitem{zuo2024gaussianworld}
+S.~Zuo, W.~Zheng, Y.~Huang, J.~Zhou, J.~Lu, Gaussianworld: Gaussian world model
+  for streaming 3d occupancy prediction, arXiv preprint arXiv:2412.10373
+  (2024).
+
+\bibitem{balloch2023neuro}
+J.~Balloch, Z.~Lin, R.~Wright, X.~Peng, M.~Hussain, A.~Srinivas, J.~Kim, M.~O.
+  Riedl, Neuro-symbolic world models for adapting to open world novelty, arXiv
+  preprint arXiv:2301.06294 (2023).
+
+\bibitem{liang2024visualpredicator}
+Y.~Liang, N.~Kumar, H.~Tang, A.~Weller, J.~B. Tenenbaum, T.~Silver, J.~F.
+  Henriques, K.~Ellis, Visualpredicator: Learning abstract world models with
+  neuro-symbolic predicates for robot planning, arXiv preprint arXiv:2410.23156
+  (2024).
+
+\bibitem{asenov2019vid2param}
+M.~Asenov, M.~Burke, D.~Angelov, T.~Davchev, K.~Subr, S.~Ramamoorthy,
+  Vid2param: Modeling of dynamics parameters from video, IEEE Robotics and
+  Automation Letters 5~(2) (2019) 414--421.
+
+\bibitem{BRUNTON2016710}
+S.~L. Brunton, J.~L. Proctor, J.~N. Kutz,
+  \href{https://www.sciencedirect.com/science/article/pii/S2405896316318298}{Sparse
+  identification of nonlinear dynamics with control (sindyc).},
+  IFAC-PapersOnLine 49~(18) (2016) 710--715, 10th IFAC Symposium on Nonlinear
+  Control Systems NOLCOS 2016.
+\newblock \href {https://doi.org/https://doi.org/10.1016/j.ifacol.2016.10.249}
+  {\path{doi:https://doi.org/10.1016/j.ifacol.2016.10.249}}.
+\newline\urlprefix\url{https://www.sciencedirect.com/science/article/pii/S2405896316318298}
+
+\bibitem{de2018end}
+F.~de~Avila Belbute-Peres, K.~Smith, K.~Allen, J.~Tenenbaum, J.~Z. Kolter,
+  End-to-end differentiable physics for learning and control, Advances in
+  neural information processing systems 31 (2018).
+
+\bibitem{yao2024marrying}
+D.~Yao, C.~Muller, F.~Locatello, Marrying causal representation learning with
+  dynamical systems for science, Advances in Neural Information Processing
+  Systems 37 (2024) 71705--71736.
+
+\bibitem{cai2021physics}
+S.~Cai, Z.~Mao, Z.~Wang, M.~Yin, G.~E. Karniadakis, Physics-informed neural
+  networks (pinns) for fluid mechanics: A review, Acta Mechanica Sinica 37~(12)
+  (2021) 1727--1738.
+
+\bibitem{ZHONG2023115664}
+W.~Zhong, H.~Meidani,
+  \href{https://www.sciencedirect.com/science/article/pii/S0045782522006193}{Pi-vae:
+  Physics-informed variational auto-encoder for stochastic differential
+  equations}, Computer Methods in Applied Mechanics and Engineering 403 (2023)
+  115664.
+\newblock \href {https://doi.org/https://doi.org/10.1016/j.cma.2022.115664}
+  {\path{doi:https://doi.org/10.1016/j.cma.2022.115664}}.
+\newline\urlprefix\url{https://www.sciencedirect.com/science/article/pii/S0045782522006193}
+
+\bibitem{tumu2023physics}
+R.~Tumu, L.~Lindemann, T.~Nghiem, R.~Mangharam, Physics constrained motion
+  prediction with uncertainty quantification, in: 2023 IEEE Intelligent
+  Vehicles Symposium (IV), IEEE, 2023, pp. 1--8.
+
+\bibitem{sridhar2023guaranteed}
+K.~Sridhar, S.~Dutta, J.~Weimer, I.~Lee, Guaranteed conformance of
+  neurosymbolic models to natural constraints, in: Learning for Dynamics and
+  Control Conference, PMLR, 2023, pp. 76--89.
+
+\bibitem{djeumou2023learn}
+F.~Djeumou, C.~Neary, U.~Topcu, How to learn and generalize from three minutes
+  of data: Physics-constrained and uncertainty-aware neural stochastic
+  differential equations, arXiv preprint arXiv:2306.06335 (2023).
+
+\bibitem{cui2020deep}
+H.~Cui, T.~Nguyen, F.-C. Chou, T.-H. Lin, J.~Schneider, D.~Bradley, N.~Djuric,
+  Deep kinematic models for kinematically feasible vehicle trajectory
+  predictions, in: 2020 IEEE International Conference on Robotics and
+  Automation (ICRA), IEEE, 2020, pp. 10563--10569.
+
+\bibitem{mao_phy-taylor_2025}
+Y.~Mao, Y.~Gu, L.~Sha, H.~Shao, Q.~Wang, T.~Abdelzaher,
+  \href{https://ieeexplore.ieee.org/document/10297119}{Phy-{Taylor}:
+  {Partially} {Physics}-{Knowledge}-{Enhanced} {Deep} {Neural} {Networks} via
+  {NN} {Editing}}, IEEE Transactions on Neural Networks and Learning Systems
+  36~(1) (2025) 447--461.
+\newblock \href {https://doi.org/10.1109/TNNLS.2023.3325432}
+  {\path{doi:10.1109/TNNLS.2023.3325432}}.
+\newline\urlprefix\url{https://ieeexplore.ieee.org/document/10297119}
+
+\bibitem{kaelbling1998planning}
+L.~P. Kaelbling, M.~L. Littman, A.~R. Cassandra, Planning and acting in
+  partially observable stochastic domains, Artificial Intelligence 101~(1--2)
+  (1998) 99--134.
+
+\bibitem{kaelbling1996reinforcement}
+L.~P. Kaelbling, M.~L. Littman, A.~W. Moore, Reinforcement learning: A survey,
+  Journal of artificial intelligence research 4 (1996) 237--285.
+
+\bibitem{wierstra2007solving}
+D.~Wierstra, A.~F{\"o}rster, J.~Peters, J.~Schmidhuber, Solving deep memory
+  {POMDP}s with recurrent policy gradients, in: International Conference on
+  Artificial Neural Networks (ICANN), Springer, 2007, pp. 697--706.
+
+\bibitem{chung2014empirical}
+J.~Chung, C.~Gulcehre, K.~Cho, Y.~Bengio, Empirical evaluation of gated
+  recurrent neural networks on sequence modeling, arXiv preprint
+  arXiv:1412.3555 (2014).
+
+\bibitem{shi2015convolutional}
+X.~Shi, Z.~Chen, H.~Wang, D.-Y. Yeung, W.-K. Wong, W.-c. Woo, Convolutional
+  lstm network: A machine learning approach for precipitation nowcasting,
+  Advances in neural information processing systems 28 (2015).
+
+\bibitem{bai2018empirical}
+S.~Bai, J.~Z. Kolter, V.~Koltun, An empirical evaluation of generic
+  convolutional and recurrent networks for sequence modeling, arXiv preprint
+  arXiv:1803.01271 (2018).
+
+\bibitem{chen2020learning}
+D.~Chen, B.~Zhou, V.~Koltun, P.~Kr{\"a}henb{\"u}hl, Learning by cheating, in:
+  Conference on Robot Learning (CoRL), PMLR, 2020, pp. 66--75.
+
+\bibitem{gou2021knowledge}
+J.~Gou, B.~Yu, S.~J. Maybank, D.~Tao, Knowledge distillation: A survey,
+  International Journal of Computer Vision 129~(6) (2021) 1789--1819.
+
+\bibitem{kong2015kinematic}
+J.~Kong, M.~Pfeiffer, G.~Schildbach, F.~Borrelli, Kinematic and dynamic vehicle
+  models for autonomous driving control design, in: 2015 IEEE Intelligent
+  Vehicles Symposium (IV), IEEE, 2015, pp. 1094--1099.
+
+\bibitem{viitala2021learning}
+A.~Viitala, R.~Boney, Y.~Zhao, A.~Ilin, J.~Kannala, Learning to drive (l2d) as
+  a low-cost benchmark for real-world reinforcement learning, in: 2021 20th
+  International Conference on Advanced Robotics (ICAR), IEEE, 2021, pp.
+  275--281.
+
+\bibitem{hussein2017imitation}
+A.~Hussein, M.~M. Gaber, E.~Elyan, C.~Jayne, Imitation learning: A survey of
+  learning methods, ACM Computing Surveys (CSUR) 50~(2) (2017) 1--35.
+
+\bibitem{brockman2016openai}
+G.~Brockman, V.~Cheung, L.~Pettersson, J.~Schneider, J.~Schulman, J.~Tang,
+  W.~Zaremba, Openai gym, arXiv preprint arXiv:1606.01540 (2016).
+
+\end{thebibliography}

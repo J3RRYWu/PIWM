@@ -270,16 +270,16 @@ b_rig = rbox(axB, (10.85, 8.05), 4.65, 2.10,
              r"then rotate by $-\Delta\psi$",
              fc="white", fontsize=9.6, weight="bold", linespacing=1.6)
 
-# Step 2: RESAMPLE (highlighted) — full width on right side
+# Step 2: RESAMPLE (no longer highlighted in red — neutral white box)
 b_res = (8.05, 5.45, 7.45, 2.05)
 box_res = FancyBboxPatch(
     (b_res[0], b_res[1]), b_res[2], b_res[3],
     boxstyle="round,pad=0.03,rounding_size=0.06",
-    linewidth=1.8, edgecolor=ACCENT, facecolor="#FFE3E3", joinstyle="round")
+    linewidth=0.7, edgecolor=EDGE, facecolor="white", joinstyle="round")
 axB.add_patch(box_res)
 axB.text(b_res[0] + b_res[2] / 2, b_res[1] + b_res[3] - 0.30,
-         "Step 2 · RESAMPLE to fixed $s$    (key fix)",
-         ha="center", fontsize=12, fontweight="bold", color=ACCENT)
+         "Step 2 · RESAMPLE to fixed $s$",
+         ha="center", fontsize=12, fontweight="bold", color="black")
 axB.text(b_res[0] + b_res[2] / 2, b_res[1] + b_res[3] / 2 - 0.15,
          r"$\alpha = \Delta y_b / \Delta s,\ \ \Delta s = 5$",
          ha="center", fontsize=10.5, color="#1a1a1a")
@@ -339,16 +339,14 @@ leg_handles = [
     Line2D([0], [0], color=ARROW, lw=1.4, label="data flow"),
     Line2D([0], [0], color=DASH, lw=1.4, linestyle=(0, (3, 2)),
            label=r"body-frame $\Delta$ feed"),
-    Rectangle((0, 0), 1, 1, fc=C_CAR,    ec=EDGE, lw=0.6, label="car state"),
-    Rectangle((0, 0), 1, 1, fc=C_LANE,   ec=EDGE, lw=0.6, label="lane state"),
-    Rectangle((0, 0), 1, 1, fc=C_PHYS,   ec=EDGE, lw=0.6,
+    Rectangle((0, 0), 1, 1, fc=C_CAR,  ec=EDGE, lw=0.6, label="car state"),
+    Rectangle((0, 0), 1, 1, fc=C_LANE, ec=EDGE, lw=0.6, label="lane state"),
+    Rectangle((0, 0), 1, 1, fc=C_PHYS, ec=EDGE, lw=0.6,
               label="learnable physical params"),
-    Rectangle((0, 0), 1, 1, fc="#FFE3E3", ec=ACCENT, lw=1.4,
-              label="key contribution"),
 ]
 fig.legend(handles=leg_handles, loc="lower center",
            bbox_to_anchor=(0.5, 0.005),
-           ncol=6, frameon=False, fontsize=10,
+           ncol=5, frameon=False, fontsize=10,
            handlelength=1.8, columnspacing=2.4, handletextpad=0.7)
 
 

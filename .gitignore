@@ -53,3 +53,8 @@ Thumbs.db
 # Claude / misc
 .claude/
 1.15.0
+
+# 论文图只追踪 .pdf,png 是预览
+figures/*.png
+# 论文参考(大 pdf/zip)
+papers/
