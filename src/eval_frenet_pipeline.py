@@ -33,8 +33,8 @@ from frenet_bridge import FrenetBridge
 from utils import load_checkpoint
 
 K = 100
-META = _os.path.join(_os.path.dirname(__file__), "..", "Data_Donkeycar_frenet", "_meta")
-FRENET_DIR = _os.path.join(_os.path.dirname(__file__), "..", "Data_Donkeycar_frenet")
+META = _os.path.join(_os.path.dirname(__file__), "..", "..", "Data_Donkeycar_frenet", "_meta")
+FRENET_DIR = _os.path.join(_os.path.dirname(__file__), "..", "..", "Data_Donkeycar_frenet")
 _tr = np.load(_os.path.join(META, "track.npz"))
 _cen, _nrm, _L, _ds, _M = _tr["centers"], _tr["normals"], float(_tr["total_len"]), float(_tr["grid_ds"]), len(_tr["centers"])
 def sd2xy(s, d): i = (np.mod(s, _L) / _ds).astype(int) % _M; return _cen[i] + d[..., None] * _nrm[i]

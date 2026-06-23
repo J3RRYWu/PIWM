@@ -107,6 +107,8 @@ def main():
     print(f"\n{'model':<8} {'@100 (m)':>10}")
     for nm in ["Frenet", "GOKU", "V2P", "DVBF", "SINDYc"]:
         m = np.array(res[nm]).mean(0); c, lw, ls = sty[nm]
+        if nm == "SINDYc":
+            np.save("figures/_sindyc_curve.npy", m)   # cache for paper_figures (pysindy-free)
         tag = f"{nm} (@100={m[100]:.3f}m)" if nm != "SINDYc" else f"{nm} (diverges → 1e17)"
         ax.plot(steps, np.maximum(m, 1e-3), color=c, lw=lw, ls=ls, label=tag)
         print(f"  {nm:<8} {m[100]:>9.3f}")

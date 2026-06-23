@@ -43,8 +43,8 @@ DONKEY_LANE_S_SAMPLES_PHYS = np.arange(0, 10, dtype=np.float32) * _DONKEY_LANE_D
 DONKEY_LANE_S_SAMPLES = DONKEY_LANE_S_SAMPLES_PHYS * DONKEY_SPATIAL_SCALE
 
 # Where the preprocessed donkey data lives.
-DONKEY_RAW_DIR  = os.path.join(os.path.dirname(__file__), "..", "Data_Donkeycar")
-DONKEY_DATA_DIR = os.path.join(os.path.dirname(__file__), "..", "Data_Donkeycar_prep")
+DONKEY_RAW_DIR  = os.path.join(os.path.dirname(__file__), "..", "..", "Data_Donkeycar")
+DONKEY_DATA_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "Data_Donkeycar_prep")
 # Stats file lives in a subdir so SeqLaneDataset's `*.npz` glob on DATA_DIR
 # doesn't accidentally pick it up.
 DONKEY_STATS_FILE = os.path.join(DONKEY_DATA_DIR, "_meta", "stats.npz")

@@ -28,8 +28,8 @@ from frenet_track import FrenetTrack
 from donkey_prep import (_bad_frame_mask, _contiguous_segments, rgb_to_gray,
                          DONKEY_DT)
 
-RAW_DIR  = _os.path.join(_os.path.dirname(__file__), "..", "Data_Donkeycar")
-OUT_DIR  = _os.path.join(_os.path.dirname(__file__), "..", "Data_Donkeycar_frenet")
+RAW_DIR  = _os.path.join(_os.path.dirname(__file__), "..", "..", "Data_Donkeycar")
+OUT_DIR  = _os.path.join(_os.path.dirname(__file__), "..", "..", "Data_Donkeycar_frenet")
 STATS    = _os.path.join(OUT_DIR, "_meta", "stats.npz")
 
 KAPPA_OFFSETS = np.arange(0, 10, dtype=np.float32) * 0.5    # [0,0.5,..,4.5] m ahead

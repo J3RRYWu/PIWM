@@ -31,8 +31,8 @@ from utils import load_checkpoint
 
 DEVICE = torch.device("cpu")
 K = 100
-META = _os.path.join(_os.path.dirname(__file__), "..", "Data_Donkeycar_frenet", "_meta")
-FRENET_DIR = _os.path.join(_os.path.dirname(__file__), "..", "Data_Donkeycar_frenet")
+META = _os.path.join(_os.path.dirname(__file__), "..", "..", "Data_Donkeycar_frenet", "_meta")
+FRENET_DIR = _os.path.join(_os.path.dirname(__file__), "..", "..", "Data_Donkeycar_frenet")
 
 # track for sd->xy
 _tr = np.load(_os.path.join(META, "track.npz"))

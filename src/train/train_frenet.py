@@ -12,7 +12,7 @@ from tqdm import tqdm
 
 from models.frenet_dynamics import FrenetDynamics
 
-DATA = _os.path.join(_os.path.dirname(__file__), "..", "..", "Data_Donkeycar_frenet")
+DATA = _os.path.join(_os.path.dirname(__file__), "..", "..", "..", "Data_Donkeycar_frenet")
 META = _os.path.join(DATA, "_meta")
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 

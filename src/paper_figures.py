@@ -106,7 +106,9 @@ def main():
     for p in enc.parameters(): p.requires_grad = False
     fr = FrenetDynamics(_os.path.join(META, "track.npz"), _os.path.join(META, "stats.npz")).to(DEVICE)
     fr.load_state_dict(load_checkpoint("checkpoints/frenet/dyn_k16.tar")["dynamics"]); fr.eval()
-    sindy = pickle.load(open("checkpoints/sindyc_lane_donkey/model.pkl", "rb"))
+    # SINDYc curve is loaded from a CPU-precomputed cache (figures/_sindyc_curve.npy)
+    # to avoid importing pysindy alongside torch+cuda, which segfaults on py311.
+    # Regenerate the cache with:  python src/eval_stability_log.py   (CPU / py3.13)
     fr_std = fr.state_std.cpu().numpy().copy(); fr_std[0] = 0.5
 
     s31, fst0, fac, act31, gtxy, theta = [], [], [], [], [], []
@@ -143,10 +145,12 @@ def main():
     ax.legend(loc="upper left"); fig.savefig("figures/fig_main.pdf"); fig.savefig("figures/fig_main.png"); plt.close(fig)
 
     # ===== Fig 2: stability log (incl SINDYc) =====
-    sc = sindyc_curve(sindy, s31, act31)
+    sc_path = "figures/_sindyc_curve.npy"
+    sc_mean = np.load(sc_path) if _os.path.exists(sc_path) else None      # precomputed mean curve (K+1,)
     fig, ax = plt.subplots(figsize=(3.5, 2.7))
-    for nm in ["SINDYc", "DVBF", "GOKU", "V2P", "Frenet"]:
-        m = (sc if nm == "SINDYc" else curves[nm]).mean(0)
+    order2 = ["SINDYc", "DVBF", "GOKU", "V2P", "Frenet"] if sc_mean is not None else ["DVBF", "GOKU", "V2P", "Frenet"]
+    for nm in order2:
+        m = sc_mean if nm == "SINDYc" else curves[nm].mean(0)
         lw = 2.4 if nm == "Frenet" else 1.6; ls = "-" if nm == "Frenet" else (":" if nm == "SINDYc" else "--")
         tag = LBL[nm] + (" (diverges)" if nm == "SINDYc" else "")
         ax.plot(steps, np.maximum(m, 1e-3), color=COL[nm], lw=lw, ls=ls, label=tag)

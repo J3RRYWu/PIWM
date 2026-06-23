@@ -20,44 +20,47 @@ GOKU/V2P 稳约 **2×**(0.25 m vs 0.45 m),且每一维都物理可解释、仅 *
 | 默认 `python`(3.13) | **CPU-only** torch,只用于不吃 GPU 的小活 |
 | 注意 | 小模型逐步 rollout 是延迟受限,**先批量化(堆 batch)GPU 才有意义** |
 
-一键出全部论文图:`<py311> paper_figures.py` → `figures/fig_{main,noise,stability}.{pdf,png}`(论文用 `.pdf`)。
+一键出全部论文图:`<py311> src/paper_figures.py` → `figures/fig_{main,noise,stability}.{pdf,png}`(论文用 `.pdf`)。
+**所有命令从 `piwm/` 运行**(checkpoint/figures 是 cwd 相对;源码在 `src/`)。
 
 ---
 
 ## 复现流程(数据 → 训练 → 图)
 ```
 1. 数据预处理(原始 npz → 训练用)
-     python donkey_prep.py        # → ../Data_Donkeycar_prep/    (31-dim 基线用)
-     python frenet_prep.py        # → ../Data_Donkeycar_frenet/  (Frenet 5-dim 状态 + κ 表)
+     python src/donkey_prep.py        # → ../Data_Donkeycar_prep/    (31-dim 基线用)
+     python src/frenet_prep.py        # → ../Data_Donkeycar_frenet/  (Frenet 5-dim 状态 + κ 表)
 
 2. 训练
-     <py311> train/train_frenet.py             # Frenet 动力学 (我们的)
-     <py311> train/train_baselines_donkey.py   # GOKU/V2P/DVBF/SINDYc 基线 (K=8)
-     # K=32 长horizon基线由 _archive/carracing_conf/.. 之外的脚本产出,checkpoint 已存
+     <py311> src/train/train_frenet.py             # Frenet 动力学 (我们的)
+     <py311> src/train/train_baselines_donkey.py   # GOKU/V2P/DVBF/SINDYc 基线 (K=8)
+     # K=32 长horizon基线已有 checkpoint(脚本在 _archive/train/train_all_longK_donkey.py)
 
 3. 评估 + 出图
-     <py311> paper_figures.py                  # 三张论文图(main/noise/stability)
-     <py311> eval_frenet_vs_baselines.py       # 100步位置误差对比表
-     <py311> noise_robustness.py               # 噪声鲁棒性(跨模型 + 逐物理量)
-     <py311> eval_stability_log.py             # log 轴稳定性(含 SINDYc 发散)
-     <py311> eval_frenet_pipeline.py           # 完整前视流程 + 图像 MSE + filmstrip
+     # SINDYc 涉及 pysindy,在 CPU(3.13)跑;其余用 py311 GPU
+     python src/eval_stability_log.py              # log稳定性(含SINDYc)+ 缓存 _sindyc_curve.npy
+     <py311> src/paper_figures.py                  # 三张论文图(读 SINDYc 缓存,不碰 pysindy)
+     <py311> src/eval_frenet_vs_baselines.py       # 100步位置误差对比表
+     <py311> src/noise_robustness.py               # 噪声鲁棒性(跨模型 + 逐物理量)
+     <py311> src/eval_frenet_pipeline.py           # 完整前视流程 + 图像 MSE + filmstrip
 ```
 
 ---
 
 ## 目录
 ```
-piwm/
-├── 核心共享        config / lane_utils / relative_coords / utils / track_utils .py
-├── DonkeyCar       donkey_{config,prep,dataset,track}.py     数据/坐标/glitch过滤
-├── Frenet(贡献)   frenet_{track,prep,bridge}.py            κ表 / 状态预处理 / ↔29维桥
-├── 评估+图         eval_frenet_{vs_baselines,pipeline}.py  eval_stability_log.py
-│                   noise_robustness.py  paper_figures.py
-├── models/         frenet_dynamics(我们的) · encoder_lane · decoder_lane
-│                   dynamics_lane_v6_kin · dynamics_bicycle_kin (训encoder时用)
-│                   dynamics_lane_v5 · dynamics_bicycle_v4 (SeqLaneDataset 传递依赖)
-├── baselines/      shared_dynamics_lane.py = GOKU / V2P / DVBF
-├── train/          train_frenet · train_baselines_donkey · train_piwm_lane_v6_donkey
+piwm/                      ← 仓库根 + 运行目录(从这里跑所有命令)
+├── src/                   ← 全部源码
+│   ├── 核心共享    config / lane_utils / relative_coords / utils / track_utils .py
+│   ├── DonkeyCar   donkey_{config,prep,dataset,track}.py     数据/坐标/glitch过滤
+│   ├── Frenet(贡献) frenet_{track,prep,bridge}.py           κ表 / 状态预处理 / ↔29维桥
+│   ├── 评估+图     eval_frenet_{vs_baselines,pipeline}.py  eval_stability_log.py
+│   │               noise_robustness.py  paper_figures.py
+│   ├── models/     frenet_dynamics(我们的) · encoder_lane · decoder_lane
+│   │               dynamics_lane_v6_kin · dynamics_bicycle_kin (训encoder时用)
+│   │               dynamics_lane_v5 · dynamics_bicycle_v4 (SeqLaneDataset 传递依赖)
+│   ├── baselines/  shared_dynamics_lane.py = GOKU / V2P / DVBF
+│   └── train/      train_frenet · train_baselines_donkey · train_piwm_lane_v6_donkey
 │                   train_piwm_lane_v5 (含共享 SeqLaneDataset)
 ├── checkpoints/    权重(gitignored):frenet/ · {goku,v2p,dvbf}_lane_donkey_longK/ · ...
 ├── figures/        当前论文图 fig_{main,noise,stability}.{pdf,png}
