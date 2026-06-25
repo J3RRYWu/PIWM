@@ -74,9 +74,12 @@ class FrenetDynamics(nn.Module):
     def _norm_v(self, v):    return (v - self.state_mean[3]) / self.state_std[3]
     def _norm_om(self, o):   return (o - self.state_mean[4]) / self.state_std[4]
 
-    def forward(self, z, action):
+    def forward(self, z, action, kappa_override=None):
+        """kappa_override (B,): if given, use this PERCEIVED curvature-at-car instead
+        of the known-map lookup kappa_at(s). This is the switch from privileged-map
+        mode to pure-world-model mode (kappa from the camera, see road_perception.py)."""
         s, d, psi, v, om = z[:, 0], z[:, 1], z[:, 2], z[:, 3], z[:, 4]
-        kap = self.kappa_at(s)
+        kap = self.kappa_at(s) if kappa_override is None else kappa_override
 
         den = 1.0 - d * kap
         den = torch.where(den.abs() < 0.2, torch.sign(den + 1e-6) * 0.2, den)
@@ -101,6 +104,39 @@ class FrenetDynamics(nn.Module):
         om_n  = om  + dom
 
         return torch.stack([s_n, d_n, psi_n, v_n, om_n], dim=-1)
+
+    @staticmethod
+    def _interp1d(xp, fp, x):
+        """Linear interp of fp(xp) at scalar tensor x; xp ascending. Clamped (hold-last)."""
+        x = x.clamp(xp[0], xp[-1])
+        i = torch.searchsorted(xp, x).clamp(1, len(xp) - 1)
+        x0, x1, y0, y1 = xp[i - 1], xp[i], fp[i - 1], fp[i]
+        w = (x - x0) / (x1 - x0 + 1e-9)
+        return y0 + w * (y1 - y0)
+
+    @torch.no_grad()
+    def rollout_perceived(self, z0, actions, kappa_profile0, offsets):
+        """Pure-world-model rollout: kappa comes from a profile PERCEIVED once at t0,
+        NOT the map. As the car advances by delta = s_k - s0 (arc-length), kappa at the
+        car is interpolated from that already-observed preview (hold-last past its reach
+        -- the structured road-context transition is just the shift of the perceived
+        profile by the predicted advance).
+
+          z0 (5,), actions (K,2), kappa_profile0 (n_off,) = perceived kappa(s0+offsets),
+          offsets (n_off,) arc-length samples in metres. Returns (K+1, 5).
+        """
+        dev = z0.device
+        offs = torch.as_tensor(offsets, dtype=torch.float32, device=dev)
+        prof = torch.as_tensor(kappa_profile0, dtype=torch.float32, device=dev)
+        s0 = z0[0].clone()
+        z = z0.unsqueeze(0)
+        out = [z0.clone()]
+        for k in range(len(actions)):
+            delta = torch.remainder(z[0, 0] - s0, self.total_len)
+            kap = self._interp1d(offs, prof, delta).reshape(1)
+            z = self.forward(z, actions[k:k + 1], kappa_override=kap)
+            out.append(z[0].clone())
+        return torch.stack(out)
 
     # --- loss helper: per-dim normalized error (s uses fixed 0.5 m scale) ---
     def state_loss(self, z_pred, z_gt):

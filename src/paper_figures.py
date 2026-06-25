@@ -130,23 +130,32 @@ def main():
     th_t = torch.tensor(theta, dtype=torch.float32, device=DEVICE)
     Wn = len(s31); steps = np.arange(K + 1); print(f"{Wn} windows")
 
-    # ===== Fig 1: main comparison (linear, mean ± SE) =====
+    # SINDYc mean curve from the CPU-precomputed cache (pysindy-free; see header note)
+    sc_path = "figures/_sindyc_curve.npy"
+    sc_mean = np.load(sc_path) if _os.path.exists(sc_path) else None      # (K+1,)
+
+    # ===== Fig 1: main comparison (linear, mean ± SE) + SINDYc off-scale =====
     curves = {"Frenet": frenet_curve(fr, fst0, fac, gtxy),
               "GOKU": base_curve(goku, s31[:, 0], act31, gtN),
               "V2P": base_curve(v2p, s31[:, 0], act31, gtN, th_t),
               "DVBF": base_curve(dvbf, s31[:, 0], act31, gtN)}
     fig, ax = plt.subplots(figsize=(3.5, 2.7))
+    ymax = 0.0
     for nm in ["Frenet", "V2P", "GOKU", "DVBF"]:
         mu, se = ms(curves[nm]); lw = 2.4 if nm == "Frenet" else 1.6
         ls = "-" if nm == "Frenet" else "--"
         ax.plot(steps, mu, color=COL[nm], lw=lw, ls=ls, label=f"{LBL[nm]} ({mu[K]:.2f} m)")
         ax.fill_between(steps, mu - se, mu + se, color=COL[nm], alpha=0.15, lw=0)
-    ax.set_xlabel("rollout step"); ax.set_ylabel("position error (m)"); ax.set_xlim(0, K); ax.set_ylim(bottom=0)
+        ymax = max(ymax, float((mu + se).max()))
+    if sc_mean is not None:
+        # plotted, but the y-axis stays scaled to the bounded models — SINDYc shoots off the top
+        ax.plot(steps, sc_mean, color=COL["SINDYc"], lw=1.4, ls=":", label=f"{LBL['SINDYc']} (diverges)")
+        ax.text(K * 0.04, ymax * 1.04, "SINDYc $\\uparrow$", color=COL["SINDYc"], fontsize=7.5, va="top")
+    ax.set_xlabel("rollout step"); ax.set_ylabel("position error (m)"); ax.set_xlim(0, K)
+    ax.set_ylim(0, ymax * 1.10)
     ax.legend(loc="upper left"); fig.savefig("figures/fig_main.pdf"); fig.savefig("figures/fig_main.png"); plt.close(fig)
 
-    # ===== Fig 2: stability log (incl SINDYc) =====
-    sc_path = "figures/_sindyc_curve.npy"
-    sc_mean = np.load(sc_path) if _os.path.exists(sc_path) else None      # precomputed mean curve (K+1,)
+    # ===== Fig 2: stability log (incl SINDYc) =====  (sc_mean loaded above)
     fig, ax = plt.subplots(figsize=(3.5, 2.7))
     order2 = ["SINDYc", "DVBF", "GOKU", "V2P", "Frenet"] if sc_mean is not None else ["DVBF", "GOKU", "V2P", "Frenet"]
     for nm in order2:

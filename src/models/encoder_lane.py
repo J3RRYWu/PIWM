@@ -33,8 +33,14 @@ class PhysicsEncoderLane(nn.Module):
         self.car_head  = nn.Linear(256, car_dim)
         self.lane_head = nn.Linear(256, lane_dim)
 
+    def features(self, x):
+        """x: (B, FRAME_STACK, 64, 64) -> (B, 256) shared penultimate features.
+        Exposed so a road-context head (curvature perception) can reuse the same
+        backbone; see models/road_perception.py."""
+        h = self.conv(x).reshape(x.size(0), -1)
+        return self.feat(h)
+
     def forward(self, x):
         """x: (B, FRAME_STACK, 64, 64) -> (B, 29) concat[car(9), lane(20)]"""
-        h = self.conv(x).reshape(x.size(0), -1)
-        h = self.feat(h)
+        h = self.features(x)
         return torch.cat([self.car_head(h), self.lane_head(h)], dim=-1)

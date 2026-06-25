@@ -39,20 +39,24 @@ import torch
 import torch.nn as nn
 from tqdm import tqdm
 
-from config import DEVICE, DATA_DIR, ENCODER_DIM as CAR_ENCODER_DIM
-from lane_utils import LANE_DIM
+from config import (DEVICE, DATA_DIR, ENCODER_DIM as CAR_ENCODER_DIM,
+                    PHYSICS_MEAN_REL, PHYSICS_STD_REL)
+from lane_utils import LANE_DIM, LANE_MEAN, LANE_STD, LANE_FRAME_STACK
+from relative_coords import to_relative_np
 from baselines.shared_dynamics_lane import (DynamicsDVBFLane, DynamicsGOKULane,
                                             DynamicsVid2ParamLane)
 from models.encoder_lane import PhysicsEncoderLane
 from utils import save_checkpoint, load_checkpoint
 from donkey_dataset import (make_donkey_loaders, split_segments,
-                            collect_state31_windows)
+                            collect_state31_windows, _phys_flip_sign,
+                            _phys_flip_offset, _lane_flip_sign, _lane_flip_offset,
+                            _ACTION_FLIP_SIGN)
 from train_piwm_lane_v5 import SeqLaneDataset
 
 # ----------------------------------------------------------------------
 # Shared hyperparams — kept identical to PIWM Stage 2 donkey for fairness
 # ----------------------------------------------------------------------
-ROLLOUT_K  = 8
+ROLLOUT_K  = 8                      # set from --K in __main__ (longK uses 32)
 EPOCHS     = 60
 BATCH_NN   = 128
 BATCH_V2P  = 64
@@ -60,6 +64,7 @@ LR         = 1e-3
 LAMBDA_LANE = 2.0
 GRAD_CLIP  = 5.0
 SEED       = 0
+SUFFIX     = ""                     # checkpoint dir suffix (e.g. "_longK"), set in __main__
 
 ENCODER_CK = "checkpoints/piwm_lane_v6_donkey/ae.tar"
 
@@ -75,80 +80,140 @@ def _split_loss(z, gt):
 
 
 # ----------------------------------------------------------------------
+# Precompute windows as GPU-resident tensors (NO images for DVBF/GOKU; V2P
+# precomputes the FROZEN encoder's obs once). The 31-dim state windows are
+# tiny (~100 MB) so they live on-GPU and minibatches are pure index_select —
+# this removes the image-laden DataLoader that profiled at 2.4x the rollout.
+# ----------------------------------------------------------------------
+def _precompute_nn(base, ep_set):
+    """(Z, A) on DEVICE. Z (N,K+1,31) normalized state31, A (N,K+1,3) actions."""
+    data = collect_state31_windows(base, ep_set, window=ROLLOUT_K + 1, stride=1, with_flip=True)
+    Z = torch.from_numpy(np.stack([s for s, _ in data])).to(DEVICE)
+    A = torch.from_numpy(np.stack([a for _, a in data])).to(DEVICE)
+    return Z, A
+
+
+def _precompute_v2p(base, ep_set, enc):
+    """(Z, A, OBS) on DEVICE for V2P. OBS = frozen-encoder output of each window's
+    15-frame stack, computed ONCE (orig + h-flip), so training never touches images.
+    Stacks are built per-episode with a sliding-window VIEW (vectorized) rather than a
+    per-window Python np.stack loop -- the loop dominated runtime on ~27k windows."""
+    FS = LANE_FRAME_STACK; W = ROLLOUT_K + 1
+    psgn, poff = _phys_flip_sign().numpy(), _phys_flip_offset().numpy()
+    lsgn, loff = _lane_flip_sign().numpy(), _lane_flip_offset().numpy()
+    asgn = _ACTION_FLIP_SIGN.numpy()
+    Zs, As, OBS = [], [], []
+    n_done = 0
+    for ep in ep_set:
+        phys = base.phys_list[ep]; acts = base.acts_list[ep]
+        wpw = base.wp_world_list[ep]; imgs = base.imgs_list[ep]
+        T = len(phys)
+        t0s = np.arange(FS - 1, T - W + 1)
+        if len(t0s) == 0:
+            continue
+        # state31 (orig + flip) per window -- cheap numpy, order [t0a_orig,t0a_flip,t0b_orig,...]
+        for t0 in t0s:
+            seg = phys[t0:t0 + W]; rel = to_relative_np(seg, 0)
+            car = (rel - PHYSICS_MEAN_REL) / PHYSICS_STD_REL
+            p0 = seg[0, :2]; y0 = seg[0, 2]; c, s = np.cos(y0), np.sin(y0)
+            d = wpw[t0:t0 + W] - p0
+            x = d[..., 0] * c + d[..., 1] * s; y = -d[..., 0] * s + d[..., 1] * c
+            lane = (np.stack([x, y], -1).reshape(W, LANE_DIM) - LANE_MEAN) / LANE_STD
+            s31 = np.concatenate([car, lane], -1).astype(np.float32)
+            a = acts[t0:t0 + W].astype(np.float32)
+            Zs.append(s31); As.append(a)
+            s31f = s31.copy(); s31f[:, :11] = s31[:, :11] * psgn + poff
+            s31f[:, 11:] = s31[:, 11:] * lsgn + loff
+            Zs.append(s31f); As.append((a * asgn).astype(np.float32))
+        # vectorized 15-frame stacks: stack for window t0 = imgs[t0-FS+1 : t0+1]
+        sw = np.lib.stride_tricks.sliding_window_view(imgs, FS, axis=0)        # (T-FS+1,64,64,FS)
+        stacks = np.moveaxis(sw, -1, 1)[t0s - (FS - 1)].astype(np.float32)     # (n,FS,64,64)
+        with torch.no_grad():
+            for j in range(0, len(stacks), 256):
+                ch = stacks[j:j + 256]
+                ob = enc(torch.from_numpy(ch).to(DEVICE))
+                obf = enc(torch.from_numpy(ch[:, :, :, ::-1].copy()).to(DEVICE))
+                OBS.append(torch.stack([ob, obf], 1).reshape(-1, ob.shape[-1]).cpu())  # orig,flip,...
+        n_done += len(t0s)
+        print(f"    [v2p precompute] {n_done} windows", flush=True)
+    OBS = torch.cat(OBS, 0).to(DEVICE)
+    Z = torch.from_numpy(np.stack(Zs)).to(DEVICE); A = torch.from_numpy(np.stack(As)).to(DEVICE)
+    return Z, A, OBS
+
+
+# ----------------------------------------------------------------------
 # NN baseline boilerplate (DVBF, GOKU)
 # ----------------------------------------------------------------------
-def _train_nn_baseline(model_factory, name, save_path,
-                       batch_size=BATCH_NN):
+_BASE = None
+def _get_base():
+    """SeqLaneDataset is built once and shared across DVBF/GOKU/V2P."""
+    global _BASE
+    if _BASE is None:
+        _BASE = SeqLaneDataset(DATA_DIR, seq_len=ROLLOUT_K + 1)
+    return _BASE
+
+
+def _train_nn_baseline(model_factory, name, save_path, batch_size=None):
+    batch_size = BATCH_NN if batch_size is None else batch_size   # read global at call time
     print("=" * 60); print(f"Train {name} [donkey]"); print("=" * 60)
-    tr_loader, val_loader, _ = make_donkey_loaders(
-        DATA_DIR, seq_len=ROLLOUT_K + 1, batch_size=batch_size,
-        val_frac=0.10, flip_aug=True, seed=SEED)
+    base = _get_base()
+    train_eps, val_eps = split_segments(base, val_frac=0.10, seed=SEED)
+    Ztr, Atr = _precompute_nn(base, train_eps)
+    Zval, Aval = _precompute_nn(base, val_eps)
+    N = Ztr.shape[0]
 
     model = model_factory().to(DEVICE)
     opt = torch.optim.Adam(model.parameters(), lr=LR)
     sch = torch.optim.lr_scheduler.ReduceLROnPlateau(opt, patience=3, factor=0.5)
     best = float('inf')
-    n_params = sum(p.numel() for p in model.parameters())
-    print(f"  param count: {n_params:,}")
+    print(f"  param count: {sum(p.numel() for p in model.parameters()):,}  "
+          f"windows: {N} train / {Zval.shape[0]} val (image-free, on {DEVICE}, batch={batch_size})")
+
+    def _rollout(Z, A):
+        z = Z[:, 0]; l_total = l_car = l_lane = 0.0
+        for k in range(ROLLOUT_K):
+            z = model(z, A[:, k])
+            lt, lc, ll = _split_loss(z, Z[:, k + 1])
+            l_total = l_total + lt; l_car = l_car + lc; l_lane = l_lane + ll
+        return l_total / ROLLOUT_K, l_car / ROLLOUT_K, l_lane / ROLLOUT_K
 
     for epoch in range(EPOCHS):
         model.train()
-        t_loss, t_car, t_lane, nb = 0.0, 0.0, 0.0, 0
-        for s0, fi, fp, fa, wn in tqdm(tr_loader, desc=f"{name} {epoch+1}/{EPOCHS}"):
-            fp = fp.to(DEVICE); fa = fa.to(DEVICE); wn = wn.to(DEVICE)
-            z = torch.cat([fp[:, 0], wn[:, 0]], dim=-1)             # (B, 31)
-            l_total, l_car, l_lane = 0, 0, 0
-            for k in range(ROLLOUT_K):
-                z = model(z, fa[:, k])
-                gt = torch.cat([fp[:, k + 1], wn[:, k + 1]], dim=-1)
-                lt, lc, ll = _split_loss(z, gt)
-                l_total = l_total + lt
-                l_car   = l_car   + lc
-                l_lane  = l_lane  + ll
-            l_total /= ROLLOUT_K; l_car /= ROLLOUT_K; l_lane /= ROLLOUT_K
-            opt.zero_grad(); l_total.backward()
-            torch.nn.utils.clip_grad_norm_(model.parameters(), GRAD_CLIP)
-            opt.step()
-            t_loss += l_total.item(); t_car += l_car.item(); t_lane += l_lane.item(); nb += 1
-        t_loss /= nb; t_car /= nb; t_lane /= nb
+        perm = torch.randperm(N, device=DEVICE)
+        t_loss, nb = 0.0, 0
+        for i in range(0, N - batch_size + 1, batch_size):
+            idx = perm[i:i + batch_size]
+            lt, lc, ll = _rollout(Ztr[idx], Atr[idx])
+            opt.zero_grad(); lt.backward()
+            torch.nn.utils.clip_grad_norm_(model.parameters(), GRAD_CLIP); opt.step()
+            t_loss += lt.item(); nb += 1
+        t_loss /= nb
 
         model.eval()
         v_loss, v_car, v_lane, vn = 0.0, 0.0, 0.0, 0
         with torch.no_grad():
-            for s0, fi, fp, fa, wn in val_loader:
-                fp = fp.to(DEVICE); fa = fa.to(DEVICE); wn = wn.to(DEVICE)
-                z = torch.cat([fp[:, 0], wn[:, 0]], dim=-1)
-                l_total, l_car, l_lane = 0, 0, 0
-                for k in range(ROLLOUT_K):
-                    z = model(z, fa[:, k])
-                    gt = torch.cat([fp[:, k + 1], wn[:, k + 1]], dim=-1)
-                    lt, lc, ll = _split_loss(z, gt)
-                    l_total = l_total + lt; l_car = l_car + lc; l_lane = l_lane + ll
-                v_loss += (l_total/ROLLOUT_K).item()
-                v_car  += (l_car  /ROLLOUT_K).item()
-                v_lane += (l_lane /ROLLOUT_K).item()
-                vn += 1
+            for i in range(0, Zval.shape[0], batch_size):
+                lt, lc, ll = _rollout(Zval[i:i + batch_size], Aval[i:i + batch_size])
+                v_loss += lt.item(); v_car += lc.item(); v_lane += ll.item(); vn += 1
         v_loss /= vn; v_car /= vn; v_lane /= vn
         sch.step(v_loss)
-        print(f"  Train tot={t_loss:.5f} car={t_car:.5f} lane={t_lane:.5f}  "
+        print(f"  ep{epoch+1}/{EPOCHS}  Train tot={t_loss:.5f}  "
               f"Val tot={v_loss:.5f} car={v_car:.5f} lane={v_lane:.5f}")
         if v_loss < best:
             best = v_loss
-            save_checkpoint({'model': model.state_dict(),
-                             'val_loss': v_loss,
-                             'val_car': v_car, 'val_lane': v_lane},
-                            save_path)
+            save_checkpoint({'model': model.state_dict(), 'val_loss': v_loss,
+                             'val_car': v_car, 'val_lane': v_lane}, save_path)
     print(f"{name} best val_total: {best:.5f}")
 
 
 def train_dvbf():
     _train_nn_baseline(DynamicsDVBFLane, "DVBF-lane",
-                       "checkpoints/dvbf_lane_donkey/best.tar")
+                       f"checkpoints/dvbf_lane_donkey{SUFFIX}/best.tar")
 
 
 def train_goku():
     _train_nn_baseline(DynamicsGOKULane, "GOKU-lane",
-                       "checkpoints/goku_lane_donkey/best.tar")
+                       f"checkpoints/goku_lane_donkey{SUFFIX}/best.tar")
 
 
 # ----------------------------------------------------------------------
@@ -161,82 +226,63 @@ def train_v2p():
             f"Encoder checkpoint not found: {ENCODER_CK}. "
             "Run PIWM Stage 1 first (train_piwm_lane_v6_donkey.py --stage ae).")
 
-    tr_loader, val_loader, _ = make_donkey_loaders(
-        DATA_DIR, seq_len=ROLLOUT_K + 1, batch_size=BATCH_V2P,
-        val_frac=0.10, flip_aug=True, seed=SEED)
+    base = _get_base()
+    train_eps, val_eps = split_segments(base, val_frac=0.10, seed=SEED)
 
     enc = PhysicsEncoderLane().to(DEVICE)
     ck = load_checkpoint(ENCODER_CK)
     enc.load_state_dict(ck['encoder']); enc.eval()
     for p in enc.parameters(): p.requires_grad = False
-    print(f"  frozen encoder from {ENCODER_CK}  (val_loss={ck.get('val_loss','?')})")
+    print(f"  frozen encoder from {ENCODER_CK}; precomputing obs (one pass) ...")
+    Ztr, Atr, Otr = _precompute_v2p(base, train_eps, enc)
+    Zval, Aval, Oval = _precompute_v2p(base, val_eps, enc)
+    N = Ztr.shape[0]
 
     model = DynamicsVid2ParamLane().to(DEVICE)
     opt = torch.optim.Adam(model.parameters(), lr=LR)
     sch = torch.optim.lr_scheduler.ReduceLROnPlateau(opt, patience=3, factor=0.5)
     best = float('inf')
-    n_params = sum(p.numel() for p in model.parameters())
-    print(f"  param count: {n_params:,} (dynamics+theta heads, encoder frozen)")
+    print(f"  param count: {sum(p.numel() for p in model.parameters()):,}  "
+          f"windows: {N} train / {Zval.shape[0]} val (obs precomputed, batch={BATCH_V2P})")
 
-    def _theta_from_stack(stack0):
-        # PIWM and V2P see the same image window (15-frame stack). For theta
-        # inference we feed a single (B, 1, 29) sequence into the GRU.
-        with torch.no_grad():
-            obs = enc(stack0)                          # (B, 29)
-        return obs.unsqueeze(1)                        # (B, 1, 29)
+    def _rollout(Z, A, O):
+        theta, mu, lv = model.infer_theta(O.unsqueeze(1))          # (B,1,29)
+        z = Z[:, 0]; l_total = l_car = l_lane = 0.0
+        for k in range(ROLLOUT_K):
+            z = model.step(z, A[:, k], theta)
+            lt, lc, ll = _split_loss(z, Z[:, k + 1])
+            l_total = l_total + lt; l_car = l_car + lc; l_lane = l_lane + ll
+        kl = -0.5 * (1 + lv - mu.pow(2) - lv.exp()).mean()
+        return l_total / ROLLOUT_K, l_car / ROLLOUT_K, l_lane / ROLLOUT_K, kl
 
     for epoch in range(EPOCHS):
         model.train()
-        t_loss, t_car, t_lane, t_kl, nb = 0.0, 0.0, 0.0, 0.0, 0
-        for s0, fi, fp, fa, wn in tqdm(tr_loader, desc=f"V2P {epoch+1}/{EPOCHS}"):
-            s0 = s0.to(DEVICE); fp = fp.to(DEVICE); fa = fa.to(DEVICE); wn = wn.to(DEVICE)
-            obs_hist = _theta_from_stack(s0)
-            theta, mu, lv = model.infer_theta(obs_hist)
-            z = torch.cat([fp[:, 0], wn[:, 0]], dim=-1)
-            l_car, l_lane, l_total = 0, 0, 0
-            for k in range(ROLLOUT_K):
-                z = model.step(z, fa[:, k], theta)
-                gt = torch.cat([fp[:, k + 1], wn[:, k + 1]], dim=-1)
-                lt, lc, ll = _split_loss(z, gt)
-                l_total = l_total + lt; l_car = l_car + lc; l_lane = l_lane + ll
-            l_total /= ROLLOUT_K; l_car /= ROLLOUT_K; l_lane /= ROLLOUT_K
-            kl = -0.5 * (1 + lv - mu.pow(2) - lv.exp()).mean()
-            loss = l_total + 1e-3 * kl
+        perm = torch.randperm(N, device=DEVICE)
+        t_loss, t_kl, nb = 0.0, 0.0, 0
+        for i in range(0, N - BATCH_V2P + 1, BATCH_V2P):
+            idx = perm[i:i + BATCH_V2P]
+            lt, lc, ll, kl = _rollout(Ztr[idx], Atr[idx], Otr[idx])
+            loss = lt + 1e-3 * kl
             opt.zero_grad(); loss.backward()
-            torch.nn.utils.clip_grad_norm_(model.parameters(), GRAD_CLIP)
-            opt.step()
-            t_loss += l_total.item(); t_car += l_car.item(); t_lane += l_lane.item()
-            t_kl += kl.item(); nb += 1
-        t_loss /= nb; t_car /= nb; t_lane /= nb; t_kl /= nb
+            torch.nn.utils.clip_grad_norm_(model.parameters(), GRAD_CLIP); opt.step()
+            t_loss += lt.item(); t_kl += kl.item(); nb += 1
+        t_loss /= nb; t_kl /= nb
 
         model.eval()
         v_loss, v_car, v_lane, vn = 0.0, 0.0, 0.0, 0
         with torch.no_grad():
-            for s0, fi, fp, fa, wn in val_loader:
-                s0 = s0.to(DEVICE); fp = fp.to(DEVICE); fa = fa.to(DEVICE); wn = wn.to(DEVICE)
-                obs_hist = _theta_from_stack(s0)
-                theta, _, _ = model.infer_theta(obs_hist)
-                z = torch.cat([fp[:, 0], wn[:, 0]], dim=-1)
-                l_car, l_lane, l_total = 0, 0, 0
-                for k in range(ROLLOUT_K):
-                    z = model.step(z, fa[:, k], theta)
-                    gt = torch.cat([fp[:, k + 1], wn[:, k + 1]], dim=-1)
-                    lt, lc, ll = _split_loss(z, gt)
-                    l_total = l_total + lt; l_car = l_car + lc; l_lane = l_lane + ll
-                v_loss += (l_total/ROLLOUT_K).item()
-                v_car  += (l_car  /ROLLOUT_K).item()
-                v_lane += (l_lane /ROLLOUT_K).item()
-                vn += 1
+            for i in range(0, Zval.shape[0], BATCH_V2P):
+                lt, lc, ll, kl = _rollout(Zval[i:i + BATCH_V2P], Aval[i:i + BATCH_V2P], Oval[i:i + BATCH_V2P])
+                v_loss += lt.item(); v_car += lc.item(); v_lane += ll.item(); vn += 1
         v_loss /= vn; v_car /= vn; v_lane /= vn
         sch.step(v_loss)
-        print(f"  Train tot={t_loss:.5f} car={t_car:.5f} lane={t_lane:.5f} kl={t_kl:.4f}  "
+        print(f"  ep{epoch+1}/{EPOCHS}  Train tot={t_loss:.5f} kl={t_kl:.4f}  "
               f"Val tot={v_loss:.5f} car={v_car:.5f} lane={v_lane:.5f}")
         if v_loss < best:
             best = v_loss
-            save_checkpoint({'model': model.state_dict(),
-                             'val_loss': v_loss,
+            save_checkpoint({'model': model.state_dict(), 'val_loss': v_loss,
                              'val_car': v_car, 'val_lane': v_lane},
-                            "checkpoints/v2p_lane_donkey/best.tar")
+                            f"checkpoints/v2p_lane_donkey{SUFFIX}/best.tar")
     print(f"V2P-lane best val_total: {best:.5f}")
 
 
@@ -317,14 +363,24 @@ if __name__ == "__main__":
     p = argparse.ArgumentParser()
     p.add_argument("--variant", default="all",
                    choices=["dvbf", "goku", "v2p", "sindyc", "all"])
+    p.add_argument("--K", type=int, default=8, help="training rollout horizon (longK uses 32)")
+    p.add_argument("--suffix", default="", help="checkpoint dir suffix, e.g. _longK")
+    p.add_argument("--batch", type=int, default=BATCH_NN, help="NN-baseline batch (DVBF/GOKU)")
+    p.add_argument("--batch_v2p", type=int, default=BATCH_V2P, help="V2P batch")
+    p.add_argument("--epochs", type=int, default=EPOCHS, help="training epochs")
     p.add_argument("--degree",    type=int,   default=2)
     p.add_argument("--threshold", type=float, default=0.05)
     p.add_argument("--alpha",     type=float, default=0.01)
     args = p.parse_args()
+    ROLLOUT_K = args.K
+    SUFFIX = args.suffix
+    BATCH_NN = args.batch
+    BATCH_V2P = args.batch_v2p
+    EPOCHS = args.epochs
+    print(f"[baselines] ROLLOUT_K={ROLLOUT_K}  SUFFIX='{SUFFIX}'  BATCH_NN={BATCH_NN}  BATCH_V2P={BATCH_V2P}  EPOCHS={EPOCHS}")
 
-    os.makedirs("checkpoints/dvbf_lane_donkey", exist_ok=True)
-    os.makedirs("checkpoints/goku_lane_donkey", exist_ok=True)
-    os.makedirs("checkpoints/v2p_lane_donkey",  exist_ok=True)
+    for v in ("dvbf", "goku", "v2p"):
+        os.makedirs(f"checkpoints/{v}_lane_donkey{SUFFIX}", exist_ok=True)
 
     if args.variant in ("dvbf",   "all"): train_dvbf()
     if args.variant in ("goku",   "all"): train_goku()
