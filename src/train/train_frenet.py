@@ -113,7 +113,17 @@ def eval_xy(dyn, ds, val_eps, K=100, n=60, kappa_mode="map"):
     return float(np.mean(e50)), float(np.median(e100)), float(np.mean(e100))
 
 
-def run(K, epochs, save, kappa_mode="map", init=None):
+def delta_supervision_noise(Z, half):
+    """Conference weak-supervision noise (Sec. 4.1): per-dim biased uniform.
+    mu_tilde = x + Δ, Δ~Unif[-half,half]; label = mean of 50 samples ~Unif[mu_tilde±half].
+    `half` = 0.5*δ*|X_i| per dim. Returns the noisy proxy labels (model never sees clean x)."""
+    b, t, d = Z.shape
+    bias = (torch.rand(b, t, d, device=Z.device) * 2 - 1) * half               # (b,t,d) * (d,)
+    resid = ((torch.rand(b, t, d, 50, device=Z.device) * 2 - 1) * half[:, None]).mean(-1)
+    return Z + bias + resid
+
+
+def run(K, epochs, save, kappa_mode="map", init=None, delta_sup=0.0):
     ds = FrenetSeqDataset(K)
     tr, va, val_eps = split(ds)
     trl = DataLoader(tr, batch_size=128, shuffle=True, drop_last=True)
@@ -123,7 +133,13 @@ def run(K, epochs, save, kappa_mode="map", init=None):
         from utils import load_checkpoint
         dyn.load_state_dict(load_checkpoint(init)["dynamics"])
         print(f"warm-started dynamics from {init}")
-    print(f"kappa_mode={kappa_mode}  (profile = perceived/preview regime, NOT map lookup)")
+    # per-dim valid range |X_i| over the data, for the δ weak-supervision noise
+    _allst = np.concatenate(ds.state, 0)
+    _rng = torch.tensor(_allst.max(0) - _allst.min(0), dtype=torch.float32, device=DEVICE)
+    half_sup = 0.5 * delta_sup * _rng
+    print(f"kappa_mode={kappa_mode}  delta_sup={delta_sup}  "
+          f"(|X|={np.round(_allst.max(0) - _allst.min(0), 3).tolist()}, "
+          f"half-width={np.round(half_sup.cpu().numpy(), 3).tolist()})")
     opt = torch.optim.Adam(dyn.parameters(), lr=1e-3 if not init else 3e-4)
     sch = torch.optim.lr_scheduler.ReduceLROnPlateau(opt, patience=3, factor=0.5)
     best = float("inf")
@@ -132,8 +148,10 @@ def run(K, epochs, save, kappa_mode="map", init=None):
         dyn.train(); tot = 0; nb = 0
         for Z, A, P in tqdm(trl, desc=f"frenet K{K} {ep+1}/{epochs}"):
             Z = Z.to(DEVICE); A = A.to(DEVICE); P = P.to(DEVICE)
-            s0 = Z[:, 0, 0].clone()
-            z = Z[:, 0]; preds = [z]
+            # weak supervision: model only ever sees the δ-noised proxy labels (init + targets)
+            Zsup = delta_supervision_noise(Z, half_sup) if delta_sup > 0 else Z
+            s0 = Zsup[:, 0, 0].clone()
+            z = Zsup[:, 0]; preds = [z]
             for k in range(K):
                 kov = None
                 if kappa_mode == "profile":
@@ -141,7 +159,7 @@ def run(K, epochs, save, kappa_mode="map", init=None):
                     kov = kappa_from_profile(P, delta)
                 z = dyn(z, A[:, k], kappa_override=kov); preds.append(z)
             preds = torch.stack(preds, 1)
-            per = dyn.state_loss(preds.reshape(-1, 5), Z.reshape(-1, 5))
+            per = dyn.state_loss(preds.reshape(-1, 5), Zsup.reshape(-1, 5))
             loss = per.sum()
             opt.zero_grad(); loss.backward()
             torch.nn.utils.clip_grad_norm_(dyn.parameters(), 1.0); opt.step()
@@ -164,5 +182,7 @@ if __name__ == "__main__":
     p.add_argument("--kappa_mode", choices=["map", "profile"], default="map",
                    help="map=known-track lookup (oracle); profile=t0 preview + shift (pure WM)")
     p.add_argument("--init", type=str, default=None, help="warm-start dynamics checkpoint")
+    p.add_argument("--delta", type=float, default=0.0,
+                   help="conference δ weak-supervision noise on state labels (e.g. 0.05, 0.10)")
     a = p.parse_args()
-    run(a.K, a.epochs, a.save, a.kappa_mode, a.init)
+    run(a.K, a.epochs, a.save, a.kappa_mode, a.init, a.delta)

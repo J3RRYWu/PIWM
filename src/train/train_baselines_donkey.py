@@ -65,6 +65,7 @@ LAMBDA_LANE = 2.0
 GRAD_CLIP  = 5.0
 SEED       = 0
 SUFFIX     = ""                     # checkpoint dir suffix (e.g. "_longK"), set in __main__
+SUP_DELTA  = 0.0                    # conference δ weak-supervision noise level, set in __main__
 
 ENCODER_CK = "checkpoints/piwm_lane_v6_donkey/ae.tar"
 
@@ -153,6 +154,21 @@ def _get_base():
     return _BASE
 
 
+def _delta_noise(Z, half):
+    """Conference δ weak-supervision noise on the 31-dim state labels (biased uniform,
+    Sec. 4.1): mu_tilde = x + Δ (Δ~Unif[-half,half]); label = mean of 50 samples
+    ~Unif[mu_tilde±half]. half = 0.5*δ*|X_i| per dim. Applied to train init+targets only."""
+    b, t, d = Z.shape
+    bias = (torch.rand(b, t, d, device=Z.device) * 2 - 1) * half
+    resid = ((torch.rand(b, t, d, 50, device=Z.device) * 2 - 1) * half[:, None]).mean(-1)
+    return Z + bias + resid
+
+
+def _half_width(Ztr):
+    """Per-dim 0.5*δ*|X_i| from the data range (zeros when δ=0)."""
+    return 0.5 * SUP_DELTA * (Ztr.amax((0, 1)) - Ztr.amin((0, 1)))
+
+
 def _train_nn_baseline(model_factory, name, save_path, batch_size=None):
     batch_size = BATCH_NN if batch_size is None else batch_size   # read global at call time
     print("=" * 60); print(f"Train {name} [donkey]"); print("=" * 60)
@@ -161,13 +177,15 @@ def _train_nn_baseline(model_factory, name, save_path, batch_size=None):
     Ztr, Atr = _precompute_nn(base, train_eps)
     Zval, Aval = _precompute_nn(base, val_eps)
     N = Ztr.shape[0]
+    half = _half_width(Ztr)                      # δ weak-supervision noise half-widths (31,)
 
     model = model_factory().to(DEVICE)
     opt = torch.optim.Adam(model.parameters(), lr=LR)
     sch = torch.optim.lr_scheduler.ReduceLROnPlateau(opt, patience=3, factor=0.5)
     best = float('inf')
     print(f"  param count: {sum(p.numel() for p in model.parameters()):,}  "
-          f"windows: {N} train / {Zval.shape[0]} val (image-free, on {DEVICE}, batch={batch_size})")
+          f"windows: {N} train / {Zval.shape[0]} val (image-free, on {DEVICE}, batch={batch_size}, "
+          f"delta={SUP_DELTA})")
 
     def _rollout(Z, A):
         z = Z[:, 0]; l_total = l_car = l_lane = 0.0
@@ -183,7 +201,8 @@ def _train_nn_baseline(model_factory, name, save_path, batch_size=None):
         t_loss, nb = 0.0, 0
         for i in range(0, N - batch_size + 1, batch_size):
             idx = perm[i:i + batch_size]
-            lt, lc, ll = _rollout(Ztr[idx], Atr[idx])
+            Zb = _delta_noise(Ztr[idx], half) if SUP_DELTA > 0 else Ztr[idx]
+            lt, lc, ll = _rollout(Zb, Atr[idx])
             opt.zero_grad(); lt.backward()
             torch.nn.utils.clip_grad_norm_(model.parameters(), GRAD_CLIP); opt.step()
             t_loss += lt.item(); nb += 1
@@ -237,6 +256,7 @@ def train_v2p():
     Ztr, Atr, Otr = _precompute_v2p(base, train_eps, enc)
     Zval, Aval, Oval = _precompute_v2p(base, val_eps, enc)
     N = Ztr.shape[0]
+    half = _half_width(Ztr)                      # δ weak-supervision noise half-widths (31,)
 
     model = DynamicsVid2ParamLane().to(DEVICE)
     opt = torch.optim.Adam(model.parameters(), lr=LR)
@@ -261,7 +281,8 @@ def train_v2p():
         t_loss, t_kl, nb = 0.0, 0.0, 0
         for i in range(0, N - BATCH_V2P + 1, BATCH_V2P):
             idx = perm[i:i + BATCH_V2P]
-            lt, lc, ll, kl = _rollout(Ztr[idx], Atr[idx], Otr[idx])
+            Zb = _delta_noise(Ztr[idx], half) if SUP_DELTA > 0 else Ztr[idx]
+            lt, lc, ll, kl = _rollout(Zb, Atr[idx], Otr[idx])
             loss = lt + 1e-3 * kl
             opt.zero_grad(); loss.backward()
             torch.nn.utils.clip_grad_norm_(model.parameters(), GRAD_CLIP); opt.step()
@@ -368,6 +389,8 @@ if __name__ == "__main__":
     p.add_argument("--batch", type=int, default=BATCH_NN, help="NN-baseline batch (DVBF/GOKU)")
     p.add_argument("--batch_v2p", type=int, default=BATCH_V2P, help="V2P batch")
     p.add_argument("--epochs", type=int, default=EPOCHS, help="training epochs")
+    p.add_argument("--delta", type=float, default=0.0,
+                   help="conference δ weak-supervision noise on 31-dim state labels (e.g. 0.05)")
     p.add_argument("--degree",    type=int,   default=2)
     p.add_argument("--threshold", type=float, default=0.05)
     p.add_argument("--alpha",     type=float, default=0.01)
@@ -377,7 +400,9 @@ if __name__ == "__main__":
     BATCH_NN = args.batch
     BATCH_V2P = args.batch_v2p
     EPOCHS = args.epochs
-    print(f"[baselines] ROLLOUT_K={ROLLOUT_K}  SUFFIX='{SUFFIX}'  BATCH_NN={BATCH_NN}  BATCH_V2P={BATCH_V2P}  EPOCHS={EPOCHS}")
+    SUP_DELTA = args.delta
+    print(f"[baselines] ROLLOUT_K={ROLLOUT_K}  SUFFIX='{SUFFIX}'  BATCH_NN={BATCH_NN}  "
+          f"BATCH_V2P={BATCH_V2P}  EPOCHS={EPOCHS}  delta={SUP_DELTA}")
 
     for v in ("dvbf", "goku", "v2p"):
         os.makedirs(f"checkpoints/{v}_lane_donkey{SUFFIX}", exist_ok=True)
