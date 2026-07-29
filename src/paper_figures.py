@@ -28,8 +28,9 @@ from baselines.shared_dynamics_lane import (DynamicsGOKULane, DynamicsVid2ParamL
                                             DynamicsDVBFLane)
 from models.frenet_dynamics import FrenetDynamics
 from models.encoder_lane import PhysicsEncoderLane
+from models.road_perception import RoadContextEncoder
 from utils import load_checkpoint
-from eval_frenet_vs_baselines import build_state31, sd2xy, META, FRENET_DIR, K
+from eval_frenet_vs_baselines import build_state31, sd2xy, META, FRENET_DIR, K, OFFSETS
 
 # ---------------- publication style ----------------
 mpl.rcParams.update({
@@ -44,10 +45,10 @@ mpl.rcParams.update({
     "axes.grid": True, "grid.alpha": 0.25, "grid.linewidth": 0.5,
 })
 # consistent colourblind-safe palette
-COL = {"Frenet": "#3B33A0", "GOKU": "#2E9E4F", "V2P": "#E8820C",
-       "DVBF": "#C0457B", "SINDYc": "#C0392B"}
-LBL = {"Frenet": "PIWM-Frenet (ours)", "GOKU": "GOKU", "V2P": "Vid2Param",
-       "DVBF": "DVBF", "SINDYc": "SINDYc"}
+COL = {"Frenet": "#3B33A0", "FrenetOr": "#8A83D8", "GOKU": "#2E9E4F",
+       "V2P": "#E8820C", "DVBF": "#C0457B", "SINDYc": "#C0392B"}
+LBL = {"Frenet": "PIWM-Frenet (ours)", "FrenetOr": "PIWM-Frenet (oracle $\\kappa$)",
+       "GOKU": "GOKU", "V2P": "Vid2Param", "DVBF": "DVBF", "SINDYc": "SINDYc"}
 std_xy = PHYSICS_STD_REL[:2]
 rng = np.random.default_rng(0)
 _os.makedirs("figures", exist_ok=True)
@@ -62,6 +63,50 @@ def frenet_curve(fr, z0, fac, gtxy):
         z = fr(z, a[:, k]); sd.append(z[:, :2].cpu().numpy())
     sd = np.stack(sd, 1); xy = sd2xy(sd[..., 0], sd[..., 1])
     return np.linalg.norm(xy - gtxy, axis=-1)          # (B,K+1) metres
+
+
+@torch.no_grad()
+def frenet_perc_curve(fr, z0, fac, profs, gtxy, offsets):
+    """PERCEIVED-kappa rollout (the deployable model): kappa comes from the profile
+    read off the front camera at t0 and is re-indexed by the arc length covered so
+    far -- never from the map.  Batched equivalent of FrenetDynamics.rollout_perceived
+    (validated against it in _check_perc_matches_reference below)."""
+    z = torch.tensor(z0, dtype=torch.float32, device=DEVICE)
+    a = torch.tensor(fac, dtype=torch.float32, device=DEVICE)
+    prof = torch.as_tensor(profs, dtype=torch.float32, device=DEVICE)     # (B,n_off)
+    offs = torch.as_tensor(offsets, dtype=torch.float32, device=DEVICE)   # (n_off,)
+    s0 = z[:, 0].clone()
+    sd = [z[:, :2].cpu().numpy()]
+    for k in range(K):
+        delta = torch.remainder(z[:, 0] - s0, fr.total_len).clamp(offs[0], offs[-1])
+        i = torch.searchsorted(offs, delta).clamp(1, len(offs) - 1)
+        x0, x1 = offs[i - 1], offs[i]
+        y0 = prof.gather(1, (i - 1).unsqueeze(1)).squeeze(1)
+        y1 = prof.gather(1, i.unsqueeze(1)).squeeze(1)
+        kap = y0 + (delta - x0) / (x1 - x0 + 1e-9) * (y1 - y0)
+        z = fr(z, a[:, k], kappa_override=kap)
+        sd.append(z[:, :2].cpu().numpy())
+    sd = np.stack(sd, 1); xy = sd2xy(sd[..., 0], sd[..., 1])
+    return np.linalg.norm(xy - gtxy, axis=-1)          # (B,K+1) metres
+
+
+@torch.no_grad()
+def _check_perc_matches_reference(fr, z0, fac, profs, gtxy, offsets, n=8):
+    """Guard: the batched rollout above must agree with the per-sample reference
+    implementation used to produce the paper's main table."""
+    ref = []
+    for i in range(min(n, len(z0))):
+        r = fr.rollout_perceived(torch.tensor(z0[i], dtype=torch.float32, device=DEVICE),
+                                 torch.tensor(fac[i], dtype=torch.float32, device=DEVICE),
+                                 torch.tensor(profs[i], dtype=torch.float32, device=DEVICE),
+                                 offsets).cpu().numpy()
+        ref.append(np.linalg.norm(sd2xy(r[:, 0], r[:, 1]) - gtxy[i], axis=-1))
+    ref = np.stack(ref)
+    got = frenet_perc_curve(fr, z0[:len(ref)], fac[:len(ref)], profs[:len(ref)],
+                            gtxy[:len(ref)], offsets)
+    d = float(np.abs(ref - got).max())
+    assert d < 1e-3, f"batched perceived rollout disagrees with reference (max |diff| = {d:.2e})"
+    print(f"perceived-rollout check vs reference impl: max |diff| = {d:.2e} over {len(ref)} windows")
 
 
 @torch.no_grad()
@@ -106,15 +151,21 @@ def main():
     for p in enc.parameters(): p.requires_grad = False
     fr = FrenetDynamics(_os.path.join(META, "track.npz"), _os.path.join(META, "stats.npz")).to(DEVICE)
     fr.load_state_dict(load_checkpoint("checkpoints/frenet/dyn_k16.tar")["dynamics"]); fr.eval()
+    # road-context perception: kappa from the front camera, NOT the map. This is the
+    # deployable ("ours") model reported in the paper's main table; the map-lookup
+    # variant below is kept only as the privileged oracle reference curve.
+    kenc = RoadContextEncoder(n_offsets=len(OFFSETS), freeze_backbone=True).to(DEVICE)
+    kenc.load_state_dict(load_checkpoint("checkpoints/frenet/kappa_scratch.tar")["model"]); kenc.eval()
     # SINDYc curve is loaded from a CPU-precomputed cache (figures/_sindyc_curve.npy)
     # to avoid importing pysindy alongside torch+cuda, which segfaults on py311.
     # Regenerate the cache with:  python src/eval_stability_log.py   (CPU / py3.13)
     fr_std = fr.state_std.cpu().numpy().copy(); fr_std[0] = 0.5
 
-    s31, fst0, fac, act31, gtxy, theta = [], [], [], [], [], []
+    s31, fst0, fac, act31, gtxy, theta, profs = [], [], [], [], [], [], []
     for ep in sorted(val_eps):
         phys = base.phys_list[ep]; a31 = base.acts_list[ep]; wpw = base.wp_world_list[ep]; imgs = base.imgs_list[ep]
-        fs = np.load(fr_files[ep])["state"]; fc = np.load(fr_files[ep])["action"]
+        frd = np.load(fr_files[ep])
+        fs = frd["state"]; fc = frd["action"]; fim = frd["imgs"].astype(np.float32)
         T = min(len(phys), len(fs), len(imgs))
         for t0 in range(FS - 1, T - K - 1, 4):
             t0 = int(t0)
@@ -124,9 +175,13 @@ def main():
             st = np.stack([imgs[t0-FS+1+j] for j in range(FS)], 0)[None]
             with torch.no_grad():
                 th, _, _ = v2p.infer_theta(enc(torch.tensor(st, dtype=torch.float32, device=DEVICE)).unsqueeze(1))
+                # perceived curvature preview from the same t0 front-camera stack
+                stk = torch.tensor(fim[t0-FS+1:t0+1], dtype=torch.float32, device=DEVICE).unsqueeze(0)
+                profs.append(kenc(stk)[0].cpu().numpy().astype(np.float32))
             theta.append(th[0].cpu().numpy())
     s31 = np.stack(s31); fst0 = np.stack(fst0); fac = np.stack(fac)
-    act31 = np.stack(act31); gtxy = np.stack(gtxy); theta = np.stack(theta); gtN = s31[:, :, :2]
+    act31 = np.stack(act31); gtxy = np.stack(gtxy); theta = np.stack(theta)
+    profs = np.stack(profs); gtN = s31[:, :, :2]
     th_t = torch.tensor(theta, dtype=torch.float32, device=DEVICE)
     Wn = len(s31); steps = np.arange(K + 1); print(f"{Wn} windows")
 
@@ -135,32 +190,41 @@ def main():
     sc_mean = np.load(sc_path) if _os.path.exists(sc_path) else None      # (K+1,)
 
     # ===== Fig 1: main comparison (linear, mean ± SE) + SINDYc off-scale =====
-    curves = {"Frenet": frenet_curve(fr, fst0, fac, gtxy),
+    _check_perc_matches_reference(fr, fst0, fac, profs, gtxy, OFFSETS)
+    curves = {"Frenet":   frenet_perc_curve(fr, fst0, fac, profs, gtxy, OFFSETS),
+              "FrenetOr": frenet_curve(fr, fst0, fac, gtxy),
               "GOKU": base_curve(goku, s31[:, 0], act31, gtN),
               "V2P": base_curve(v2p, s31[:, 0], act31, gtN, th_t),
               "DVBF": base_curve(dvbf, s31[:, 0], act31, gtN)}
+    for nm in ["Frenet", "FrenetOr", "V2P", "GOKU", "DVBF"]:
+        print(f"  {LBL[nm]:<34} @25={curves[nm][:,25].mean():.3f}  "
+              f"@50={curves[nm][:,50].mean():.3f}  @100={curves[nm][:,K].mean():.3f} m")
     fig, ax = plt.subplots(figsize=(3.5, 2.7))
     ymax = 0.0
-    for nm in ["Frenet", "V2P", "GOKU", "DVBF"]:
-        mu, se = ms(curves[nm]); lw = 2.4 if nm == "Frenet" else 1.6
-        ls = "-" if nm == "Frenet" else "--"
+    for nm in ["Frenet", "FrenetOr", "V2P", "GOKU", "DVBF"]:
+        mu, se = ms(curves[nm])
+        lw = 2.4 if nm == "Frenet" else (1.3 if nm == "FrenetOr" else 1.6)
+        ls = "-" if nm == "Frenet" else (":" if nm == "FrenetOr" else "--")
         ax.plot(steps, mu, color=COL[nm], lw=lw, ls=ls, label=f"{LBL[nm]} ({mu[K]:.2f} m)")
         ax.fill_between(steps, mu - se, mu + se, color=COL[nm], alpha=0.15, lw=0)
         ymax = max(ymax, float((mu + se).max()))
     if sc_mean is not None:
         # plotted, but the y-axis stays scaled to the bounded models — SINDYc shoots off the top
+        # no inline arrow annotation: it collides with the legend, which already
+        # carries "(diverges)", and the curve visibly leaves the top of the axes
         ax.plot(steps, sc_mean, color=COL["SINDYc"], lw=1.4, ls=":", label=f"{LBL['SINDYc']} (diverges)")
-        ax.text(K * 0.04, ymax * 1.04, "SINDYc $\\uparrow$", color=COL["SINDYc"], fontsize=7.5, va="top")
     ax.set_xlabel("rollout step"); ax.set_ylabel("position error (m)"); ax.set_xlim(0, K)
     ax.set_ylim(0, ymax * 1.10)
     ax.legend(loc="upper left"); fig.savefig("figures/fig_main.pdf"); fig.savefig("figures/fig_main.png"); plt.close(fig)
 
     # ===== Fig 2: stability log (incl SINDYc) =====  (sc_mean loaded above)
     fig, ax = plt.subplots(figsize=(3.5, 2.7))
-    order2 = ["SINDYc", "DVBF", "GOKU", "V2P", "Frenet"] if sc_mean is not None else ["DVBF", "GOKU", "V2P", "Frenet"]
+    order2 = (["SINDYc", "DVBF", "GOKU", "V2P", "FrenetOr", "Frenet"] if sc_mean is not None
+              else ["DVBF", "GOKU", "V2P", "FrenetOr", "Frenet"])
     for nm in order2:
         m = sc_mean if nm == "SINDYc" else curves[nm].mean(0)
-        lw = 2.4 if nm == "Frenet" else 1.6; ls = "-" if nm == "Frenet" else (":" if nm == "SINDYc" else "--")
+        lw = 2.4 if nm == "Frenet" else (1.3 if nm == "FrenetOr" else 1.6)
+        ls = "-" if nm == "Frenet" else ("--" if nm in ("DVBF", "GOKU", "V2P") else ":")
         tag = LBL[nm] + (" (diverges)" if nm == "SINDYc" else "")
         ax.plot(steps, np.maximum(m, 1e-3), color=COL[nm], lw=lw, ls=ls, label=tag)
     ax.set_yscale("log"); ax.set_xlim(0, K); ax.set_xlabel("rollout step"); ax.set_ylabel("position error (m, log)")
@@ -170,17 +234,20 @@ def main():
     N = 10
     def tile(x): return np.repeat(x, N, 0)
     fac_b, act_b, gtxy_b, gtN_b = tile(fac), tile(act31), tile(gtxy), tile(gtN)
+    profs_b = tile(profs)
     th_b = torch.tensor(tile(theta), dtype=torch.float32, device=DEVICE)
     sigmas = [0.0, 0.25, 0.5, 1.0, 1.5]; MA = ["Frenet", "V2P", "GOKU", "DVBF"]
     A = {m: ([], []) for m in MA}
     for sig in sigmas:
         zf = tile(fst0) + rng.standard_normal((Wn*N, 5)).astype(np.float32) * fr_std * sig
-        eF = frenet_curve(fr, zf, fac_b, gtxy_b)[:, K].reshape(Wn, N).mean(1)
+        eF = frenet_perc_curve(fr, zf, fac_b, profs_b, gtxy_b, OFFSETS)[:, K].reshape(Wn, N).mean(1)
         zb = tile(s31[:, 0]) + rng.standard_normal((Wn*N, 31)).astype(np.float32) * sig
         vals = {"Frenet": eF}
         for nm, m, t in [("GOKU", goku, None), ("V2P", v2p, th_b), ("DVBF", dvbf, None)]:
             vals[nm] = base_curve(m, zb, act_b, gtN_b, t)[:, K].reshape(Wn, N).mean(1)
         for nm in MA: A[nm][0].append(vals[nm].mean()); A[nm][1].append(vals[nm].std()/np.sqrt(Wn))
+        print(f"  init-noise sigma={sig:<4} " +
+              "  ".join(f"{nm}={vals[nm].mean():.3f}" for nm in MA))
     dims = {"localization $s$": (0, [0, .02, .05, .1, .2]), "CTE $d$": (1, [0, .02, .05, .1, .2]),
             "heading $\\psi_e$": (2, [0, .05, .1, .2, .35]), "speed $v$": (3, [0, .05, .1, .2, .4]),
             "yaw-rate $\\omega$": (4, [0, .1, .25, .5, 1.0])}
@@ -189,7 +256,7 @@ def main():
         mu, se = [], []
         for mg in mags:
             zf = tile(fst0).copy(); zf[:, di] += rng.standard_normal(Wn*N).astype(np.float32) * mg
-            e = frenet_curve(fr, zf, fac_b, gtxy_b)[:, K].reshape(Wn, N).mean(1)
+            e = frenet_perc_curve(fr, zf, fac_b, profs_b, gtxy_b, OFFSETS)[:, K].reshape(Wn, N).mean(1)
             mu.append(e.mean()); se.append(e.std()/np.sqrt(Wn))
         Bv[q] = (mags, np.array(mu), np.array(se))
 

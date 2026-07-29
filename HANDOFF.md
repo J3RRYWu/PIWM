@@ -1,6 +1,12 @@
 # PIWM 交接文档(换机器继续跑)
 
-> 最后更新:2026-06-27 · 最新提交 `84632ae` · 远程 `git@github.com:J3RRYWu/PIWM.git`
+> 最后更新:2026-07-28 · HEAD `b6fb35d` · 远程 `git@github.com:J3RRYWu/PIWM.git`
+>
+> **仓库根在这台机器上是 `C:\Users\suian\OneDrive\桌面\PIWM\`,不是本文档旧版写的 `E:\Desktop\PIWM\`
+> (E: 盘不存在)。下文所有 `E:\` 一律按此换算。**
+>
+> **2026-07-28:本文档 §5 的 Frenet 结果已经写进期刊正文**(主表 / κ 消融 / δ 噪声三张表 + 两张图)。
+> 写作侧的交接见 `piwm/Jounral_PIWM/HANDOFF.md`,两份要一起读。
 
 ---
 
@@ -32,12 +38,26 @@ python src/train/train_baselines_donkey.py --variant dvbf --K 32 --suffix _delta
 > `checkpoints/sindyc_lane_donkey/model.pkl` 有 139MB,若不拷则 SINDYc 曲线用缓存
 > `figures/_sindyc_curve.npy`(已在 git 里)即可,不必重拟合。
 
+**⚠️ 上表不全 —— `.gitignore` 还挡掉了这些,clone 一份是拿不到的,也必须手拷:**
+
+| 内容 | 路径 | 为什么重要 |
+|---|---|---|
+| 会议版 PDF + 论文 zip | `papers/`(整个目录被忽略) | 改写的基础 |
+| 训练日志 | `*.log`,尤其 `_archive/logs/overnight.log`(4.5 MB) | CarRacing 表的唯一出处 |
+| 旧可视化 | `_archive/vis/`(`vis/` 规则任意层级都匹配) | 含 `final_state_mse.png` |
+| 论文图预览 | `figures/*.png`(顶层) | `figures/_archive/*.png` 反而是被追踪的 |
+| 前视帧样本 | `<仓库根>/frame_samples/` | **在 git 根之外**,clone 永远拿不到 |
+
 ---
 
 ## 2. 环境(关键怪癖,踩过坑)
 
-- **GPU 用 Python 3.11**:`C:\Users\suian\AppData\Local\Programs\Python\Python311\python.exe`(cu130/RTX4080)。
-  默认 `python`(3.13)是 **CPU-only torch**。
+- **用 venv**(2026-07-28 已建好,从 `piwm/` 运行):
+  - `.venv/Scripts/python.exe` —— Python 3.11.9 + torch **2.13.0+cu130**,默认用这个。
+  - `.venv-sindy/Scripts/python.exe` —— CPU torch + pysindy,只跑 SINDYc。
+  重建方式见 `piwm/README.md` 和 `requirements*.txt`。PATH 上的 `python` 是 Store 占位符,不可用。
+- **本机 GPU 是 RTX 5080(Blackwell / sm_120)**,不是旧文档写的 4080 —— torch 必须 cu128+。
+- **路径含中文(`桌面`)**:跑 Python 前先 `export PYTHONUTF8=1`,否则 cp1252 编码报错。
 - **小模型 GPU≈CPU**:动力学/基线都是 1万–6万参数 + K=32 逐步 rollout,**延迟受限**,CPU 反而更稳。
   → **δ 实验、基线训练一律用默认 python(CPU)**;GPU 只在 encoder/图像批量任务上有优势。
 - **pysindy 不能和 torch 同进程**(会段错误,CPU 上也中招)。
@@ -112,6 +132,9 @@ python src/eval_stability_log.py                 # CPU:刷新 SINDYc 缓存 + �
 
 ## 5. 核心结果(已确认,可直接写进论文)
 
+> **2026-07-28:本节三组数字已全部在本机重跑验证,并已写进期刊正文
+> (Table 1 / Table 2 / Table 3)。复现命令见 `Jounral_PIWM/HANDOFF.md` §4。**
+
 ### 主表:感知-κ 纯世界模型 vs 基线
 (201 个 val 窗口,同 split,GT 初始化,100 步 rollout,真实米;`python src/eval_frenet_vs_baselines.py`)
 
@@ -168,13 +191,27 @@ oracle(地图) 0.246 | GT-profile(完美感知) 0.263 | **scratch encoder 0.267*
 
 ## 7. 论文相关(期刊扩展)
 
-- LaTeX 在 `piwm/Jounral_PIWM/elsarticle-template-num.tex`(Elsevier,已编译 ~34 页)。
-- 会议版 PDF:`piwm/PIWMconference version.pdf`(arXiv:2412.12870)。
+- LaTeX 在 `piwm/Jounral_PIWM/elsarticle-template-num.tex`(Elsevier,**已编译 42 页,0 undefined**)。
+  本机已装 MiKTeX 25.12(`%LOCALAPPDATA%\Programs\MiKTeX\miktex\bin\x64\`,未进 PATH)。
+- 会议版 PDF:`piwm/papers/PIWMconference version.pdf`(arXiv:2412.12870)。注意 `papers/` 被 gitignore。
 - **会议版噪声 = δ 弱监督标签噪声**(biased uniform,δ∈{0,5%,10%},加在训练标签);
-  **期刊现有 `fig_noise` = 测试时初始状态高斯噪声**(新增实验)。两者不同,**论文里务必写清区别**。
-- **待办**:`fig:partial_obs` 目前用前视相机帧当占位图,需换成正式的双车示意图。
-- **未完的技术债**:decoder 仍依赖 v6 + `FrenetBridge`(把 Frenet 状态转回 20 航点表示),
-  这正是论文要反对的表示 → 建议做一个原生 `[d, ψₑ, κ-profile] → 图像` 的 decoder,彻底去掉 v6。
+  **`fig_noise` = 测试时初始状态高斯噪声**(期刊新增实验)。两者不同,**论文里务必写清区别**。
+  目前正文里的 Table 3 是前者;`fig_noise` 还没进正文(见下)。
+- ✅ **已完成**:`fig:partial_obs` 已换成 TikZ 画的双车示意图,不再是相机帧占位。
+  `fig:arch` / `fig:encoding` / `fig:prediction` 也都用 TikZ 重画,与 Frenet 叙述一致。
+- ✅ **`fig_main` / `fig_stability` / `fig_noise` 已用 fair 基线重生成(7-28)**,`fig_main.pdf`
+  和 `fig_noise.pdf` 已进正文(Fig 5 / Fig 7)。同时修了 `src/paper_figures.py` 的一个实质 bug:
+  它原来画的是 **oracle(查地图 κ,特权)** 模型却标成 "PIWM-Frenet (ours)"。现在画感知 κ 的
+  可部署模型,oracle 作虚线参考,数字与 §5 主表逐格一致;批量实现与
+  `FrenetDynamics.rollout_perceived` 有断言对拍(max|diff| 4.5e-07)。
+  `fig_stability.pdf`(log 纵轴 + SINDYc 发散)数据也是新的,但正文暂未使用。
+- **未完的技术债**:
+  1. decoder 仍依赖 v6 + `FrenetBridge`(把 Frenet 状态转回 20 航点表示),这正是论文要反对的表示
+     → 建议做一个原生 `[d, ψₑ, κ-profile] → 图像` 的 decoder,彻底去掉 v6。
+  2. 正文 §5.1 仍写 extrinsic **VQ-VAE(512 码本) + Transformer 物理编码器**(沿用会议版结论),
+     而 Frenet 线实际用的是 CNN 主干 + 线性 κ 头。**要么改叙述,要么补实验**。
+  3. CarRacing 的定量对比已在正文里注释掉(原表把纯车辆模型 `PIWM-bicycle-v4` 标成了
+     "PIWM (ours, full)",而真正带道路的 `PIWM-lane-v5` 被删且成绩最差)。详见期刊 HANDOFF §4。
 
 ---
 

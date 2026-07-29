@@ -19,13 +19,39 @@
 ---
 
 ## 环境(关键)
-| | |
-|---|---|
-| **GPU 任务** | `C:\Users\suian\AppData\Local\Programs\Python\Python311\python.exe`(CUDA torch / RTX 4080) |
-| 默认 `python`(3.13) | **CPU-only** torch,只用于不吃 GPU 的小活 |
-| 注意 | 小模型逐步 rollout 是延迟受限,**先批量化(堆 batch)GPU 才有意义** |
 
-一键出全部论文图:`<py311> src/paper_figures.py` → `figures/fig_{main,noise,stability}.{pdf,png}`(论文用 `.pdf`)。
+两个虚拟环境,都基于 **Python 3.11.9**(`%LOCALAPPDATA%\Programs\Python\Python311\python.exe`):
+
+| venv | 内容 | 用途 |
+|---|---|---|
+| **`.venv`** | torch **2.13.0+cu130** + numpy/scipy/matplotlib/pillow/tqdm | 训练、评估、出图。**默认用这个** |
+| `.venv-sindy` | torch **CPU** + pysindy(+ 同样的科学栈) | 只跑 SINDYc(拟合 / 反序列化 `model.pkl`) |
+
+为什么分两个:**pysindy 的 C 扩展和 torch+cuda 同进程会段错误**(踩过坑)。
+所以 `.venv` 里**不装 pysindy**;SINDYc 曲线在 `.venv-sindy` 里算好缓存到
+`figures/_sindyc_curve.npy`,`paper_figures.py` 只读缓存。
+
+```bash
+# 重建(从 piwm/ 运行)
+<py311> -m venv .venv
+.venv/Scripts/python.exe -m pip install -r requirements.txt
+.venv/Scripts/python.exe -m pip install --index-url https://download.pytorch.org/whl/cu130 torch
+
+<py311> -m venv .venv-sindy
+.venv-sindy/Scripts/python.exe -m pip install -r requirements-sindy.txt
+.venv-sindy/Scripts/python.exe -m pip install --index-url https://download.pytorch.org/whl/cpu torch
+```
+
+**两个必须知道的坑:**
+1. **GPU 是 RTX 5080(Blackwell, `sm_120`)**,不是文档旧版写的 4080 —— torch 必须是 **cu128 或更新**
+   的 wheel,老的 cu121 跑不了。验证:`torch.cuda.get_arch_list()` 里要有 `sm_120`。
+2. **仓库路径含中文(`桌面`)**,Python 默认 cp1252 stdout 会 `UnicodeEncodeError`。
+   跑任何脚本前先 `export PYTHONUTF8=1`(或 `set PYTHONUTF8=1`)。
+
+小模型逐步 rollout 是延迟受限,**先批量化(堆 batch)GPU 才有意义**。
+
+一键出全部论文图:`.venv/Scripts/python.exe src/paper_figures.py`
+→ `figures/fig_{main,noise,stability}.{pdf,png}`(论文用 `.pdf`)。
 **所有命令从 `piwm/` 运行**(checkpoint/figures 是 cwd 相对;源码在 `src/`)。
 
 ---

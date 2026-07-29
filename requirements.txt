@@ -1,0 +1,22 @@
+# PIWM 主环境(.venv) —— 训练 / 评估 / 出图
+#
+# 建立方式(从 piwm/ 运行):
+#   <py311> -m venv .venv
+#   .venv/Scripts/python.exe -m pip install -r requirements.txt
+#   # torch 单独装,因为要走 PyTorch 自己的 index(见下)
+#
+# torch:不要从 PyPI 装!必须按 GPU 选 CUDA 版本:
+#   RTX 5080 / 5090 (Blackwell, sm_120) → cu128 或更新
+#   RTX 4080 (Ada, sm_89)               → cu121+
+#   无 GPU / 只跑小模型                  → 默认 PyPI 的 CPU 版即可
+#
+#   .venv/Scripts/python.exe -m pip install --index-url https://download.pytorch.org/whl/cu130 torch
+#
+# ⚠️ 这个环境里**不要装 pysindy** —— pysindy 的 C 扩展和 torch+cuda 同进程会段错误。
+#    需要 SINDYc 时用 .venv-sindy(见 requirements-sindy.txt)。
+
+numpy
+scipy
+matplotlib
+pillow
+tqdm

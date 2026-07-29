@@ -124,7 +124,10 @@ def main():
         E = np.array(res[(dtag, ktag)])
         print(f"{dtag:<14}{ktag:<12} {E[:,25].mean():>7.3f}m {E[:,50].mean():>7.3f}m "
               f"{np.median(E[:,100]):>10.3f}m {E[:,100].mean():>11.3f}m")
-    print("\nref baselines (map-free, same metric): GOKU ~0.47m  V2P ~0.44m  DVBF ~0.80m  @xy100")
+    # Fair-retrain baselines (batch 128/64), same val windows and metric.
+    # These SUPERSEDE the earlier under-trained numbers (V2P ~0.44 / DVBF ~0.80),
+    # which flattered us; source of truth is src/eval_frenet_vs_baselines.py.
+    print("\nref baselines (map-free, same metric): V2P 0.383m  GOKU 0.478m  DVBF 0.610m  @xy100")
 
 
 if __name__ == "__main__":

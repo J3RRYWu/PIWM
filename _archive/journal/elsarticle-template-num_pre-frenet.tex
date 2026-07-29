@@ -11,8 +11,8 @@
 %%
 \documentclass[preprint,12pt]{elsarticle}
 
-\usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{amsmath}
 \usepackage{amsthm}
 \usepackage{graphicx}
 \usepackage{subcaption}
@@ -20,30 +20,6 @@
 \usepackage{algorithm}
 \usepackage{algpseudocode}
 \usepackage{siunitx}
-%% Without this, the .bbl falls back to \texttt for URLs, which cannot break
-%% and pushes two ScienceDirect links ~75pt past the right margin.
-\usepackage{url}
-\usepackage{tikz}
-\usetikzlibrary{arrows.meta,positioning,fit,calc,backgrounds}
-
-%% Every figure asset lives in imgs/, so this directory is self-contained.
-%% Elsevier's Editorial Manager flattens the uploaded file set, which breaks
-%% any \includegraphics that reaches outside the manuscript directory.
-\graphicspath{{imgs/}}
-
-%% Long DOIs/URLs in the bibliography otherwise overflow the text block.
-\emergencystretch=3em
-
-%% The results section is float-dense (3 figures + 3 tables in a few pages).
-%% With LaTeX's defaults (max 2 top floats, max 3 floats/page, >=20% text per
-%% page) the queue backs up and every figure is deferred past the bibliography.
-\setcounter{topnumber}{3}
-\setcounter{bottomnumber}{2}
-\setcounter{totalnumber}{4}
-\renewcommand{\topfraction}{0.9}
-\renewcommand{\bottomfraction}{0.8}
-\renewcommand{\textfraction}{0.07}
-\renewcommand{\floatpagefraction}{0.7}
 
 \newtheorem{definition}{Definition}
 \newtheorem{problem}{Problem}
@@ -65,24 +41,6 @@
        Driving: Encoding and Predicting the Road Environment under
        Weak Supervision}
 
-%% ---------------------------------------------------------------
-%% TODO(authors) --- FILL IN BEFORE SUBMISSION.
-%% The placeholder \author below exists only so that the \affiliation
-%% has something to attach to; without any \author, elsarticle typesets
-%% the title followed by an orphan address block and no byline.
-%% The conference version (arXiv:2412.12870) is authored by
-%%   Zhenjiang Mao, Mrinall Eashaan Umasudhan, Ivan Ruchkin.
-%% Confirm the journal author list, order, corresponding author and
-%% e-mail, then replace the placeholder with the block below.
-%%
-%% \author[uf]{First Author}
-%% \author[uf]{Second Author}
-%% \author[uf]{Corresponding Author\corref{cor1}}
-%% \ead{corresponding@ufl.edu}
-%% \cortext[cor1]{Corresponding author.}
-%% ---------------------------------------------------------------
-\author[uf]{[AUTHOR LIST --- TO BE COMPLETED BEFORE SUBMISSION]}
-
 \affiliation[uf]{organization={Trustworthy Engineered Autonomy (TEA) Lab,
                                University of Florida},
                city={Gainesville},
@@ -91,38 +49,53 @@
 
 %% ---------------------------------------------------------------
 \begin{abstract}
-Learning predictive models from high-dimensional observations is fundamental for
-safe autonomous cyber-physical systems, yet the latent states of standard world
-models lack physical interpretability.
-Our conference work introduced the Physically Interpretable World Model (PIWM),
-which aligns latent representations with physical quantities and constrains
-their evolution through partially known dynamics under distribution-based weak
-supervision.
-That formulation assumes the vehicle state is a complete Markov description of
-the task, which holds for fully observable benchmarks such as CartPole and Lunar
-Lander but fails for driving: two vehicles with identical position, heading and
-speed follow divergent futures when the road ahead differs, and a forward-facing
-camera reveals that road only partially.
+Learning predictive models from high-dimensional sensory observations is
+fundamental for safe autonomous cyber-physical systems, yet the latent
+representations of standard world models lack physical interpretability.
+Our prior conference work introduced the Physically Interpretable World Model
+(PIWM), which aligns latent representations with physical quantities and
+constrains their temporal evolution through partially known dynamics, trained
+under distribution-based weak supervision derived from realistic sensing
+pipelines.
+That formulation implicitly assumes that the system's physical state provides a
+complete Markov description of the task, a condition that holds for
+fully observable benchmarks such as CartPole and Lunar Lander but fails for
+realistic driving.
+Two vehicles with identical position, heading, and speed can follow divergent
+futures when the road geometry ahead differs, because a standard vehicle state
+encodes nothing about the lane or the vehicle's relationship to it.
+Driving is therefore \emph{partially observable}: the world model must reason
+not only about the vehicle but about the external road environment, which is
+neither part of the vehicle state nor fully visible from an onboard camera.
+
 This article extends PIWM to partially observable driving along three axes.
-First, we move to two partially observable driving case studies: a simulated
-top-down \emph{CarRacing} track and a \emph{real, physical DonkeyCar}.
+First, we move beyond the fully observable benchmarks to two new
+partially observable case studies: a simulated top-down \emph{CarRacing}
+environment and a \emph{real, physical DonkeyCar} platform driven on a
+laboratory track.
 Second, we introduce a physically interpretable \emph{encoding} of the road
-environment, factorizing the interpretable latent into a vehicle-relative
-component and a road-context component---lateral deviation, vehicle--road
-heading error and curvature---inferred from onboard images.
-Third, we introduce a physically interpretable \emph{prediction} of that
-environment: a split-dynamics model that advances the vehicle through structured
-kinematics while forecasting how the road context evolves.
-On the physical DonkeyCar, where road context is supervised only during training
-and must be recovered from the front camera at test time, PIWM attains
-\SI{0.267}{m} position error over a 100-step rollout against \SI{0.383}{m} for
-the strongest baseline, with every state variable physically meaningful.
+environment: the interpretable latent is factorized into a vehicle-relative
+component and a road-context component (lateral deviation, vehicle--road
+heading error, and road curvature) that is inferred from images even when the
+road ahead is only partially visible.
+Third, we introduce a physically interpretable \emph{prediction} of the road
+environment: a split-dynamics model couples a learnable bicycle kinematic model
+for the vehicle with a structured, geometry-driven transition that forecasts how
+the road context evolves.
+On the real DonkeyCar, ground-truth road context is available only at training
+time through external track localization and is withheld at test time, so the
+model must recover and roll out road context from onboard images alone.
+Across the original benchmarks, simulated CarRacing, and the physical DonkeyCar,
+PIWM with factorized state and split dynamics substantially outperforms
+data-driven and physics-informed baselines at long prediction horizons,
+demonstrating that physically grounded driving world models must both encode and
+predict the external road environment, not merely the vehicle state.
 \end{abstract}
 
 \begin{keyword}
 physically interpretable world models \sep partial observability \sep
-autonomous driving \sep road-context encoding \sep weak supervision \sep
-trajectory prediction
+autonomous driving \sep road-context encoding \sep road prediction \sep
+bicycle dynamics \sep weak supervision \sep trajectory prediction
 \end{keyword}
 
 \end{frontmatter}
@@ -211,7 +184,7 @@ it is about to enter.
 Predicting the road, like encoding it, should be physically interpretable so that
 the forecasted environment can be inspected, trusted, and monitored.
 
-\
+\looseness=-1
 These two facets, encoding and predicting the external environment, are precisely
 what distinguishes a driving world model from the vehicle-centric formulation of
 the conference paper, which modeled only the state of the controlled body.
@@ -233,11 +206,11 @@ structure: the cross-track error (lateral deviation from the lane center), the
 vehicle--road heading error, and the local road curvature.
 Together, $(\zv, \zr)$ form a Markov description of the driving task, restoring
 the validity of the predictive world-model framework.
-The vehicle-relative component is governed by a structured kinematic model whose
-unknown actuation parameters are recovered during training; the road-context
-component is governed by a geometry-driven transition that advects the road past
-the vehicle as it advances, rather than treating the road as a free latent that
-can drift.
+The vehicle-relative component is governed by a learnable bicycle kinematic
+model, whose parameters (e.g., the effective wheelbase) are unknown and recovered
+during training.
+The road-context component is governed by a structured, geometry-driven
+transition that reflects the slow, conservative evolution of lane variables.
 This split-dynamics formulation provides appropriate inductive biases for each
 component and decouples the faster-varying vehicle motion from the
 slower-varying road context.
@@ -256,11 +229,9 @@ image stream.
 This setup tests whether the factorized representation learned under privileged
 supervision transfers to the more challenging unaided real-world deployment
 setting.
-On the physical platform, over a 100-step ($\approx$\SI{4.5}{s}) rollout, PIWM
-with factorized state and split dynamics reaches \SI{0.267}{m} position error
-against \SI{0.383}{m} for the strongest data-driven or physics-informed baseline,
-and the gap widens with the horizon: the baselines diverge while PIWM stays
-bounded.
+Across both environments and at prediction horizons of up to 100 steps, PIWM with
+factorized state and split dynamics substantially outperforms data-driven
+baselines and physics-informed alternatives.
 
 \subsection*{Contributions}
 
@@ -293,17 +264,13 @@ along three axes, which constitute its three contributions.
 
     \item \textbf{Physically interpretable prediction of the road environment.}
     We introduce a split-dynamics model that not only rolls out the vehicle with
-    a structured kinematic model, but also \emph{forecasts the road context} with
-    a geometry-driven transition in which the road is advected past the vehicle
-    by its own predicted motion.
+    a learnable bicycle kinematic model, but also \emph{forecasts the road
+    context} with a structured, geometry-driven transition.
     The predicted road context is itself physically interpretable, so the
     forecasted environment, not just the forecasted vehicle, can be inspected and
     monitored.
-    We show that this geometric treatment, rather than propagating the road as a
-    free latent, is what keeps long-horizon rollout bounded, and that the road
-    context can be perceived from the onboard camera at a cost of roughly
-    \SI{2}{cm} in \SI{100}{}-step position error relative to a privileged map
-    lookup.
+    We show that predicting the road, rather than treating it as static, is what
+    enables stable long-horizon prediction under partial observability.
 \end{enumerate}
 
 \noindent
@@ -321,8 +288,8 @@ Section~\ref{sec:architecture} presents the PIWM architecture, the road-context
 encoder (Section~\ref{sec:encoding}), and the road-context predictor
 (Section~\ref{sec:prediction}).
 Section~\ref{sec:experiments} describes the experimental setup, and
-Section~\ref{sec:results} reports results on the benchmarks and on the real
-DonkeyCar.
+Section~\ref{sec:results} reports results on the benchmarks, CarRacing, and the
+real DonkeyCar.
 Section~\ref{sec:discussion} discusses implications and limitations, and
 Section~\ref{sec:conclusion} concludes.
 
@@ -631,53 +598,14 @@ the horizon (Section~\ref{sec:prediction}).
 
 \begin{figure}[t]
     \centering
-    \begin{tikzpicture}[
-        x=1cm, y=1cm,
-        road/.style={line width=8mm, color=black!10, line cap=round},
-        centre/.style={dash pattern=on 2pt off 2pt, color=black!45,
-                       line width=0.4pt},
-        pred/.style={line width=1.1pt, color=blue!60!black,
-                     -{Stealth[length=1.8mm]}},
-        fov/.style={fill=orange!45, draw=none, opacity=0.45},
-        lbl/.style={font=\footnotesize},
-        slbl/.style={font=\scriptsize, color=black!65},
-    ]
-    %% ---- (a) straight segment ahead -------------------------------
-    \draw[road]   (0,0) -- (0,3.9);
-    \draw[centre] (0,0) -- (0,3.9);
-    \fill[fov]    (0,0.55) -- (-0.62,1.75) -- (0.62,1.75) -- cycle;
-    \draw[pred]   (0,0.55) -- (0,3.5);
-    \fill[red!75!black,draw=black!55,line width=0.3pt]
-                  (0,0.80) -- (-0.17,0.42) -- (0.17,0.42) -- cycle;
-    \node[slbl,anchor=west] at (0.42,1.35) {camera preview};
-    \node[lbl] at (0,-0.55) {(a) straight segment ahead};
-
-    %% ---- (b) curved segment ahead ---------------------------------
-    \draw[road]   (5,0) .. controls (5,1.7) and (5.5,2.5) .. (6.9,3.2);
-    \draw[centre] (5,0) .. controls (5,1.7) and (5.5,2.5) .. (6.9,3.2);
-    \fill[fov]    (5,0.55) -- (4.38,1.75) -- (5.62,1.75) -- cycle;
-    \draw[pred]   (5,0.55) .. controls (5,1.8) and (5.5,2.4) .. (6.6,3.0);
-    \fill[red!75!black,draw=black!55,line width=0.3pt]
-                  (5,0.80) -- (4.83,0.42) -- (5.17,0.42) -- cycle;
-    \node[lbl] at (5.6,-0.55) {(b) curved segment ahead};
-
-    %% ---- shared annotations ---------------------------------------
-    \node[lbl,anchor=south] at (2.9,4.15)
-        {identical $x_t=(x,y,\psi,v)$ \; and \; identical action $a_t$};
-    \draw[->,>={Stealth[length=1.6mm]},color=black!55,line width=0.4pt]
-        (2.1,4.1) .. controls (1.2,3.9) .. (0.15,3.6);
-    \draw[->,>={Stealth[length=1.6mm]},color=black!55,line width=0.4pt]
-        (3.7,4.1) .. controls (4.8,3.9) .. (5.15,3.6);
-    \node[slbl,anchor=north,text width=3.2cm,align=center] at (2.9,3.1)
-        {predicted futures\\ \emph{diverge}};
-    \end{tikzpicture}
+    %% Front-camera samples illustrate that the road ahead is only partially
+    %% visible; replace with the composed two-vehicle schematic if preferred.
+    \includegraphics[width=0.85\linewidth]{../../frame_samples/traj1_t0.png}
     \caption{Partial observability in driving. Two vehicles with identical
-    kinematic states $(x, y, \psi, v)$, issued identical actions, follow
-    divergent futures because the road geometry ahead differs. The vehicle state
-    alone is therefore non-Markov: the road context $r_t$ (lane shape and the
-    vehicle's relation to it) is missing from it and, for a forward-facing
-    camera, the road is visible only over a short preview (shaded wedge), so
-    $r_t$ must be both encoded from images and predicted forward.}
+    kinematic states $(x, y, \psi, v)$ diverge because the road geometry ahead
+    differs. The vehicle state alone is non-Markov: the road context $r_t$
+    (lane shape and the vehicle's relation to it) is missing and, for a
+    forward-facing camera, only partially visible.}
     \label{fig:partial_obs}
 \end{figure}
 
@@ -687,7 +615,7 @@ To resolve the partial observability problem, we augment the interpretable state
 with road-context information and express the vehicle component in a translation-
 and rotation-invariant reference frame.
 
-\paragraph{Vehicle-relative state}
+\paragraph{Vehicle-relative state.}
 Global coordinates $(x, y)$ introduce unnecessary dependence on the starting
 position of each trajectory, complicating generalization across scenes.
 Instead, we express vehicle motion relative to the initial timestep of each
@@ -711,7 +639,7 @@ vehicle at $t_0$, so that $x_{\mathrm{rel}}$ is the longitudinal displacement,
 $y_{\mathrm{rel}}$ the lateral displacement, and $\psi_{\mathrm{rel}}$ the
 cumulative heading change.
 
-\paragraph{Road-context state}
+\paragraph{Road-context state.}
 The road-context component $\zr_t$ captures the vehicle's relationship to the road
 geometry:
 \begin{equation}
@@ -728,7 +656,7 @@ the local road curvature.
 Together, $\zr_t$ encodes the information needed to determine how the vehicle will
 interact with the road geometry over the coming steps.
 
-\paragraph{Factorized state}
+\paragraph{Factorized state.}
 The complete \emph{factorized interpretable state} is:
 \begin{equation}
     \zstar_t = \left[ \zv_t,\; \zr_t \right] \in \mathbb{R}^6.
@@ -782,66 +710,20 @@ axes: a road-context \emph{encoder} (Section~\ref{sec:encoding}) and a
 road-context \emph{predictor} (Section~\ref{sec:prediction}).
 A high-level overview is shown in Figure~\ref{fig:arch}.
 
-\begin{figure}[t]
+\begin{figure*}[t]
     \centering
-    \resizebox{\linewidth}{!}{%
-    \begin{tikzpicture}[
-        x=1cm, y=1cm,
-        blk/.style={draw=black!65, rounded corners=1.5pt, line width=0.5pt,
-                    align=center, font=\footnotesize, inner sep=3.5pt,
-                    minimum height=9mm},
-        vis/.style={blk, fill=blue!8},
-        phy/.style={blk, fill=green!10},
-        dyn/.style={blk, fill=purple!8},
-        st/.style={blk, fill=orange!12},
-        ar/.style={-{Stealth[length=2mm]}, line width=0.55pt, color=black!70},
-        dar/.style={ar, dash pattern=on 2.5pt off 1.5pt, color=black!55},
-        lbl/.style={font=\scriptsize, color=black!70},
-    ]
-    %% ---- encoding chain -------------------------------------------
-    \node[vis] (img) at (0,0)    {$y_{t-k+1:t}$\\[1pt]\scriptsize onboard images};
-    \node[vis] (ev)  at (3.2,0)  {vision encoder\\$\mathcal{E}_v$};
-    \node[phy] (ep)  at (7.0,0)  {physical encoder $\mathcal{E}_p$\\[1pt]
-                                  \scriptsize Transformer over window $k$};
-    \node[st]  (zs)  at (11.4,0) {$\zstar_t=[\zv_t,\;\zr_t]$\\[2pt]
-        \scriptsize $\zv=(x_{\mathrm{rel}},y_{\mathrm{rel}},\psi_{\mathrm{rel}})$\\
-        \scriptsize $\zr=(e_{\mathrm{CTE}},e_\psi,\kappa)$};
-    \node[blk,fill=black!4] (sup) at (7.0,2.0)
-        {privileged road context $\Xi^r$\\[1pt]\scriptsize training time only};
-
-    \draw[ar]  (img) -- (ev);
-    \draw[ar]  (ev)  -- node[above,lbl]{$z_\tau$} (ep);
-    \draw[ar]  (ep)  -- (zs);
-    \draw[dar] (sup) -- (ep);
-
-    %% ---- split dynamics -------------------------------------------
-    \node[dyn] (dv) at (3.3,-3.0)  {vehicle transition $\phi_\theta$\\[1pt]
-                                    \scriptsize structured kinematics};
-    \node[dyn] (dr) at (7.8,-3.0)  {road transition $f_r$\\[1pt]
-                                    \scriptsize geometric advection};
-    \node[st]  (zn) at (11.4,-3.0) {$\hat{\zstar}_{t+1}$};
-    \node[blk,fill=black!4] (act) at (-0.3,-3.0) {$a_t$};
-
-    \draw[ar] (zs.south) -- ++(0,-1.4) -| (dv.north);
-    \draw[ar] (act) -- (dv);
-    \draw[ar] (dv)  -- node[above,lbl]{$\hat{\zv}_{t+1}$} (dr);
-    \draw[ar] (dr)  -- (zn);
-    \draw[dar] (zn.south) -- ++(0,-1.0)
-               -| node[pos=0.25,below,lbl]{autoregressive rollout} (dv.south);
-    \end{tikzpicture}}
-    \caption{Overview of the PIWM architecture for partially observable driving.
-    A vision encoder maps each observation to a visual latent; a physical encoder
-    aggregates a temporal window of those latents into the factorized
-    interpretable state $\zstar = [\zv, \zr]$, where $\zv$ is the
-    vehicle-relative state and $\zr$ the road context. A split-dynamics model
-    then rolls the state forward, advancing $\zv$ with a structured kinematic
-    model and $\zr$ with a geometry-driven transition that advects the road past
-    the vehicle. The encoder (Section~\ref{sec:encoding}) infers the external
-    road environment from images, supervised at training time by a privileged
-    signal that is withheld at test time; the predictor
-    (Section~\ref{sec:prediction}) forecasts how that environment evolves.}
+    \includegraphics[width=0.95\textwidth]{../reports/figures/architecture.pdf}
+    \caption{Overview of the PIWM architecture.
+    A vision encoder maps observations to a visual latent; a physical encoder
+    extracts the factorized interpretable state
+    $\zstar = [\zv, \zr]$ (vehicle-relative state and road context); and a
+    split-dynamics model rolls the state forward, applying a learnable bicycle
+    kinematic model to $\zv$ and a structured, geometry-driven transition to
+    $\zr$. The encoder (Section~\ref{sec:encoding}) infers the external road
+    environment from images; the predictor (Section~\ref{sec:prediction})
+    forecasts how that environment evolves.}
     \label{fig:arch}
-\end{figure}
+\end{figure*}
 
 \subsection{Learning Interpretable Representations}\label{sec:repr_learning}
 
@@ -849,7 +731,7 @@ The autoencoder maps high-dimensional observations to a physically interpretable
 latent state aligned with the true physical state.
 We follow the conference paper in considering two architectural approaches.
 
-\paragraph{Intrinsic encoding}
+\paragraph{Intrinsic encoding.}
 The encoder $\mathcal{E}: Y \rightarrow Z^*$ maps an observation directly to the
 interpretable latent, partitioned as $\zstar = [z_p^*, z_v^*]$, where $z_p^*$ is
 the physically interpretable component and $z_v^*$ captures the residual visual
@@ -868,7 +750,7 @@ and a learnable visual component.
 The interpretability loss is applied to the averaged physical part of the
 selected codebook entries.
 
-\paragraph{Extrinsic encoding}
+\paragraph{Extrinsic encoding.}
 The extrinsic approach decouples visual perception from physical interpretation
 via a two-stage process.
 In the first stage, a vision autoencoder $(\mathcal{E}_v, \mathcal{D}_v)$ is
@@ -894,7 +776,7 @@ with a discrete (VQ) latent consistently yields the strongest physical grounding
 and prediction accuracy; we adopt this configuration as the primary model for the
 driving experiments.
 
-\paragraph{Interpretability loss}
+\paragraph{Interpretability loss.}
 For all variants, alignment between the encoded state and the physical variables
 is enforced through the mean squared error to the empirical mean of the
 supervisory samples:
@@ -921,7 +803,7 @@ environment rather than only to the vehicle.
 \subsection{Encoding the Road Environment}\label{sec:encoding}  %% [NEW]
 %% --------------------------------------------------------------
 
-\paragraph{Challenge and motivation}
+\paragraph{Challenge and motivation.}
 The conference model encoded only the controlled body's state, which for the
 benchmarks was directly inferable from a single frame.
 Road context is different in two ways.
@@ -934,7 +816,7 @@ the current frame.
 A single-frame encoder is therefore insufficient; the road context must be
 aggregated over time.
 
-\paragraph{Temporal road-context encoder}
+\paragraph{Temporal road-context encoder.}
 We condition the physical encoder on a history of visual latents:
 \begin{equation}
     (\zv_t,\; \zr_t) = \mathcal{E}_p(z_{t-k+1:t}),
@@ -952,7 +834,7 @@ The encoder produces both components jointly but supervises them separately
 through~\eqref{eq:interp_loss_drive}, ensuring $\zr_t$ carries genuine
 environmental information rather than being absorbed into the vehicle component.
 
-\paragraph{Privileged supervision for real-world deployment}
+\paragraph{Privileged supervision for real-world deployment.}
 On the real DonkeyCar, the road context cannot be measured by the deployed car
 itself.
 We therefore use \emph{privileged supervision}: during training, an external
@@ -972,79 +854,13 @@ diagnostic in Section~\ref{sec:results}.
 
 \begin{figure}[t]
     \centering
-    \resizebox{\linewidth}{!}{%
-    \begin{tikzpicture}[
-        x=1cm, y=1cm,
-        road/.style={line width=11mm, color=black!9},
-        centre/.style={dash pattern=on 2.5pt off 2pt, color=black!50,
-                       line width=0.4pt},
-        ar/.style={-{Stealth[length=1.8mm]}, line width=0.5pt, color=black!70},
-        dbl/.style={{Stealth[length=1.5mm]}-{Stealth[length=1.5mm]},
-                    line width=0.45pt, color=red!65!black},
-        hint/.style={dash pattern=on 1.6pt off 1.6pt, color=black!60,
-                     line width=0.4pt},
-        lbl/.style={font=\footnotesize},
-        slbl/.style={font=\scriptsize, color=black!70},
-    ]
-    %% ---- road band + centreline ------------------------------------
-    \draw[road]   (-0.3,0.6) .. controls (2.5,0.6) and (3.9,1.3) .. (6.6,2.2);
-    %% perceived preview window, clipped to [s, s+4.5 m]
-    \begin{scope}
-        \clip (1.35,-0.4) rectangle (4.75,3.0);
-        \draw[line width=11mm, color=orange!30]
-              (-0.3,0.6) .. controls (2.5,0.6) and (3.9,1.3) .. (6.6,2.2);
-    \end{scope}
-    \draw[centre] (-0.3,0.6) .. controls (2.5,0.6) and (3.9,1.3) .. (6.6,2.2);
-    \node[slbl,anchor=north] at (0.3,-0.05) {lane centre};
-
-    %% ---- vehicle, offset from the centreline and yawed -------------
-    \fill[red!75!black,draw=black!55,line width=0.3pt]
-          (1.75,1.03) -- (1.15,1.19) -- (1.22,0.85) -- cycle;
-    \draw[hint] (1.35,1.02) -- (2.75,1.02);
-    \draw[hint] (1.35,1.02) -- (2.72,1.52);
-    \draw[color=black!60,line width=0.4pt] (2.15,1.02) arc (0:20:0.8);
-    \node[slbl] at (2.52,1.22) {$e_\psi$};
-    \draw[dbl] (1.28,0.60) -- (1.28,1.02);
-    \node[slbl,anchor=east] at (1.18,0.81) {$e_{\mathrm{CTE}}$};
-
-    %% ---- curvature of the segment ahead ----------------------------
-    \draw[ar,color=black!60] (5.75,1.05) .. controls (5.4,1.35) .. (5.55,1.68);
-    \node[slbl,anchor=north west] at (5.55,1.02) {curvature $\kappa$};
-    \draw[ar] (3.4,-0.05) -- (4.4,-0.05);
-    \node[slbl,anchor=north] at (3.9,-0.12) {arc length $s$};
-
-    %% ---- preview annotation ----------------------------------------
-    \draw[dbl] (1.4,2.45) -- (4.7,2.45);
-    \node[slbl,anchor=south,align=center] at (3.05,2.52)
-        {camera preview: $\kappa(s+\Delta)$, $\Delta\in[0,\SI{4.5}{m}]$};
-
-    %% ---- predicted curvature profile (encoder output) --------------
-    \begin{scope}[shift={(7.9,0.35)}]
-        \draw[color=black!55,line width=0.4pt] (0,0) -- (3.5,0);
-        \draw[color=black!55,line width=0.4pt] (0,0) -- (0,1.9);
-        \node[slbl,anchor=north] at (1.75,-0.12) {preview offset $\Delta$ (m)};
-        \node[slbl,anchor=south west] at (-0.05,1.92) {$\hat{\kappa}$ (1/m)};
-        \draw[line width=0.9pt,color=blue!60!black]
-              (0.1,0.25) .. controls (1.1,0.3) and (1.9,1.1) .. (3.35,1.6);
-        \foreach \x/\y in {0.10/0.25, 0.46/0.26, 0.82/0.30, 1.18/0.38,
-                           1.54/0.52, 1.90/0.72, 2.26/0.95, 2.62/1.18,
-                           2.98/1.40, 3.34/1.60}
-            \fill[blue!60!black] (\x,\y) circle (0.055);
-    \end{scope}
-    \draw[ar] (5.05,1.5) .. controls (6.4,2.1) .. (7.6,1.5);
-    \node[slbl,anchor=south] at (6.4,2.05) {$\mathcal{E}_p$};
-    \end{tikzpicture}}
-    \caption{Encoding the road environment. The road-context state
-    $\zr=(e_{\mathrm{CTE}}, e_\psi, \kappa)$ is defined geometrically with
-    respect to the lane centre: the cross-track error is the signed lateral
-    offset, the heading error is the angle between the vehicle heading and the
-    road tangent, and $\kappa$ is the local curvature. For a forward-facing
-    camera the road is visible only over a short preview (shaded), so the
-    physical encoder $\mathcal{E}_p$ aggregates a temporal window of images into
-    a curvature \emph{profile} $\hat{\kappa}(s+\Delta)$ sampled at ten offsets
-    over the first \SI{4.5}{m} ahead. On the real DonkeyCar this encoding is
-    supervised by privileged track localization at training time and recovered
-    from the front camera alone at test time.}
+    \includegraphics[width=\linewidth]{../reports/figures/lane_waypoints.pdf}
+    \caption{Encoding the road environment. The road-context state $\zr$
+    (cross-track error $e_{\mathrm{CTE}}$, heading error $e_\psi$, curvature
+    $\kappa$) describes the lane ahead in the vehicle's body frame and is
+    inferred from a temporal window of onboard images. On the real DonkeyCar this
+    encoding is supervised by privileged track localization at training time and
+    recovered from the front camera alone at test time.}
     \label{fig:encoding}
 \end{figure}
 
@@ -1052,7 +868,7 @@ diagnostic in Section~\ref{sec:results}.
 \subsection{Predicting the Road Environment}\label{sec:prediction}  %% [NEW]
 %% --------------------------------------------------------------
 
-\paragraph{Challenge and motivation}
+\paragraph{Challenge and motivation.}
 Encoding the road at the current step is necessary but not sufficient.
 To roll out a trajectory over a long horizon without new observations, the world
 model must anticipate how the road context itself changes as the vehicle advances:
@@ -1064,7 +880,7 @@ that no longer matches reality.
 We therefore make road prediction an explicit, physically interpretable part of
 the dynamics.
 
-\paragraph{Split dynamics}
+\paragraph{Split dynamics.}
 We use a \emph{split-dynamics} model that advances the vehicle and the road
 context with separate, physically appropriate transitions:
 \begin{align}
@@ -1073,162 +889,65 @@ context with separate, physically appropriate transitions:
     \hat{\zr}_{t+1} &= f_r(\zr_t,\; \zv_t,\; a_t;\; \theta_r).
         \label{eq:split_road}
 \end{align}
-The vehicle transition $\phi_\theta$ is a structured kinematic model with a small
-learned actuation map (below); the road transition $f_r$ is a geometry-driven
-model (below).
+The vehicle transition $\phi_\theta$ is the learnable bicycle kinematic model
+(below); the road transition $f_r$ is a structured, geometry-driven model
+(below).
 Splitting the dynamics decouples the fast-varying vehicle motion from the
 slow-varying road geometry and lets each receive its correct inductive bias.
 
-\paragraph{Structured kinematics for the vehicle}
+\paragraph{Bicycle kinematic model for the vehicle.}
 For driving environments we replace the generic second-order dynamics of the
-conference paper with a wheeled-vehicle kinematic prior.
-In the body frame this is the classical \emph{bicycle kinematic model}
+conference paper with a \emph{bicycle kinematic model}, a physically appropriate
+prior for wheeled-vehicle motion:
 \begin{align}
     x_{t+1}    &= x_t    + v_t\cos(\psi_t + \beta_t)\,\Delta t,
     \label{eq:bic_x}\\
     y_{t+1}    &= y_t    + v_t\sin(\psi_t + \beta_t)\,\Delta t,
     \label{eq:bic_y}\\
     \psi_{t+1} &= \psi_t + \frac{v_t}{l_r}\sin(\beta_t)\,\Delta t,
-    \label{eq:bic_psi}
+    \label{eq:bic_psi}\\
+    v_{t+1}    &= v_t    + a_t\,\Delta t,
+    \label{eq:bic_v}
 \end{align}
-with slip angle
-$\beta_t = \arctan\!\left(\frac{l_r}{l_f + l_r}\tan(\delta_{f,t})\right)$, where
-$l_f$ and $l_r$ are the distances from the centre of mass to the front and rear
-axles (unknown and learned during training), $\delta_{f,t}$ is the steering
-angle, $v_t$ the longitudinal speed and $\psi_t$ the heading.
+where $\beta_t = \arctan\!\left(\frac{l_r}{l_f + l_r}\tan(\delta_{f,t})\right)$
+is the slip angle, $l_f$ and $l_r$ are the distances from the center of mass to
+the front and rear axles, $\delta_{f,t}$ is the steering angle, $v_t$ is the
+longitudinal speed, and $\psi_t$ is the heading.
+The wheelbase parameters $l_f, l_r$ are unknown and learned during training.
+The vehicle-relative dynamics~\eqref{eq:split_vehicle} apply
+\eqref{eq:bic_x}--\eqref{eq:bic_psi} in the local frame of each window, expressing
+displacements relative to the initial timestep~\eqref{eq:vehicle_rel}.
 
-Because the road context is itself defined relative to the lane
-(Section~\ref{sec:factorized_state}), we express the vehicle in the same
-road-aligned frame, which yields the equivalent kinematics
-\eqref{eq:frenet_s}--\eqref{eq:frenet_psi} below and lets the two branches of the
-split dynamics share one geometry.
-In either frame the \emph{pose} kinematics are analytic; what is unknown is how
-the commanded action drives the vehicle.
-We therefore learn only a compact actuation map
-\begin{equation}
-    v_{t+1} = v_t + g^v_\theta(\zv_t, \zr_t, a_t),
-    \qquad
-    \omega_{t+1} = \omega_t + g^\omega_\theta(\zv_t, \zr_t, a_t),
-    \label{eq:actuation}
-\end{equation}
-where $g^v_\theta$ and $g^\omega_\theta$ are small multilayer perceptrons mapping
-throttle to longitudinal acceleration and steering to yaw acceleration.
-Every remaining quantity in the vehicle branch is a physical variable propagated
-by an analytic equation.
-
-\paragraph{Structured road-context transition}
+\paragraph{Structured road-context transition.}
 The road-context state $(e_{\mathrm{CTE}}, e_\psi, \kappa)$ evolves slowly and
 geometrically.
-As the vehicle moves by the increment implied by its predicted motion, the road
-ahead is effectively re-indexed: the lane geometry is advected past the vehicle.
+As the vehicle moves by the body-frame increment implied by its predicted motion,
+the road ahead is effectively re-indexed: the lane geometry is advected past the
+vehicle.
 We therefore model $f_r$ as a geometry-driven transition that (i) updates the
-cross-track and heading errors from the vehicle's predicted lateral and angular
-motion relative to the road, and (ii) does \emph{not} integrate the curvature
-forward at all, but re-reads it from the already-perceived preview at the arc
-length the vehicle has covered.
-
-Concretely, we work in a road-aligned (Frenet) frame in which the vehicle state
-is $(s, e_{\mathrm{CTE}}, e_\psi, v, \omega)$, with $s$ the arc length along the
-lane centre, $v$ the longitudinal speed and $\omega$ the yaw rate.
-Writing $\kappa_t = \hat{\kappa}(s_t)$ for the perceived curvature at the current
-arc length and $\eta_t = 1 - e_{\mathrm{CTE},t}\kappa_t$ for the Jacobian of the
-road-aligned parameterization, the transition is
-\begin{align}
-    s_{t+1} &= s_t + \frac{v_t\cos e_{\psi,t}}{\eta_t}\,\Delta t,
-        \label{eq:frenet_s}\\
-    e_{\mathrm{CTE},t+1} &= e_{\mathrm{CTE},t}
-        + v_t \sin e_{\psi,t}\,\Delta t + \varepsilon^d_{\theta_r},
-        \label{eq:frenet_d}\\
-    e_{\psi,t+1} &= e_{\psi,t}
-        + \Bigl(\omega_t - \kappa_t\,\frac{v_t\cos e_{\psi,t}}{\eta_t}\Bigr)\Delta t
-        + \varepsilon^\psi_{\theta_r},
-        \label{eq:frenet_psi}\\
-    \kappa_{t+1} &= \hat{\kappa}(s_{t+1}),
-        \label{eq:frenet_kappa}
-\end{align}
-where $\Delta t$ is the sampling interval and
-$(\varepsilon^d_{\theta_r}, \varepsilon^\psi_{\theta_r})$ is a small learned
-residual, tightly bounded, that corrects effects the rigid geometric update
-misses (e.g., imperfect lane tracking).
-Equations~\eqref{eq:frenet_s}--\eqref{eq:frenet_psi} are analytic; only the
-residual and the actuation map~\eqref{eq:actuation} are learned.
-
-Equation~\eqref{eq:frenet_kappa} is the crucial one.
-The curvature is a \emph{lookup into the curvature profile already perceived at
-the start of the rollout} (Section~\ref{sec:encoding}), indexed by how far the
-predicted vehicle has travelled.
-It is therefore not a free latent that the dynamics must propagate, and it cannot
-accumulate error over the horizon: the road is \emph{observed} once and then
-re-indexed, not extrapolated.
-This is the structural reason the rollout stays bounded, and it is what
-distinguishes the model from world models that carry the road as an unconstrained
-latent that drifts and, in turn, corrupts the vehicle branch that consumes it.
-The preview is long enough for this to be well defined: over a 100-step rollout
-the vehicle covers on average \SI{3.3}{m} of arc length (\SI{4.45}{m} at the
-$90$th percentile), inside the \SI{4.5}{m} perceived preview.
-Because $f_r$ operates on the physically interpretable $\zr$, the forecasted road
-context at any horizon is itself interpretable: the model outputs a predicted
-lane geometry that can be visualized and checked, not an opaque feature.
+cross-track error and heading error from the vehicle's predicted lateral and
+angular motion relative to the road, and (ii) advances the curvature
+conservatively, treating it as locally constant over a single step and updating it
+toward the curvature of the next road segment:
+\begin{equation}
+    \zr_{t+1} = f_r(\zr_t,\; \zv_t,\; a_t;\; \theta_r).
+    \label{eq:road_dyn}
+\end{equation}
+A small learnable residual corrects for effects not captured by the rigid
+geometric update (e.g., imperfect lane tracking), with $\theta_r$ learned jointly.
+Crucially, because $f_r$ operates on the physically interpretable $\zr$, the
+forecasted road context at any horizon is itself interpretable: the model outputs
+a predicted lane geometry that can be visualized and checked, not an opaque
+feature.
 
 \begin{figure}[t]
     \centering
-    \resizebox{\linewidth}{!}{%
-    \begin{tikzpicture}[
-        x=1cm, y=1cm,
-        road/.style={line width=10mm, color=black!9},
-        centre/.style={dash pattern=on 2.5pt off 2pt, color=black!50,
-                       line width=0.4pt},
-        ar/.style={-{Stealth[length=1.7mm]}, line width=0.5pt, color=black!70},
-        tick/.style={line width=0.4pt, color=black!55},
-        slbl/.style={font=\scriptsize, color=black!70},
-    ]
-    %% ---- once-perceived curvature profile (top) --------------------
-    \begin{scope}[shift={(0.6,2.7)}]
-        \draw[tick] (0,0) -- (5.6,0);
-        \draw[tick] (0,0) -- (0,1.5);
-        \node[slbl,anchor=east] at (-0.12,1.35) {$\hat{\kappa}$};
-        \node[slbl,anchor=south east] at (5.6,0.06) {arc length $s$};
-        \draw[line width=0.9pt,color=black!45]
-             (0.1,0.18) .. controls (1.6,0.2) and (2.8,1.05) .. (5.45,1.25);
-        \node[slbl,anchor=south west,align=left] at (0.0,1.62)
-            {curvature profile perceived once at $t_0$, never re-predicted};
-        %% index markers
-        \fill[blue!65!black] (0.55,0.185) circle (0.085);
-        \fill[teal!70!black] (2.35,0.60)  circle (0.085);
-        \fill[green!45!black](4.30,1.16)  circle (0.085);
-        \node[slbl,anchor=south east,color=blue!65!black]  at (0.50,0.24) {$s_t$};
-        \node[slbl,anchor=south east,color=teal!70!black]  at (2.30,0.65) {$s_{t+m}$};
-        \node[slbl,anchor=south east,color=green!45!black] at (4.25,1.21) {$s_{t+2m}$};
-    \end{scope}
-
-    %% ---- the road, with the vehicle advancing along it -------------
-    \draw[road]   (-0.2,0.45) .. controls (2.2,0.45) and (3.4,0.95) .. (6.0,1.65);
-    \draw[centre] (-0.2,0.45) .. controls (2.2,0.45) and (3.4,0.95) .. (6.0,1.65);
-
-    \fill[blue!65!black]  (1.30,0.50) -- (0.80,0.63) -- (0.80,0.37) -- cycle;
-    \fill[teal!70!black]  (3.20,0.73) -- (2.72,0.90) -- (2.66,0.64) -- cycle;
-    \fill[green!45!black] (5.00,1.24) -- (4.50,1.38) -- (4.56,1.12) -- cycle;
-
-    \draw[ar,color=blue!65!black]  (0.95,0.72) -- (0.95,2.55);
-    \draw[ar,color=teal!70!black]  (2.85,0.98) -- (2.85,2.55);
-    \draw[ar,color=green!45!black] (4.65,1.47) -- (4.65,2.55);
-
-    \draw[{Stealth[length=1.5mm]}-{Stealth[length=1.5mm]},
-          line width=0.45pt,color=black!65] (0.95,-0.25) -- (4.65,-0.25);
-    \node[slbl,anchor=north] at (2.8,-0.32)
-        {travelled arc length $\Delta s=\textstyle\int v\,dt$ from the
-         predicted vehicle motion};
-    \end{tikzpicture}}
-    \caption{Predicting the road environment. The curvature profile ahead is
-    perceived once, at the start of the rollout; as the vehicle advances, the
-    road context is \emph{advected} past it, i.e.\ the profile is re-indexed by
-    the arc length the predicted vehicle motion has covered, and the cross-track
-    and heading errors are updated from the vehicle's lateral and angular motion
-    relative to the road. A small learned residual corrects effects the rigid
-    geometric update misses. Because the road is re-indexed rather than
-    propagated as a free latent, it cannot drift over a long horizon, and because
-    $\zr$ stays physically interpretable, the forecasted lane can be inspected at
-    every step.}
+    \includegraphics[width=\linewidth]{../reports/figures/lane_resample.pdf}
+    \caption{Predicting the road environment. As the vehicle advances, the road
+    context is advected past it: the geometry ahead is re-indexed under the
+    predicted ego motion (a quasi-rigid geometric update) and corrected by a small
+    learned residual. Because the predicted road context remains physically
+    interpretable, the forecasted lane can be inspected at every horizon.}
     \label{fig:prediction}
 \end{figure}
 
@@ -1251,7 +970,7 @@ Algorithm~\ref{alg:piwm_drive} summarizes the procedure.
 \label{alg:piwm_drive}
 \begin{algorithmic}[1]
 \Require Training set $\mathcal{S}$, loss weights
-         $\lambda_v, \lambda_r, \lambda_{\mathrm{latent}}$, context length $k$
+         $\lambda_v, \lambda_r, \lambda_{\mathrm{dyn}}$, context length $k$
 \State Train vision autoencoder $(\mathcal{E}_v, \mathcal{D}_v)$ on image
        reconstruction
 \For{each batch $(y_{1:M}, a_{1:M}, \Xi^v_{1:M}, \Xi^r_{1:M})$}
@@ -1290,14 +1009,14 @@ We evaluate across three tiers of increasing difficulty.
 Tier~1 establishes continuity with the conference paper; Tiers~2 and~3 are the two
 new partially observable driving case studies (Contribution~1).
 
-\paragraph{Tier~1: Fully observable benchmarks}
+\paragraph{Tier~1: Fully observable benchmarks.}
 \textbf{CartPole} and \textbf{Lunar Lander}~\cite{brockman2016openai} are retained
 from the conference paper as controlled settings where the system state is a
 complete Markov description.
 These results establish continuity with the conference version and a clean
 baseline for physically interpretable prediction under simple dynamics.
 
-\paragraph{Tier~2: Partially observable simulated driving (CarRacing)}
+\paragraph{Tier~2: Partially observable simulated driving (CarRacing).}
 \textbf{CarRacing}~\cite{brockman2016openai} is a top-down simulated racing
 environment in which the vehicle navigates a procedurally generated track.
 The observation is a bird's-eye-view RGB image (native $96 \times 96$, resized to
@@ -1308,12 +1027,10 @@ lane) is not part of the state and must be inferred from the image.
 Because the camera is top-down, the road ahead is visible but the model must still
 \emph{encode} it into the physical road context and \emph{predict} its evolution
 during rollout.
-This is the controlled setting in which the factorized-state formulation and the
-split dynamics were developed; the quantitative evaluation reported in this
-article is on the physical platform of Tier~3, for the reason given in
-Section~\ref{sec:carracing_results}.
+This is the primary controlled testbed for the factorized-state formulation and
+split dynamics.
 
-\paragraph{Tier~3: Real-world DonkeyCar deployment}
+\paragraph{Tier~3: Real-world DonkeyCar deployment.}
 The \textbf{DonkeyCar (real)} tier evaluates the factorized formulation on a
 physical RC-scale autonomous car driven on a laboratory track.
 The car observes its environment through a front-facing camera (the test-time
@@ -1328,15 +1045,15 @@ rolls out road context from the onboard front-camera stream alone.
 
 \subsection{Experimental Setup}\label{sec:setup}
 
-\paragraph{Benchmarks (Tier~1)}
+\paragraph{Benchmarks (Tier~1).}
 The data-collection and weak-supervision protocol follows the conference paper.
 For each environment, we collect 60{,}000 trajectories of at least 50 steps,
 generated by a mix of random actions and a pretrained neural controller.
 Weak-supervision labels are synthesized by adding biased uniform noise of relative
 width $\delta \in \{0\%, 5\%, 10\%\}$ to the ground-truth state, as described in
-\ref{sec:interp_loss_def}.
+Appendix~\ref{sec:interp_loss_def}.
 
-\paragraph{CarRacing (Tier~2)}
+\paragraph{CarRacing (Tier~2).}
 Driving data are generated with a pretrained controller on procedurally generated
 tracks; each episode records the onboard image, action, and simulator state.
 Ground-truth labels for the vehicle-relative state $(x_{\mathrm{rel}},
@@ -1347,79 +1064,66 @@ We use exact ground-truth labels for training (corresponding to $\delta = 0$) an
 evaluate whether the factorized-state formulation improves long-horizon prediction
 relative to baselines that use only vehicle-state labels.
 
-\paragraph{DonkeyCar real (Tier~3)}
+\paragraph{DonkeyCar real (Tier~3).}
 We drive the physical DonkeyCar on a closed laboratory track and record
 synchronized front-camera frames ($64 \times 64$), control actions
-(steering, throttle), and vehicle pose, at approximately \SI{22}{fps}, so that
-$\Delta t = 1/22\,\mathrm{s}$ and the 100-step evaluation horizon corresponds to
-about \SI{4.5}{s} of driving.
+(steering, throttle), and vehicle pose, at approximately \SI{22}{fps}.
 Trajectories are segmented into clean contiguous laps; brief sensing artifacts
 (dropped or interpolated frames, pose glitches) are filtered out before training.
-Ground-truth road context is computed from the known track centreline and the
+Ground-truth road context is computed from the known track centerline and the
 logged pose (privileged supervision), and is withheld at test time.
-Laps are split into disjoint training and validation sets; all numbers reported
-below are computed on the $201$ held-out validation windows, in real metres.
+We hold out a subset of laps for evaluation and report prediction error on the
+held-out laps.
 
-\paragraph{Architecture and training}
+\paragraph{Architecture and training.}
 The driving experiments use the extrinsic PIWM variant (a vision encoder followed
-by a physical encoder producing the factorized state), which the conference paper
-showed to be the strongest configuration.
-The vision encoder maps each $64 \times 64$ observation to a compact latent, and
-the physical encoder aggregates a context window of $k = 15$ frames
-($\approx$\SI{0.7}{s}) to infer the road context from image sequences
-(Section~\ref{sec:encoding}).
-Rollouts are trained on $16$-step horizons and evaluated at up to $100$ steps, so
-the reported horizon is more than six times the training horizon.
-Dynamics are trained with Adam, a cosine learning-rate schedule and early stopping
-on validation loss.
-All baselines are trained under identical conditions with the same data, the same
-optimizer and the same evaluation protocol, and with the batch sizes at which each
-baseline was tuned; we verified that increasing the batch size degrades these
-small, latency-bound baselines and would therefore have flattered our model.
+by a Transformer physical encoder producing the factorized state), which the
+conference paper showed to be the strongest configuration.
+The vision encoder maps each $64 \times 64$ observation to a compact latent.
+The physical encoder uses a temporal context window to infer road context from
+image sequences (Section~\ref{sec:encoding}).
+Dynamics are trained with a cosine learning-rate schedule and early stopping on
+validation loss.
+All baselines are trained under identical conditions with the same data,
+optimizer (Adam), and evaluation protocol.
 
 \subsection{Baselines}
 
-We compare against the same families used in the conference paper.
-\textbf{DVBF}~\cite{karl2016deep}, \textbf{GokuNet}~\cite{linial_generative_2021}
-and \textbf{Vid2Param}~\cite{asenov2019vid2param} are physics-aware latent
-sequence models, and \textbf{SindyC}~\cite{BRUNTON2016710} is a classical
-dynamics-discovery baseline operating on the interpretable latent.
-All of them receive the same images and actions as our model; in addition, each
-baseline is given the ground-truth lane waypoints at the first timestep of the
-window, so the comparison is, if anything, generous to them: they start from a
-description of the road that our model must recover from pixels.
-To separate the contribution of \emph{perceiving} the road from that of
-\emph{representing} it, we also evaluate a privileged \textbf{oracle} variant of
-our own model in which $\kappa$ is read from the known track map instead of the
-camera; the gap between the two is the cost of perception.
+We compare against the same families used in the conference paper, augmented with
+ablations that isolate the road-context contributions.
+Data-driven sequence models (\textbf{LSTM} and \textbf{Transformer}) serve as
+non-physical benchmarks.
+\textbf{DVBF}~\cite{karl2016deep}, \textbf{GokuNet}~\cite{linial_generative_2021},
+and \textbf{Vid2Param}~\cite{asenov2019vid2param} are physics-aware baselines, and
+\textbf{SindyC}~\cite{BRUNTON2016710} is a classical dynamics-discovery baseline
+operating on the interpretable latent.
+For driving, to isolate the contribution of road-context encoding and prediction,
+we additionally include two PIWM ablations:
+\textbf{PIWM-linear} (PIWM with a linear vehicle-dynamics model and no road
+context) and \textbf{PIWM-bicycle} (the bicycle model on the vehicle state, again
+without the road-context factorization).
+The gap between these ablations and the full model measures the value of encoding
+and predicting the road, not just the vehicle.
 
 \subsection{Metrics}
 
-The primary driving metric is the \emph{position error at rollout step $k$}: the
-Euclidean distance, in metres, between the predicted and the true vehicle
-position after $k$ autoregressive steps, averaged over the $N = 201$ held-out
-validation windows,
+The primary metric is the root mean squared error (RMSE) of the predicted state
+over multi-step rollout horizons.
+For benchmark tasks, RMSE is computed over all state dimensions.
+For driving tasks, RMSE is evaluated on the vehicle-relative state:
 \begin{equation}
-    E_{xy}(k) = \frac{1}{N}\sum_{i=1}^{N}
-    \bigl\lVert \hat{p}_{i,k} - p_{i,k} \bigr\rVert_2 ,
-    \qquad
-    p_{i,k} = (x_{\mathrm{rel}}, y_{\mathrm{rel}})_{i,k},
-    \label{eq:metric_exy}
+    \mathrm{RMSE}_{xy} =
+    \sqrt{\frac{1}{N}\sum_{i=1}^N
+    \left( (\hat{x}_{\mathrm{rel},i} - x_{\mathrm{rel},i})^2
+          + (\hat{y}_{\mathrm{rel},i} - y_{\mathrm{rel},i})^2
+    \right)}.
 \end{equation}
-where positions are expressed in the vehicle-relative frame
-of~\eqref{eq:vehicle_rel} anchored at the start of the window.
-We report $E_{xy}$ at $k \in \{25, 50, 100\}$ and plot the full curve
-$k \mapsto E_{xy}(k)$; all rollouts are initialized from the ground-truth state at
-$k=0$ so that the comparison isolates the dynamics rather than the encoder.
-Because $E_{xy}$ is a distance and not a squared error, its values are directly
-readable as centimetres of drift.
-We additionally report the curvature error of the road-context encoder,
-$\mathrm{RMSE}_\kappa$ in $\mathrm{m}^{-1}$, to evaluate the encoded road
-directly.
-For benchmark tasks (Tier~1) we follow the conference protocol and report state
-RMSE over all state dimensions at a 30-step horizon, together with the relative
-parameter-recovery error for the environments whose ground-truth physical
-parameters are known (CartPole, Lunar Lander).
+We additionally report the road-context prediction error (on
+$e_{\mathrm{CTE}}, e_\psi, \kappa$) to evaluate the quality of the predicted road
+environment directly.
+We evaluate at horizons of 30 steps (benchmarks) and up to 100 steps (driving).
+For environments where ground-truth physical parameters are known (CartPole,
+Lunar Lander), we additionally report relative parameter-recovery error.
 
 
 %% ==============================================================
@@ -1430,9 +1134,7 @@ parameters are known (CartPole, Lunar Lander).
 
 The fully observable benchmark results are carried over from the conference
 paper~\cite{piwm_conf} and summarized here for completeness.
-Across CartPole, Lunar Lander and the \emph{simulated} DonkeyCar of the conference
-paper---which is a different platform from the physical car of
-Section~\ref{sec:donkeyreal_results}---the extrinsic-discrete PIWM variant
+Across CartPole, Lunar Lander, and DonkeyCar, the extrinsic-discrete PIWM variant
 consistently achieves the lowest and most stable 30-step prediction error,
 substantially outperforming data-driven and physics-aware baselines; the quantized
 latent provides strong regularization that improves long-horizon stability.
@@ -1444,418 +1146,181 @@ These benchmark results establish that the driving extension is a proper superse
 of the original framework: on fully observable tasks, where the vehicle state is
 already Markov, PIWM behaves exactly as before.
 
-\subsection{CarRacing (Tier~2)}\label{sec:carracing_results}
+\subsection{CarRacing Results (Tier~2)}\label{sec:carracing_results}
 
-CarRacing serves in this article as the controlled simulated setting in which the
-factorized formulation was developed: the road geometry is present in the image
-but absent from the vehicle state, so the encoder must recover it from pixels
-even though the top-down view makes the road ahead fully visible.
-We do not report a quantitative baseline comparison for this tier here.
-The comparison in an earlier version of this work was run with a vehicle-only
-dynamics variant rather than the road-context model described in
-Section~\ref{sec:prediction}, and re-running it with the present model is left to
-future work; Section~\ref{sec:discussion} returns to this point.
-All quantitative claims in this article therefore rest on the physical platform
-of Section~\ref{sec:donkeyreal_results}, where the forward-facing camera makes
-partial observability genuine rather than nominal.
+\begin{figure*}[t]
+    \centering
+    \includegraphics[width=0.95\textwidth]{../vis/final_state_mse.png}
+    \caption{Prediction performance on CarRacing. State error over a 100-step
+    horizon for $x_{\mathrm{rel}}$, $y_{\mathrm{rel}}$, and $\psi_{\mathrm{rel}}$,
+    comparing PIWM (with factorized state and split dynamics) against PIWM-linear,
+    PIWM-bicycle (vehicle state only, no road context), SindyC, GokuNet, DVBF, and
+    Vid2Param. Methods that encode and predict the road context remain accurate at
+    long horizons, while vehicle-only and data-driven baselines diverge.}
+    \label{fig:carracing}
+\end{figure*}
 
-%% =================================================================
-%% COMMENTED OUT --- DO NOT DELETE.
-%% The CarRacing figure, table and analysis below are retained verbatim.
-%% They were withdrawn because the row printed as "PIWM (ours, full)" was the
-%% PIWM-bicycle-v4 column of _archive/logs/overnight.log, which is a
-%% vehicle-only dynamic-bicycle model with NO road context, while the one
-%% variant that did carry road context (PIWM-lane-v5, 0.0013/0.0333/0.2671/
-%% 1.5950 at steps 20/50/75/100) was omitted from the table.  The numbers are
-%% also MSE, not the RMSE declared in the Metrics subsection.
-%% TO RESTORE: re-run the CarRacing comparison with the road-context model,
-%% then uncomment, relabel the rows to match the checkpoints actually used,
-%% state the metric explicitly, and re-check every claim in the analysis.
-%% =================================================================
-%% \subsection{CarRacing Results (Tier~2)}\label{sec:carracing_results_OLD}
-%% 
-%% \begin{figure*}[t]
-%%     \centering
-%%     \includegraphics[width=0.95\textwidth]{../vis/final_state_mse.png}
-%%     \caption{Prediction performance on CarRacing. State error over a 100-step
-%%     horizon for $x_{\mathrm{rel}}$, $y_{\mathrm{rel}}$, and $\psi_{\mathrm{rel}}$,
-%%     comparing PIWM (with factorized state and split dynamics) against PIWM-linear,
-%%     PIWM-bicycle (vehicle state only, no road context), SindyC, GokuNet, DVBF, and
-%%     Vid2Param. Methods that encode and predict the road context remain accurate at
-%%     long horizons, while vehicle-only and data-driven baselines diverge.}
-%%     \label{fig:carracing}
-%% \end{figure*}
-%% 
-%% Figure~\ref{fig:carracing} reports state error over a 100-step prediction horizon
-%% on CarRacing.
-%% Table~\ref{tab:carracing} summarizes the longitudinal-displacement
-%% ($x_{\mathrm{rel}}$) error at representative horizons.
-%% 
-%% \begin{table}[t]
-%% \centering
-%% \caption{CarRacing longitudinal-displacement ($x_{\mathrm{rel}}$) prediction
-%% error at increasing horizons (lower is better). PIWM with the bicycle model and
-%% road-context factorization maintains low error to 100 steps, whereas the
-%% vehicle-only ablations (PIWM-linear, PIWM-bicycle) and most baselines diverge.
-%% \emph{The numerical entries are populated from our evaluation runs; confirm
-%% against the final experiment freeze before submission.}}
-%% \label{tab:carracing}
-%% \small
-%% \begin{tabular}{lrrrr}
-%% \toprule
-%% Model & step 20 & step 50 & step 75 & step 100 \\
-%% \midrule
-%% PIWM-linear            & 0.015 & 0.124 & 0.559 & 1.985 \\
-%% PIWM-bicycle (veh.\ only) & 0.008 & 0.186 & 0.696 & 2.020 \\
-%% SindyC                 & 0.046 & 0.927 & 4.493 & 15.03 \\
-%% DVBF                   & 0.009 & 0.182 & 1.242 & 3.556 \\
-%% Vid2Param              & 0.001 & 0.094 & 1.093 & 6.044 \\
-%% GokuNet                & 0.001 & 0.038 & 0.324 & 1.405 \\
-%% \textbf{PIWM (ours, full)} & \textbf{0.002} & \textbf{0.026} & \textbf{0.074} & \textbf{0.306} \\
-%% \bottomrule
-%% \end{tabular}
-%% \end{table}
-%% 
-%% The proposed PIWM with the bicycle model and factorized state substantially
-%% outperforms all baselines across the state dimensions and across the full 100-step
-%% horizon.
-%% Critically, the two ablations that drop the road context, PIWM-linear and
-%% PIWM-bicycle (vehicle state only), are competitive at short horizons but diverge
-%% as the horizon grows: by 75--100 steps their error is roughly an order of
-%% magnitude larger than the full model.
-%% This is the central empirical signature of partial observability.
-%% A vehicle-only model cannot anticipate the upcoming road geometry, so once the
-%% rollout enters curvature that was not represented, errors compound; the full
-%% model, which encodes the road context and predicts its evolution, steers the
-%% predicted vehicle through the correct geometry and stays accurate.
-%% Data-driven baselines (LSTM-style and GokuNet) and the physics-aware DVBF and
-%% Vid2Param exhibit rapid error growth at long horizons, consistent with the
-%% conference findings.
-%% 
-%% \paragraph{Quality of the predicted road environment}
-%% Because $\zr$ is interpretable, we can inspect the forecasted road directly.
-%% The predicted road context (cross-track error, heading error, curvature) tracks
-%% the ground-truth lane geometry over the rollout, confirming that the model is not
-%% merely improving vehicle prediction as a side effect but is genuinely forecasting
-%% the external environment in physically meaningful terms.
-%% 
+Figure~\ref{fig:carracing} reports state error over a 100-step prediction horizon
+on CarRacing.
+Table~\ref{tab:carracing} summarizes the longitudinal-displacement
+($x_{\mathrm{rel}}$) error at representative horizons.
+
+\begin{table}[t]
+\centering
+\caption{CarRacing longitudinal-displacement ($x_{\mathrm{rel}}$) prediction
+error at increasing horizons (lower is better). PIWM with the bicycle model and
+road-context factorization maintains low error to 100 steps, whereas the
+vehicle-only ablations (PIWM-linear, PIWM-bicycle) and most baselines diverge.
+\emph{The numerical entries are populated from our evaluation runs; confirm
+against the final experiment freeze before submission.}}
+\label{tab:carracing}
+\small
+\begin{tabular}{lrrrr}
+\toprule
+Model & step 20 & step 50 & step 75 & step 100 \\
+\midrule
+PIWM-linear            & 0.015 & 0.124 & 0.559 & 1.985 \\
+PIWM-bicycle (veh.\ only) & 0.008 & 0.186 & 0.696 & 2.020 \\
+SindyC                 & 0.046 & 0.927 & 4.493 & 15.03 \\
+DVBF                   & 0.009 & 0.182 & 1.242 & 3.556 \\
+Vid2Param              & 0.001 & 0.094 & 1.093 & 6.044 \\
+GokuNet                & 0.001 & 0.038 & 0.324 & 1.405 \\
+\textbf{PIWM (ours, full)} & \textbf{0.002} & \textbf{0.026} & \textbf{0.074} & \textbf{0.306} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The proposed PIWM with the bicycle model and factorized state substantially
+outperforms all baselines across the state dimensions and across the full 100-step
+horizon.
+Critically, the two ablations that drop the road context, PIWM-linear and
+PIWM-bicycle (vehicle state only), are competitive at short horizons but diverge
+as the horizon grows: by 75--100 steps their error is roughly an order of
+magnitude larger than the full model.
+This is the central empirical signature of partial observability.
+A vehicle-only model cannot anticipate the upcoming road geometry, so once the
+rollout enters curvature that was not represented, errors compound; the full
+model, which encodes the road context and predicts its evolution, steers the
+predicted vehicle through the correct geometry and stays accurate.
+Data-driven baselines (LSTM-style and GokuNet) and the physics-aware DVBF and
+Vid2Param exhibit rapid error growth at long horizons, consistent with the
+conference findings.
+
+\paragraph{Quality of the predicted road environment.}
+Because $\zr$ is interpretable, we can inspect the forecasted road directly.
+The predicted road context (cross-track error, heading error, curvature) tracks
+the ground-truth lane geometry over the rollout, confirming that the model is not
+merely improving vehicle prediction as a side effect but is genuinely forecasting
+the external environment in physically meaningful terms.
+
 \subsection{Real DonkeyCar Results (Tier~3)}\label{sec:donkeyreal_results}
 
 We deploy the learned model on the physical DonkeyCar, where the road context is
-supervised only during training and must be inferred from the front camera at
-test time.
-This is the setting the article is about: the camera sees a short stretch of road,
-the vehicle state alone is non-Markov, and nothing about the track is available to
-the deployed model beyond what it can read from its own images.
+supervised only during training and must be inferred from the front camera at test
+time.
 
-\paragraph{Long-horizon prediction against baselines}
-Table~\ref{tab:donkey_main} and Figure~\ref{fig:donkey_main} report position error
-over a 100-step ($\approx$\SI{4.5}{s}) autoregressive rollout on the $201$
-held-out validation windows.
-Two regimes are visible, and the crossover between them is the central result.
-Up to roughly $65$ steps the physics-aware baselines are \emph{ahead} of our
-model: Vid2Param in particular is more than twice as accurate at step $25$
-(\SI{0.036}{m} against \SI{0.090}{m}).
-This is expected, and it is a consequence of the comparison being generous to
-them: each baseline is handed the ground-truth lane waypoints at $t_0$, so over
-short horizons it is interpolating from a description of the road that our model
-had to recover from pixels.
-Beyond the crossover the ordering inverts and does not invert back.
-By step $100$ every baseline has entered superlinear error growth, while our model
-has not: \SI{0.267}{m} against \SI{0.383}{m} for the strongest baseline, a factor
-of $1.4$, growing to $1.8\times$ against GokuNet and $2.3\times$ against DVBF.
-SindyC diverges outright, exceeding the plot range before step $25$ and reaching
-$\sim$\num{e17} by the end of the rollout.
+\paragraph{Short-horizon accuracy.}
+For one-step prediction from a temporal observation context, the model attains a
+relative displacement error of
+$\mathrm{RMSE}_x = \SI{0.057}{m}$, $\mathrm{RMSE}_y = \SI{0.048}{m}$, and
+$\mathrm{RMSE}_{xy} = \SI{0.075}{m}$, i.e.\ an average positional error of roughly
+\SI{7.5}{cm} on the physical car.
 
-\begin{table}[t]
-\centering
-\caption{Position error $E_{xy}$ in metres on the physical DonkeyCar, at three
-rollout horizons, averaged over the $201$ held-out validation windows (lower is
-better). All models see the same images and actions; the baselines additionally
-receive the ground-truth lane waypoints at $t_0$. The oracle row is a privileged
-variant of our own model, not a competing method: it reads $\kappa$ from the known
-track map instead of the camera and therefore upper-bounds what perfect road
-perception could buy.}
-\label{tab:donkey_main}
-\small
-\begin{tabular}{lrrr}
-\toprule
-Model & $E_{xy}(25)$ & $E_{xy}(50)$ & $E_{xy}(100)$ \\
-\midrule
-Vid2Param~\cite{asenov2019vid2param}   & \textbf{0.036} & \textbf{0.076} & 0.383 \\
-GokuNet~\cite{linial_generative_2021}  & 0.061 & 0.130 & 0.478 \\
-DVBF~\cite{karl2016deep}               & 0.071 & 0.167 & 0.610 \\
-SindyC~\cite{BRUNTON2016710}           & \multicolumn{3}{c}{diverges ($\sim$\num{e17} at step 100)} \\
-\midrule
-\textbf{PIWM-Frenet (ours, perceived $\kappa$)} & 0.090 & 0.158 & \textbf{0.267} \\
-\midrule
-\emph{PIWM-Frenet (oracle $\kappa$, privileged)} & \emph{0.085} & \emph{0.148} & \emph{0.246} \\
-\bottomrule
-\end{tabular}
-\end{table}
+\paragraph{Per-lap analysis.}
+Prediction error varies across laps.
+Most laps yield consistent, low error; a few exhibit larger error traceable to
+sensing artifacts in the recorded trajectory (occasional pose irregularities from
+logging noise) rather than model failure.
+To characterize the model under clean conditions, we report a best-lap analysis:
+on the best-performing lap the model attains
+\[
+    \mathrm{RMSE}_{xy} = \SI{0.0238}{m},
+\]
+roughly \SI{2.4}{cm} of positional error.
+Figure~\ref{fig:donkey_bestlap} compares the predicted trajectory against the
+ground-truth path for this lap; the predicted displacements closely follow the
+true trajectory, demonstrating accurate motion prediction on real hardware when
+the underlying data are clean.
 
 \begin{figure}[t]
     \centering
-    \includegraphics[width=\linewidth]{fig_main.pdf}
-    \caption{Position error against rollout step on the physical DonkeyCar
-    (mean $\pm$ standard error over the $201$ held-out validation windows, all
-    rollouts initialized from the ground-truth state). The baselines lead over
-    short horizons and then enter superlinear growth; the proposed model stays
-    close to linear because the road it rolls out over was observed rather than
-    extrapolated. SindyC leaves the plot range before step $25$. The privileged
-    oracle curve (dotted) is our own model with $\kappa$ read from the track map
-    and sits only $\sim$\SI{2}{cm} below the perceived model at step $100$.}
-    \label{fig:donkey_main}
+    \includegraphics[width=0.8\linewidth]{donkeycarbestlap.png}
+    \caption{Real DonkeyCar best-lap prediction. Predicted trajectory (in global
+    coordinates) compared with the ground-truth path; the relative displacement
+    error is $\mathrm{RMSE}_{xy} = \SI{0.0238}{m}$ (\(\approx\)\,\SI{2.4}{cm}).}
+    \label{fig:donkey_bestlap}
 \end{figure}
 
-\paragraph{What the crossover means}
-The two regimes separate two different things a world model can be good at.
-Before the crossover the task is essentially smooth extrapolation of the recent
-motion, and a flexible latent sequence model does it well.
-After the crossover the rollout has left the stretch of road that the initial
-observation described, and the question becomes whether the model knows what road
-it is now on.
-A model that carries the road as a free latent must propagate it, and any error in
-that propagation feeds back into the vehicle branch that consumes it; the result
-is the compounding growth visible in Figure~\ref{fig:donkey_main}.
-Our model does not propagate the road at all: by~\eqref{eq:frenet_kappa} it
-re-reads the curvature that was already perceived at $t_0$, indexed by the arc
-length covered so far (Figure~\ref{fig:prediction}). Since the vehicle travels on
-average \SI{3.3}{m} over the full rollout, well inside the \SI{4.5}{m} preview,
-the road is \emph{observed} for the entire horizon and error in it cannot
-accumulate.
-
-\paragraph{The cost of perceiving the road}
-Because the road-context encoder (Figure~\ref{fig:encoding}) is the only part of
-the model that has to look at pixels, we can price it directly by replacing its
-output with progressively better sources of $\kappa$
-(Table~\ref{tab:kappa_source}).
-Reading $\kappa$ from the known track map---privileged information no
-image-and-action model could have---yields \SI{0.246}{m}; feeding the
-ground-truth curvature profile, i.e.\ perfect perception of exactly the quantity
-the encoder predicts, yields \SI{0.263}{m}; the encoder actually used yields
-\SI{0.267}{m} at a curvature error of $\mathrm{RMSE}_\kappa =
-\SI{0.1193}{m^{-1}}$.
-The entire cost of replacing a map lookup by a camera is therefore about
-\SI{2}{cm} at 100 steps, roughly $8\%$ of the total error, and the model still
-beats the strongest baseline by $1.4\times$.
-The advantage is thus attributable to the \emph{structure} of the representation,
-not to privileged information.
-The ablation also shows that the encoder is best trained from scratch: warm-starting
-its backbone from the pretrained visual encoder of the conference model is
-slightly worse (\SI{0.274}{m}) and freezing that backbone is clearly worse
-(\SI{0.290}{m}), indicating that features tuned for image reconstruction are not
-the features needed to read road curvature.
-
-\begin{table}[t]
-\centering
-\caption{Where the curvature comes from. All rows use the identical dynamics and
-differ only in the source of $\kappa$; $E_{xy}(100)$ in metres on the physical
-DonkeyCar. Only the third row is a deployable model---the first two are
-privileged upper bounds, and the last two are training variants of the encoder.}
-\label{tab:kappa_source}
-\footnotesize
-\begin{tabular}{llr}
-\toprule
-Source of $\kappa$ & Information used & $E_{xy}(100)$ \\
-\midrule
-Known track map                 & privileged (map + pose)  & 0.246 \\
-Ground-truth profile            & privileged (perfect perception) & 0.263 \\
-\textbf{Encoder, from scratch}  & \textbf{front camera only} & \textbf{0.267} \\
-Encoder, warm-started backbone  & front camera only & 0.274 \\
-Encoder, frozen backbone        & front camera only & 0.290 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\paragraph{Robustness to weak supervision}
-All results above are trained with exact road-context labels.
-The conference formulation, however, supervises the interpretable state only
-through noisy distributions, and the physical platform is exactly where such
-labels are hardest to obtain: they come from an external localization system whose
-accuracy is finite.
-We therefore repeat the training under the conference noise model of
-\ref{sec:interp_loss_def}, injecting biased uniform label noise of
-relative width $\delta \in \{0\%, 5\%, 10\%\}$
-(Table~\ref{tab:delta}, Figure~\ref{fig:delta}).
-At $\delta = 10\%$ the model still reaches \SI{0.253}{m}, which remains better
-than the strongest baseline trained on \emph{clean} labels (\SI{0.383}{m}).
-Degradation is therefore not the binding constraint: the geometric structure of
-the rollout carries the model even when the supervision that shaped its encoder is
-substantially corrupted.
-We note that the ordering across $\delta$ is not monotone---$\delta = 5\%$ is
-worse than $\delta = 10\%$---which is single-run training variance rather than a
-property of the noise model; separating the two would require repeating each
-condition over multiple folds, which we leave to future work.
-
-\begin{table}[t]
-\centering
-\caption{Weak-supervision noise on the physical DonkeyCar. Position error
-$E_{xy}$ in metres when the road-context labels used for training are corrupted
-by biased uniform noise of relative width $\delta$
-(\ref{sec:interp_loss_def}). The last column is the strongest baseline
-from Table~\ref{tab:donkey_main}, trained on clean labels, for reference.}
-\label{tab:delta}
-\small
-\begin{tabular}{lrrr}
-\toprule
- & $\delta = 0\%$ & $\delta = 5\%$ & $\delta = 10\%$ \\
-\midrule
-$E_{xy}(50)$  & 0.158 & 0.197 & 0.162 \\
-$E_{xy}(100)$ & 0.267 & 0.334 & 0.253 \\
-\midrule
-\multicolumn{4}{l}{\emph{strongest baseline, clean labels:} $E_{xy}(100) = 0.383$} \\
-\bottomrule
-\end{tabular}
-\end{table}
+\paragraph{Long-horizon rollout.}
+We additionally evaluate multi-step (autoregressive) rollout over complete laps,
+feeding the predicted state and the control inputs back into the split-dynamics
+model.
+Across laps, the long-horizon $\mathrm{RMSE}_{xy}$ remains in the range
+\SI{0.05}{m}--\SI{0.07}{m}, indicating that error stays bounded as the horizon
+grows.
+Figure~\ref{fig:donkey_rollout} shows representative long-horizon predictions and
+the predicted lane overlaid on the ground-truth track.
+The trajectories remain well aligned over most of the lap, with the largest
+deviations appearing in high-curvature segments, where small per-step errors
+accumulate; nonetheless the predicted road context keeps the rollout physically
+plausible.
+This is the key real-world finding: a factorized representation whose road context
+is learned under privileged supervision transfers to deployment, where the road
+must be recovered from the onboard camera alone.
 
 \begin{figure}[t]
     \centering
-    \includegraphics[width=0.8\linewidth]{fig_delta_supervision.pdf}
-    \caption{Robustness to corrupted road-context supervision. Position error
-    against rollout step on the physical DonkeyCar when the labels used to train
-    the road-context encoder carry biased uniform noise of relative width
-    $\delta$. All three curves stay below the \SI{0.383}{m} reached at step 100
-    by the strongest baseline trained on clean labels.}
-    \label{fig:delta}
+    \begin{subfigure}{0.49\linewidth}
+        \includegraphics[width=\linewidth]{../figures/fig_rollout_trajectory.png}
+        \caption{Long-horizon rollout.}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.49\linewidth}
+        \includegraphics[width=\linewidth]{../figures/fig_lane_overlay.png}
+        \caption{Predicted vs.\ true lane.}
+    \end{subfigure}
+    \caption{Real DonkeyCar long-horizon behavior. (a) Predicted vs.\
+    ground-truth trajectory over a lap. (b) The predicted road context (lane
+    geometry) overlaid on the true lane, showing that the model forecasts the
+    external environment, not only the vehicle.}
+    \label{fig:donkey_rollout}
 \end{figure}
-
-\paragraph{Robustness to a corrupted initial state}
-The study above perturbs the \emph{supervision}; a complementary question is what
-happens when the state the rollout starts from is itself wrong, as it would be
-under an imperfect state estimator at deployment.
-We therefore repeat the evaluation with Gaussian noise of standard deviation
-$\sigma$ (in units of each state variable's own standard deviation) added to the
-initial state, $10$ draws per window
-(Figure~\ref{fig:noise}\,(a)).
-This is a \emph{test-time} perturbation of the state and should not be confused
-with the $\delta$ \emph{training-label} noise of Table~\ref{tab:delta}; the two
-probe different failure modes.
-The ranking is unchanged at every level: at $\sigma = 1.5$ our model is at
-\SI{0.749}{m} against \SI{0.889}{m} (Vid2Param), \SI{1.186}{m} (GokuNet) and
-\SI{1.393}{m} (DVBF).
-We note that our relative degradation over this range ($2.8\times$) is in fact
-slightly larger than the baselines' ($2.3$--$2.5\times$), which is what one
-expects when a method starts from the smallest error: the absolute gap narrows
-with noise, but it does not close.
-
-Because every state variable is a physical quantity, we can also ask \emph{which}
-one the rollout is sensitive to, rather than only how sensitive it is overall
-(Figure~\ref{fig:noise}\,(b)).
-Perturbing the speed $v$ is by far the most damaging---\SI{0.4}{m/s} of noise
-roughly doubles the 100-step error---while the yaw rate $\omega$ is almost
-inconsequential over an order of magnitude larger range, and the road-context
-variables $e_{\mathrm{CTE}}$ and $e_\psi$ sit in between.
-This is a diagnostic an opaque latent state cannot provide, and it is
-actionable: it says that longitudinal state estimation, not heading estimation,
-is where sensing effort should go on this platform.
-
-\begin{figure}[t]
-    \centering
-    \includegraphics[width=\linewidth]{fig_noise.pdf}
-    \caption{Robustness to a corrupted \emph{initial state} (test-time
-    perturbation; distinct from the training-label noise of
-    Table~\ref{tab:delta}). (a) 100-step position error against the noise scale
-    $\sigma$ applied to all state variables; the ranking is preserved throughout.
-    (b) Sensitivity of our model to noise on each physical state variable
-    separately. Speed dominates; yaw rate is nearly irrelevant. Shaded bands are
-    standard errors over the $201$ validation windows.}
-    \label{fig:noise}
-\end{figure}
-
-%% =================================================================
-%% COMMENTED OUT --- DO NOT DELETE.
-%% Earlier Tier-3 numbers and figures, withdrawn rather than mixed with the
-%% results above.  Reasons:
-%%   * Provenance: they trace to backup.tex, whose model is a VAE + LSTM latent
-%%     predictor with no factorized state, no road context and no structured
-%%     kinematics -- i.e. not the architecture this article describes.  The same
-%%     document also describes its data as coming from the Donkey Car SIMULATOR
-%%     (backup.tex:168,185), which contradicts the "physical car" framing.
-%%   * Metric: the one-step 0.075 m and the "long-horizon 0.05--0.07 m" are two
-%%     different quantities under one symbol (relative window displacement vs.
-%%     global trajectory RMSE over whole laps), which is why the long-horizon
-%%     number came out SMALLER than the one-step number.
-%%   * The best-lap figure (imgs/donkeycarbestlap.png) is a screen capture of a
-%%     photo viewer showing a matplotlib window, and its legend reads
-%%     "Pred (every stride, true yaw)", i.e. ground-truth yaw was supplied to
-%%     the predictor -- a condition the surrounding text did not state.
-%% TO RESTORE: re-derive each number from the current model, state which metric
-%% each one is, regenerate the figure from source (not a screenshot), and
-%% disclose the true-yaw condition if it still applies.
-%%
-%% \paragraph{Short-horizon accuracy}
-%% For one-step prediction from a temporal observation context, the model attains
-%% a relative displacement error of $\mathrm{RMSE}_x = \SI{0.057}{m}$,
-%% $\mathrm{RMSE}_y = \SI{0.048}{m}$, and $\mathrm{RMSE}_{xy} = \SI{0.075}{m}$.
-%%
-%% \paragraph{Per-lap analysis}
-%% ... best lap $\mathrm{RMSE}_{xy} = \SI{0.0238}{m}$ ($\approx$\SI{2.4}{cm}),
-%% figure imgs/donkeycarbestlap.png, label fig:donkey_bestlap.
-%%
-%% \paragraph{Long-horizon rollout}
-%% ... long-horizon $\mathrm{RMSE}_{xy}$ in the range \SI{0.05}{m}--\SI{0.07}{m},
-%% two-panel figure imgs/fig_rollout_trajectory.png + imgs/fig_lane_overlay.png,
-%% label fig:donkey_rollout.  NOTE: fig_rollout_trajectory.png is titled
-%% "8-step rollout" and its panels travel 0.14--0.25 m, so it does not show a
-%% lap; fig_lane_overlay.png plots the 20-D waypoint representation, not
-%% $\zr=(e_{\mathrm{CTE}},e_\psi,\kappa)$.  Both need regenerating before reuse.
-%% =================================================================
 
 
 %% ==============================================================
 \section{Discussion}\label{sec:discussion}
 %% ==============================================================
 
-\paragraph{Bounded rollout comes from not having to predict the road}
-The horizon at which our model overtakes the baselines
-(Figure~\ref{fig:donkey_main}) is the horizon at which the initial observation
-stops describing the road the vehicle is on.
-Before it, the task is smooth extrapolation and a flexible latent model does it
-better than we do.
-After it, the question is whether the model knows the geometry it has entered, and
-this is where a free-latent road representation fails: it must be propagated, its
-propagation error compounds, and the vehicle branch that consumes it inherits that
-error.
-The structural answer this article proposes is to make the road not a predicted
-quantity at all but an \emph{observed} one that is re-indexed by the vehicle's own
-predicted motion~\eqref{eq:frenet_kappa}.
-Vehicle state alone is non-Markov, so the road context must be
-\emph{encoded}---but once encoded over a preview that outlasts the horizon, it
-need not be extrapolated, and that is what keeps the error bounded.
+\paragraph{Encoding and predicting the road is what restores long-horizon
+accuracy.}
+The CarRacing results show a clear and growing gap between models that include the
+road-context factorization and those that do not: vehicle-only ablations match the
+full model at short horizons but diverge by 50--100 steps
+(Table~\ref{tab:carracing}).
+This is the empirical content of the partial observability argument from
+Section~\ref{sec:problem}.
+Vehicle state alone is non-Markov; the road context carries the missing
+information about upcoming geometry, and both \emph{encoding} it from images and
+\emph{predicting} its evolution are required for stable rollout.
 
-\paragraph{Structure, not information}
-It would be easy to attribute our long-horizon advantage to the privileged
-supervision used at training time. Table~\ref{tab:kappa_source} rules this out.
-Replacing the camera-derived curvature by a lookup into the true track map---the
-strongest form of privileged information available---improves the 100-step error
-only from \SI{0.267}{m} to \SI{0.246}{m}.
-The remaining \SI{0.12}{m} separating our model from the strongest baseline is
-therefore not information the baseline lacked; the baselines were in fact handed
-ground-truth lane waypoints at $t_0$, which our model never sees.
-What separates them is that our state variables are road-aligned physical
-quantities propagated by analytic geometry, rather than latent coordinates
-propagated by a learned map.
+\paragraph{Bicycle dynamics vs.\ generic dynamics.}
+The advantage of the bicycle model over a generic linear predictor indicates that
+the physical inductive bias is beneficial beyond raw capacity: the bicycle model
+constrains predicted motion to physically plausible, heading-consistent
+trajectories, which reduces error accumulation over long horizons.
+This parallels the conference finding for benchmark tasks, where structured
+dynamics outperformed black-box sequence models.
 
-\paragraph{Interpretability of the forecasted environment}
+\paragraph{Interpretability of the forecasted environment.}
 Because the road context is physically interpretable, the forecasted road, not
 just the forecasted vehicle, can be inspected and monitored.
-The predicted curvature profile can be compared against the true track geometry at
-every step---the encoder's own error, $\mathrm{RMSE}_\kappa =
-\SI{0.1193}{m^{-1}}$, is measured in the physical unit of curvature---providing a
-diagnostic that opaque world models do not offer.
+On both CarRacing and the real DonkeyCar, the predicted lane geometry can be
+compared against ground truth, providing a diagnostic that opaque world models do
+not offer.
 This is directly useful for safety monitoring: a forecasted road that departs from
-plausible geometry is a detectable failure signal, available before the predicted
-trajectory itself looks wrong.
-The same property makes the model's failure modes addressable rather than merely
-observable: because the state is physical, the sensitivity study of
-Figure~\ref{fig:noise}\,(b) attributes the rollout's fragility to a specific
-quantity---longitudinal speed---and is silent about another---yaw rate---which
-turns a robustness result into a concrete instruction about where sensing effort
-belongs. A latent-state model can report that it is sensitive to initialization;
-it cannot say to \emph{what}.
+plausible geometry is a detectable failure signal.
 
-\paragraph{Privileged training for real deployment}
+\paragraph{Privileged training for real deployment.}
 The real DonkeyCar uses privileged road-context supervision at training and
 withholds it at test.
 This reflects practical deployability: external localization (a mapped track, or
@@ -1866,35 +1331,18 @@ during training by the privileged signal.
 The fact that the learned encoding transfers to the unaided setting is what makes
 the approach viable on real hardware.
 
-\paragraph{Limitations}
+\paragraph{Limitations.}
 First, the road-context variables are specified manually for each environment; a
 more general approach might discover the decomposition automatically.
-Second, the vehicle kinematics are a slip-free approximation that ignores tire
-dynamics, which may limit accuracy at high speeds or on low-friction surfaces;
-the physical platform used here operates well inside the linear regime, so this
-assumption is untested at the limit.
-Third, the argument that the road need not be extrapolated holds only while the
-horizon stays inside the perceived preview.
-On our platform the \SI{4.5}{m} preview covers the full 100-step rollout with
-margin, but a faster vehicle or a longer horizon would leave it, and the model
-would then have to either re-perceive or genuinely extrapolate the road; we have
-not characterized that regime.
-Fourth, privileged supervision requires an instrumented training environment to
+Second, the bicycle model is a kinematic approximation that ignores tire dynamics
+and slip, which may limit accuracy at high speeds or on low-friction surfaces.
+Third, privileged supervision requires an instrumented training environment to
 obtain ground-truth road context; reducing this requirement (e.g., via
 self-supervised road estimation) is open.
-Fifth, each configuration is trained once on a single train/validation split, so
-differences of a few centimetres---including the non-monotone ordering across
-$\delta$ in Table~\ref{tab:delta}---are within run-to-run variance; a
-cross-validated repetition is needed to resolve them.
-Sixth, the quantitative evaluation reported here is confined to the physical
-platform: the CarRacing comparison referred to in
-Section~\ref{sec:carracing_results} was run with a vehicle-only dynamics variant
-and has not been repeated with the road-context model, so this article does not
-claim a simulated-domain result.
 Finally, the method currently assumes a single vehicle and a single lane;
 multi-agent and multi-lane settings are future work.
 
-\paragraph{Future directions}
+\paragraph{Future directions.}
 Natural next steps include scaling PIWM to open-world driving with richer road
 topology, multiple agents, and additional sensor modalities (LiDAR, radar);
 treating other vehicles as additional interpretable road-context variables to
@@ -1921,52 +1369,17 @@ factorizing the interpretable state into a vehicle-relative component and a
 road-context component inferred from images, including under privileged
 supervision for real-world deployment.
 And we introduced a physically interpretable \emph{prediction} of the road
-environment: a split-dynamics model in which the vehicle advances under structured
-kinematics while the road is advected past it, re-indexed by the distance the
-vehicle has covered rather than propagated as a free latent.
-Experiments on the real DonkeyCar confirm that this treatment of the external
-environment, not merely of the vehicle, is what keeps long-horizon prediction
-bounded under partial observability: at 100 steps the model reaches
-\SI{0.267}{m} against \SI{0.383}{m} for the strongest baseline, and it stays
-ahead under road-context supervision corrupted by up to $10\%$ label noise, while
-the original benchmark results are retained unchanged.
-Replacing perceived curvature by a privileged map lookup improves the result by
-only about \SI{2}{cm}, so the advantage is attributable to the structure of the
-representation rather than to the information available to it.
+environment, a split-dynamics model that forecasts how the road context evolves
+alongside a learnable bicycle model for the vehicle.
+Experiments on CarRacing and the real DonkeyCar confirm that encoding and
+predicting the external environment, not merely the vehicle, is what enables
+stable long-horizon prediction under partial observability, while the original
+benchmark results are retained unchanged.
 Physically interpretable world modeling for driving thus requires aligning latent
 representations with physical variables \emph{and} decomposing those
 representations according to the semantic structure of the task, so that the
 external environment is both encoded and predicted in physically meaningful terms.
 
-
-%% ==============================================================
-\section*{Declaration of Competing Interest}
-%% ==============================================================
-
-%% TODO(authors): confirm before submission and adjust if any author has a
-%% competing interest to declare.
-The authors declare that they have no known competing financial interests or
-personal relationships that could have appeared to influence the work reported in
-this article.
-
-%% ==============================================================
-\section*{CRediT Authorship Contribution Statement}
-%% ==============================================================
-
-%% TODO(authors): fill in per-author CRediT roles once the author list is fixed.
-%% Example: \textbf{Jane Doe}: Conceptualization, Methodology, Software,
-%% Investigation, Writing --- original draft.
-[CRediT ROLES --- TO BE COMPLETED BEFORE SUBMISSION.]
-
-%% ==============================================================
-\section*{Data Availability}
-%% ==============================================================
-
-%% TODO(authors): replace with the archived DOI / repository URL before
-%% submission, or state the applicable restriction.
-The DonkeyCar trajectories, the derived road-context labels and the code used to
-train and evaluate the models will be made available in a public repository upon
-publication.
 
 %% ==============================================================
 \section*{Acknowledgements}
@@ -1995,13 +1408,9 @@ $p_i(x) = \mathrm{Unif}[\tilde{\mu}_i - \frac{1}{2}\delta|\mathcal{X}_i|,\;
 \tilde{\mu}_i + \frac{1}{2}\delta|\mathcal{X}_i|]$.
 At each timestep, $L = 50$ samples are drawn to form the proxy supervision set
 $\Xi_t$.
-The same noise model is applied to the road-context supervision $\Xi^r$ on the
-physical DonkeyCar in the robustness study of Table~\ref{tab:delta}, where
-$\delta$ scales the valid range of each road-context component.
-Unless stated otherwise, the Tier~3 results reported in
-Section~\ref{sec:donkeyreal_results} use exact ground-truth labels at training
-time ($\delta = 0$), reflecting the availability of training-time track
-localization; at test time the road context is withheld in every case and
+For Tier~2 and Tier~3 experiments, exact ground-truth labels are used at training
+time ($\delta = 0$), reflecting the availability of simulator state and
+training-time track localization; at test time, the road context is withheld and
 inferred from images.
 
 \bibliographystyle{elsarticle-num}

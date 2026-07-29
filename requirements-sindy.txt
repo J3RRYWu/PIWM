@@ -1,0 +1,22 @@
+# PIWM SINDYc 环境(.venv-sindy) —— 只用来跑 pysindy 相关的东西
+#
+# 为什么要单独一个环境:pysindy 的 C 扩展与 torch+cuda 同进程会段错误(踩过坑),
+# 所以这里装 **CPU 版 torch**,和主环境 .venv 的 CUDA torch 隔离开。
+#
+# 建立方式(从 piwm/ 运行):
+#   <py311> -m venv .venv-sindy
+#   .venv-sindy/Scripts/python.exe -m pip install -r requirements-sindy.txt
+#   .venv-sindy/Scripts/python.exe -m pip install --index-url https://download.pytorch.org/whl/cpu torch
+#
+# 用途(只有这两件事需要它):
+#   1. 重新拟合 SINDYc:  src/train/train_baselines_donkey.py --variant sindyc  (第 316 行 lazy import pysindy)
+#   2. 反序列化 checkpoints/sindyc_lane_donkey/model.pkl 并刷新曲线缓存:
+#        .venv-sindy/Scripts/python.exe src/eval_stability_log.py
+#      → 写出 figures/_sindyc_curve.npy,主环境的 paper_figures.py 只读这个缓存。
+
+numpy
+scipy
+matplotlib
+pillow
+tqdm
+pysindy

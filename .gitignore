@@ -37,8 +37,8 @@ __pycache__/
 .mypy_cache/
 .ruff_cache/
 
-# Virtual environments
-.venv/
+# Virtual environments (.venv = main/CUDA, .venv-sindy = CPU+pysindy; see README)
+.venv*/
 venv/
 env/
 
@@ -58,3 +58,10 @@ Thumbs.db
 figures/*.png
 # 论文参考(大 pdf/zip)
 papers/
+
+# LaTeX build artifacts
+*.spl
+*.blg
+*.fls
+*.fdb_latexmk
+*.synctex.gz
