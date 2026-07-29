@@ -78,6 +78,7 @@ python src/train/train_baselines_donkey.py --variant dvbf --K 32 --suffix _delta
 | `checkpoints/frenet/dyn_k16_delta10.tar` | Frenet δ=10% |
 | `checkpoints/frenet/kappa_scratch.tar` | **κ 感知编码器(原生从零,最优)** |
 | `checkpoints/frenet/kappa_{finetune,frozen}.tar` | κ 编码器消融(v6 warmstart / 冻结) |
+| `checkpoints/frenet/kappa_vqformer.tar` | **VQ-512 + Transformer 编码器**(论文 Table 2 的 baseline 行) |
 | `checkpoints/{dvbf,goku,v2p}_lane_donkey_longK/` | 基线 δ=0(忠实 batch 128/64) |
 | `checkpoints/{dvbf,goku,v2p}_lane_donkey_delta5/` | 基线 δ=5% |
 | `checkpoints/sindyc_lane_donkey/model.pkl` | SINDYc(发散基线) |
@@ -208,8 +209,11 @@ oracle(地图) 0.246 | GT-profile(完美感知) 0.263 | **scratch encoder 0.267*
 - **未完的技术债**:
   1. decoder 仍依赖 v6 + `FrenetBridge`(把 Frenet 状态转回 20 航点表示),这正是论文要反对的表示
      → 建议做一个原生 `[d, ψₑ, κ-profile] → 图像` 的 decoder,彻底去掉 v6。
-  2. 正文 §5.1 仍写 extrinsic **VQ-VAE(512 码本) + Transformer 物理编码器**(沿用会议版结论),
-     而 Frenet 线实际用的是 CNN 主干 + 线性 κ 头。**要么改叙述,要么补实验**。
+  2. ✅ **已解决(7-28)**:正文 §5.1 声称的 VQ-VAE + Transformer 编码器已**实现并训练**
+     (`src/models/road_perception_vqformer.py`,`train_kappa_perception.py --arch vqformer`)。
+     同等容量 + 4 倍 epoch + 码本健康,仍然两个指标都差(κ-RMSE 0.1897 vs 0.1193,
+     E_xy@100 0.275 vs 0.267)→ CNN 留在论文,VQ+Transformer 作为 baseline 写进 Table 2。
+     ⚠️ 朴素 VQ 会码本塌缩(12/512),必须用数据相关初始化 + 死码复活,否则结论不成立。
   3. CarRacing 的定量对比已在正文里注释掉(原表把纯车辆模型 `PIWM-bicycle-v4` 标成了
      "PIWM (ours, full)",而真正带道路的 `PIWM-lane-v5` 被删且成绩最差)。详见期刊 HANDOFF §4。
 

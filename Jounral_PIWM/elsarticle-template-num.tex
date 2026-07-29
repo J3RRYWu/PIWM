@@ -802,7 +802,7 @@ A high-level overview is shown in Figure~\ref{fig:arch}.
     \node[vis] (img) at (0,0)    {$y_{t-k+1:t}$\\[1pt]\scriptsize onboard images};
     \node[vis] (ev)  at (3.2,0)  {vision encoder\\$\mathcal{E}_v$};
     \node[phy] (ep)  at (7.0,0)  {physical encoder $\mathcal{E}_p$\\[1pt]
-                                  \scriptsize Transformer over window $k$};
+                                  \scriptsize over a window of $k$ frames};
     \node[st]  (zs)  at (11.4,0) {$\zstar_t=[\zv_t,\;\zr_t]$\\[2pt]
         \scriptsize $\zv=(x_{\mathrm{rel}},y_{\mathrm{rel}},\psi_{\mathrm{rel}})$\\
         \scriptsize $\zr=(e_{\mathrm{CTE}},e_\psi,\kappa)$};
@@ -885,14 +885,31 @@ $\zstar = \mathcal{E}_p(z)$, optimizing:
     + \lambda_{\mathrm{latent}}\,\mathcal{L}_{\mathrm{recon}}\!\left(z,
     \mathcal{D}_p(\zstar)\right).
 \end{equation}
-The physical encoder $\mathcal{E}_p$ is implemented as a Transformer over the
-temporal latent sequence (Section~\ref{sec:encoding}), with mean pooling and
-linear projection to the factorized state $\zstar = [\zv, \zr]$.
+The physical encoder $\mathcal{E}_p$ maps the temporal latent sequence to the
+factorized state $\zstar = [\zv, \zr]$ (Section~\ref{sec:encoding}).
 
-The conference paper's systematic comparison showed that the extrinsic approach
-with a discrete (VQ) latent consistently yields the strongest physical grounding
-and prediction accuracy; we adopt this configuration as the primary model for the
-driving experiments.
+\paragraph{Which encoder for driving}
+The conference paper's systematic comparison found that the extrinsic approach
+with a discrete (VQ) latent gave the strongest physical grounding and prediction
+accuracy, and it would be natural to carry that configuration over here.
+We do not, and the reason is worth stating rather than glossing: that comparison
+was run on \emph{fully observable} benchmarks, where the quantity to be encoded is
+the controlled body's own state and a single frame nearly determines it.
+The road-context encoder faces a different problem---reading the geometry of the
+scene ahead out of a short, partially informative image window---so the conference
+ranking is an extrapolation, not a result.
+We therefore tested it directly, implementing the claimed configuration (per-frame
+convolutional encoder, a $512$-entry VQ bottleneck, and a Transformer with
+self-attention over the temporal window) at matched capacity and training it to
+convergence on the same data as the encoder we ship.
+It is worse on both the perception task and the downstream rollout, by
+\SI{0.071}{m^{-1}} of curvature error and \SI{8}{mm} of 100-step position error
+(Table~\ref{tab:kappa_source}).
+The driving experiments therefore use a convolutional encoder over the stacked
+window with a linear curvature head, trained from scratch on the road-context
+objective; the VQ--Transformer variant is reported as a baseline.
+Section~\ref{sec:donkeyreal_results} returns to why the two differ so much less
+downstream than they do at perception.
 
 \paragraph{Interpretability loss}
 For all variants, alignment between the encoded state and the physical variables
@@ -942,12 +959,15 @@ We condition the physical encoder on a history of visual latents:
     \label{eq:temporal_encoder}
 \end{equation}
 where $k$ is the context-window length.
-The Transformer-based physical encoder handles variable-length temporal inputs
-via self-attention, allowing it to aggregate motion and appearance cues across
-frames: as the vehicle advances, the road geometry that was previously seen far
-ahead becomes the geometry the vehicle is on, so a temporal window disambiguates
-cross-track error, heading error, and curvature that a single frame leaves
-ambiguous.
+Conditioning on a window rather than a frame is what makes the road context
+identifiable: as the vehicle advances, geometry that was previously seen far ahead
+becomes the geometry the vehicle is on, so the window supplies the parallax and
+motion cues that disambiguate cross-track error, heading error and curvature,
+which a single frame leaves ambiguous.
+In practice we realize $\mathcal{E}_p$ convolutionally, with the $k$ frames of the
+window entered as input channels and a linear curvature head on the pooled
+features; a self-attention alternative over the same window was evaluated and did
+not help (Table~\ref{tab:kappa_source}).
 The encoder produces both components jointly but supervises them separately
 through~\eqref{eq:interp_loss_drive}, ensuring $\zr_t$ carries genuine
 environmental information rather than being absorbed into the vehicle component.
@@ -1641,29 +1661,61 @@ The entire cost of replacing a map lookup by a camera is therefore about
 beats the strongest baseline by $1.4\times$.
 The advantage is thus attributable to the \emph{structure} of the representation,
 not to privileged information.
-The ablation also shows that the encoder is best trained from scratch: warm-starting
-its backbone from the pretrained visual encoder of the conference model is
-slightly worse (\SI{0.274}{m}) and freezing that backbone is clearly worse
-(\SI{0.290}{m}), indicating that features tuned for image reconstruction are not
-the features needed to read road curvature.
+
+The same table settles two architecture questions.
+First, the encoder is best trained from scratch on the road-context objective:
+warm-starting its backbone from the pretrained visual encoder of the conference
+model is slightly worse (\SI{0.274}{m}) and freezing that backbone is clearly
+worse (\SI{0.290}{m}), so features tuned for image reconstruction are not the
+features needed to read road curvature.
+Second, the discrete-latent, self-attention configuration that the conference
+paper found strongest on fully observable benchmarks does \emph{not} transfer to
+this task: at matched capacity and four times the training budget, and with a
+healthy codebook (roughly $270$ of $512$ entries in active use), the
+VQ--Transformer encoder reaches only $\mathrm{RMSE}_\kappa =
+\SI{0.190}{m^{-1}}$ against \SI{0.119}{m^{-1}} for the convolutional encoder.
+
+The most informative thing about Table~\ref{tab:kappa_source}, however, is how
+weakly perception quality propagates.
+Curvature error varies by a factor of two across the four camera-only rows
+(\SI{0.119}{}--\SI{0.237}{m^{-1}}) while the resulting 100-step position error
+varies by \SI{2.3}{cm} (\SI{0.267}{}--\SI{0.290}{m}); the VQ--Transformer encoder
+is $59\%$ worse at reading curvature yet only \SI{8}{mm} worse at predicting
+position.
+This is the clearest evidence we have for the article's central claim.
+If the rollout depended on continuously estimating the road, a $59\%$ worse
+estimate would compound over $100$ steps.
+It does not, because the road enters the dynamics as a fixed preview that is
+re-indexed geometrically~\eqref{eq:frenet_kappa} rather than integrated: errors in
+$\hat{\kappa}$ perturb the trajectory, but they do not accumulate in it.
+The corollary is practical---effort spent sharpening road perception has sharply
+diminishing returns here, and the remaining error is dominated by the vehicle
+branch, consistent with the sensitivity analysis below.
 
 \begin{table}[t]
 \centering
 \caption{Where the curvature comes from. All rows use the identical dynamics and
-differ only in the source of $\kappa$; $E_{xy}(100)$ in metres on the physical
-DonkeyCar. Only the third row is a deployable model---the first two are
-privileged upper bounds, and the last two are training variants of the encoder.}
+differ only in how $\kappa$ is obtained. $\mathrm{RMSE}_\kappa$ is the encoder's
+own curvature error in \si{m^{-1}} and $E_{xy}(100)$ the resulting 100-step
+position error in metres, both on the physical DonkeyCar. The first two rows are
+privileged upper bounds, not deployable models; the remaining four read the front
+camera alone and differ only in encoder architecture or initialization. Note how
+little of the wide spread in perception quality survives into the rollout: a
+factor of two in $\mathrm{RMSE}_\kappa$ becomes \SI{2.3}{cm} in $E_{xy}(100)$.}
 \label{tab:kappa_source}
 \footnotesize
-\begin{tabular}{llr}
+\setlength{\tabcolsep}{4.5pt}
+\begin{tabular}{llrr}
 \toprule
-Source of $\kappa$ & Information used & $E_{xy}(100)$ \\
+Source of $\kappa$ & Input & $\mathrm{RMSE}_\kappa$ & $E_{xy}(100)$ \\
 \midrule
-Known track map                 & privileged (map + pose)  & 0.246 \\
-Ground-truth profile            & privileged (perfect perception) & 0.263 \\
-\textbf{Encoder, from scratch}  & \textbf{front camera only} & \textbf{0.267} \\
-Encoder, warm-started backbone  & front camera only & 0.274 \\
-Encoder, frozen backbone        & front camera only & 0.290 \\
+Known track map            & map $+$ pose  & ---   & 0.246 \\
+Ground-truth profile       & true $\kappa$ & ---   & 0.263 \\
+\midrule
+\textbf{CNN, from scratch} & \textbf{camera} & \textbf{0.119} & \textbf{0.267} \\
+CNN, warm-started backbone & camera & 0.122 & 0.274 \\
+VQ\,$+$\,Transformer       & camera & 0.190 & 0.275 \\
+CNN, frozen backbone       & camera & 0.237 & 0.290 \\
 \bottomrule
 \end{tabular}
 \end{table}

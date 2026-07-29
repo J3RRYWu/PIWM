@@ -83,16 +83,23 @@ def main():
         m = RoadContextEncoder(n_offsets=len(offsets), freeze_backbone=True)
         m.load_state_dict(load_checkpoint(path)["model"]); m.eval()
         encs[tag] = m
+    # optional: the VQ + Transformer architecture the paper's Sec. 5.1 claims.
+    # Present only once trained (train_kappa_perception.py --arch vqformer).
+    _vqp = "checkpoints/frenet/kappa_vqformer.tar"
+    if os.path.exists(_vqp):
+        from models.road_perception_vqformer import RoadContextVQFormer
+        m = RoadContextVQFormer(n_offsets=len(offsets))
+        m.load_state_dict(load_checkpoint(_vqp)["model"]); m.eval()
+        encs["vqformer"] = m
 
     files = sorted(f for f in glob.glob(os.path.join(FRENET_DIR, "*.npz")) if "_meta" not in f)
     val_eps = val_split(files)
     print(f"val segs: {sorted(val_eps)}")
 
     # rows: (dynamics, kappa-source)
-    rows = [("map-trained", "oracle"), ("map-trained", "GT-profile"),
-            ("map-trained", "scratch"), ("map-trained", "finetune"), ("map-trained", "frozen"),
-            ("profile-tuned", "oracle"), ("profile-tuned", "GT-profile"),
-            ("profile-tuned", "scratch"), ("profile-tuned", "finetune"), ("profile-tuned", "frozen")]
+    _ksrc = ["oracle", "GT-profile", "scratch", "finetune", "frozen"] + \
+            (["vqformer"] if "vqformer" in encs else [])
+    rows = [(d, k) for d in ("map-trained", "profile-tuned") for k in _ksrc]
     res = {r: [] for r in rows}
     nwin = 0
     for ep in sorted(val_eps):

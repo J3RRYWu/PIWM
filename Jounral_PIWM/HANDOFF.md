@@ -117,7 +117,7 @@ Elsevier Editorial Manager 上传时会把文件拍平，外部路径必然失�
 | 表/图 | 生成脚本 | 验证状态 |
 |---|---|---|
 | Table 1 主表 | `src/eval_frenet_vs_baselines.py` | ✅ 实跑，5 个模型 × 3 个 horizon 全对 |
-| Table 2 κ 消融 | `scripts/compare_kappa_rollout.py` | ✅ 实跑，5 行全对 |
+| Table 2 κ 消融 | `scripts/compare_kappa_rollout.py` | ✅ 实跑，5 行全对；第 6 行(VQ+Transformer)为本轮新增 |
 | Table 3 / Fig 6 δ 噪声 | `scripts/fig_delta_supervision.py` | ✅ 实跑，6 格全对 |
 | Fig 5 / Fig 7 | `src/paper_figures.py` | ✅ 我重生成，且与 Table 1 同源 |
 
@@ -185,9 +185,25 @@ Elsevier Editorial Manager 上传时会把文件拍平，外部路径必然失�
 | privileged 监督，测试withhold | 训练用地图 κ，测试用相机 ✓ |
 | 解析运动学 + 少量学习项 | 位姿方程解析，只学 `dv_net`/`dom_net` + 小残差 ✓ |
 
-**仍未对齐的**：正文 §5.1 仍写 extrinsic **VQ-VAE（512 码本）+ Transformer 物理编码器**（沿用会议版结论），
-而 Frenet 那条线的编码器是 CNN 主干 + 线性 κ 头。**要么把 §5.1 对 driving 的表述改成实际用的编码器，
-要么补一次 VQ/Transformer 版本的实验**。这是目前最后一处叙述/实现不一致。
+✅ **§5.1 那处也在 2026-07-28 解决了 —— 而且是用实验解决的，不是改措辞。**
+
+旧版正文声称 driving 用会议版最强配置（extrinsic **VQ-VAE 512 码本 + Transformer 物理编码器**），
+而实际编码器是 CNN + 线性 κ 头。我们**把声称的那套实现出来并真的训了**
+（`src/models/road_perception_vqformer.py`，逐帧 CNN → VQ-512 → 3 层 Transformer）：
+
+| | κ-RMSE (1/m) | E_xy@100 (m) | 参数 | epoch |
+|---|---|---|---|---|
+| **CNN + 线性头（论文采用）** | **0.1193** | **0.267** | 1.76M | 25 |
+| VQ + Transformer（作为 baseline 写进 Table 2） | 0.1897 | 0.275 | 1.59M | 100 |
+
+同等容量、**4 倍训练预算**、码本健康（~270/512 有效码）、已收敛（最好值在 ep43，之后平台期），
+两个指标都更差。所以正文现在的说法是：**会议版的 VQ 结论是在全局可观测基准上得到的，
+外推到 driving 不成立，我们实测了**。checkpoint 在 `checkpoints/frenet/kappa_vqformer.tar`。
+
+> ⚠️ **第一次跑这个实验的结果是废的,别引用**:朴素 VQ（`uniform ±1/512` 初始化、无死码复活）
+> 码本塌到 12/512、aux loss 前期暴涨 30 倍、25 epoch 远未收敛,得到 κ-RMSE 0.3487。
+> 修法是**数据相关初始化 + 死码复活**(见 `road_perception_vqformer.py` 里 `VectorQuantizer` 的注释),
+> 修完 perplexity 12→273。拿塌掉的码本去下结论，等于我们这轮一直在清除的那种不公平比较。
 
 ---
 
@@ -211,7 +227,7 @@ Elsevier Editorial Manager 上传时会把文件拍平，外部路径必然失�
 
 - [ ] **填作者块**。`.tex` 里现在是显眼的占位符 `[AUTHOR LIST --- TO BE COMPLETED BEFORE SUBMISSION]`，
       上方注释里有会议版作者名可参考。同时填 CRediT、确认 Competing Interest、Data Availability 的仓库地址。
-- [ ] **§5.1 编码器叙述对账**（见 §5 最后一段）——VQ+Transformer vs 实际的 CNN+线性头。
+- [x] ~~§5.1 编码器叙述对账~~ **已完成 2026-07-28**，用实验解决（见 §5）。
 - [x] ~~用 fresh 基线重跑 `src/paper_figures.py`~~ **已完成 2026-07-28**：
       三张图全部用 fair 基线重生成，`fig_main.pdf` 和 `fig_noise.pdf` 已进正文（Fig 5 / Fig 7）。
       同时修了 `paper_figures.py` 的一个实质 bug —— 它原来画的是 **oracle（查地图 κ，特权）** 模型

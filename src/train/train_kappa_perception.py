@@ -20,6 +20,7 @@ from torch.utils.data import Dataset, DataLoader, Subset
 from tqdm import tqdm
 
 from models.road_perception import RoadContextEncoder
+from models.road_perception_vqformer import RoadContextVQFormer
 from lane_utils import LANE_FRAME_STACK as FS
 from utils import load_checkpoint
 
@@ -75,7 +76,7 @@ def evaluate(model, loader, offsets):
     return rmse
 
 
-def run(mode, save, epochs, backbone_ckpt):
+def run(mode, save, epochs, backbone_ckpt, arch="cnn"):
     ds = KappaFrameDataset()
     offsets = np.load(_os.path.join(DATA, "_meta", "stats.npz"))["kappa_offsets"]
     tr, va, val_eps = split(ds)
@@ -83,37 +84,56 @@ def run(mode, save, epochs, backbone_ckpt):
     trl = DataLoader(tr, batch_size=128, shuffle=True, drop_last=True, num_workers=0)
     val = DataLoader(va, batch_size=256, shuffle=False, num_workers=0)
 
-    model = RoadContextEncoder(n_offsets=ds.n_off, freeze_backbone=(mode == "frozen")).to(DEVICE)
-    if backbone_ckpt.lower() == "scratch":
-        print("backbone: RANDOM init (no v6 warm-start) -- native-from-scratch test")
+    if arch == "vqformer":
+        # per-frame CNN -> VQ(512) -> Transformer over the window. Always trained
+        # from scratch: there is no pretrained VQ/Transformer backbone in this repo,
+        # so --mode / --backbone do not apply and are ignored on purpose.
+        model = RoadContextVQFormer(n_offsets=ds.n_off, frame_stack=FS).to(DEVICE)
+        print("arch=vqformer  (per-frame CNN + VQ-512 + 2-layer Transformer, from scratch)")
+        if mode == "frozen" or backbone_ckpt.lower() != "scratch":
+            print("  note: --mode/--backbone ignored for this arch (nothing to warm-start from)")
     else:
-        # warm-start the backbone from the trained v6 encoder
-        model.load_backbone(load_checkpoint(backbone_ckpt)["encoder"])
+        model = RoadContextEncoder(n_offsets=ds.n_off,
+                                   freeze_backbone=(mode == "frozen")).to(DEVICE)
+        if backbone_ckpt.lower() == "scratch":
+            print("backbone: RANDOM init (no v6 warm-start) -- native-from-scratch test")
+        else:
+            # warm-start the backbone from the trained v6 encoder
+            model.load_backbone(load_checkpoint(backbone_ckpt)["encoder"])
     n_train = sum(p.numel() for p in model.parameters() if p.requires_grad)
-    print(f"mode={mode}  trainable params={n_train}  (head only={sum(p.numel() for p in model.kappa_head.parameters())})")
+    print(f"arch={arch} mode={mode}  trainable params={n_train}  "
+          f"(head only={sum(p.numel() for p in model.kappa_head.parameters())})")
 
-    lr = 1e-3 if mode == "frozen" else 3e-4
+    # same optimizer / schedule / budget for both archs so the comparison is about
+    # architecture rather than tuning
+    lr = 1e-3 if (mode == "frozen" and arch == "cnn") else 3e-4
     opt = torch.optim.Adam([p for p in model.parameters() if p.requires_grad], lr=lr)
     sch = torch.optim.lr_scheduler.ReduceLROnPlateau(opt, patience=3, factor=0.5)
     lossfn = nn.MSELoss()
     best = float("inf")
     for ep in range(epochs):
         model.train(); tot = nb = 0
-        for x, y in tqdm(trl, desc=f"kappa-{mode} {ep+1}/{epochs}"):
+        perp_sum = 0.0
+        for x, y in tqdm(trl, desc=f"kappa-{arch}-{mode} {ep+1}/{epochs}"):
             x, y = x.to(DEVICE), y.to(DEVICE)
             pred = model(x)
             loss = lossfn(pred, y)
+            if arch == "vqformer":
+                loss = loss + model.last_vq_loss        # VQ codebook + commitment
+                perp_sum += float(model.last_perplexity)
             opt.zero_grad(); loss.backward(); opt.step()
             tot += loss.item(); nb += 1
         rmse = evaluate(model, val, offsets)
         score = float(rmse.mean())
         sch.step(score)
-        print(f"  ep{ep+1} train_mse={tot/nb:.4f}  val_RMSE mean={score:.4f}  "
-              f"per-offset={np.round(rmse, 3).tolist()}")
+        extra = f"  codebook_perplexity={perp_sum/max(nb,1):.1f}/{model.vq.n_codes}" \
+                if arch == "vqformer" else ""
+        print(f"  ep{ep+1} train_loss={tot/nb:.4f}  val_RMSE mean={score:.4f}  "
+              f"per-offset={np.round(rmse, 3).tolist()}{extra}")
         if score < best:
             best = score
             os.makedirs(_os.path.dirname(save), exist_ok=True)
-            torch.save({"model": model.state_dict(), "mode": mode,
+            torch.save({"model": model.state_dict(), "mode": mode, "arch": arch,
                         "val_rmse": rmse.tolist(), "offsets": offsets.tolist()}, save)
     print(f"\nBEST val RMSE(mean over offsets) = {best:.4f} 1/m  -> {save}")
     print(f"  offsets (m) = {np.round(offsets, 1).tolist()}")
@@ -121,9 +141,12 @@ def run(mode, save, epochs, backbone_ckpt):
 
 if __name__ == "__main__":
     p = argparse.ArgumentParser()
-    p.add_argument("--mode", choices=["frozen", "finetune"], required=True)
+    p.add_argument("--mode", choices=["frozen", "finetune"], default="finetune")
+    p.add_argument("--arch", choices=["cnn", "vqformer"], default="cnn",
+                   help="cnn = shipped channel-stacked backbone; "
+                        "vqformer = per-frame CNN + VQ-512 + Transformer")
     p.add_argument("--save", required=True)
     p.add_argument("--epochs", type=int, default=25)
     p.add_argument("--backbone", default="checkpoints/piwm_lane_v6_donkey/ae.tar")
     a = p.parse_args()
-    run(a.mode, a.save, a.epochs, a.backbone)
+    run(a.mode, a.save, a.epochs, a.backbone, arch=a.arch)
