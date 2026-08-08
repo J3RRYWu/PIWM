@@ -25,6 +25,15 @@
 \usepackage{url}
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta,positioning,fit,calc,backgrounds}
+%% Without these the document falls back to bitmap (Type 3) EC fonts, which look
+%% ragged on screen, bloat the PDF, and are rejected by some production systems.
+%% Latin Modern is metric-compatible with Computer Modern, so nothing reflows.
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+%% Character protrusion and font expansion: tightens justification, removes most
+%% of the residual overfull boxes, and evens out the greyness of the text block.
+%% Requires scalable fonts, hence lmodern above.
+\usepackage{microtype}
 
 %% Every figure asset lives in imgs/, so this directory is self-contained.
 %% Elsevier's Editorial Manager flattens the uploaded file set, which breaks
@@ -33,6 +42,10 @@
 
 %% Long DOIs/URLs in the bibliography otherwise overflow the text block.
 \emergencystretch=3em
+
+%% Never strand a single line of a paragraph at the top or bottom of a page.
+\widowpenalty=10000
+\clubpenalty=10000
 
 %% The results section is float-dense (3 figures + 3 tables in a few pages).
 %% With LaTeX's defaults (max 2 top floats, max 3 floats/page, >=20% text per
@@ -800,13 +813,13 @@ A high-level overview is shown in Figure~\ref{fig:arch}.
     ]
     %% ---- encoding chain -------------------------------------------
     \node[vis] (img) at (0,0)    {$y_{t-k+1:t}$\\[1pt]\scriptsize onboard images};
-    \node[vis] (ev)  at (3.2,0)  {vision encoder\\$\mathcal{E}_v$};
-    \node[phy] (ep)  at (7.0,0)  {physical encoder $\mathcal{E}_p$\\[1pt]
-                                  \scriptsize over a window of $k$ frames};
-    \node[st]  (zs)  at (11.4,0) {$\zstar_t=[\zv_t,\;\zr_t]$\\[2pt]
+    \node[vis] (ev)  at (3.0,0)  {vision encoder\\$\mathcal{E}_v$};
+    \node[phy] (ep)  at (6.4,0)  {physical encoder $\mathcal{E}_p$\\[1pt]
+                                  \scriptsize window of $k$ frames};
+    \node[st]  (zs)  at (10.1,0) {$\zstar_t=[\zv_t,\;\zr_t]$\\[2pt]
         \scriptsize $\zv=(x_{\mathrm{rel}},y_{\mathrm{rel}},\psi_{\mathrm{rel}})$\\
         \scriptsize $\zr=(e_{\mathrm{CTE}},e_\psi,\kappa)$};
-    \node[blk,fill=black!4] (sup) at (7.0,2.0)
+    \node[blk,fill=black!4] (sup) at (6.4,1.9)
         {privileged road context $\Xi^r$\\[1pt]\scriptsize training time only};
 
     \draw[ar]  (img) -- (ev);
@@ -815,24 +828,24 @@ A high-level overview is shown in Figure~\ref{fig:arch}.
     \draw[dar] (sup) -- (ep);
 
     %% ---- split dynamics: two PARALLEL transitions, one per component ----
-    \node[dyn] (dv) at (4.8,-2.9)  {vehicle transition $\phi_\theta$\\[1pt]
+    \node[dyn] (dv) at (5.5,-2.75) {vehicle transition $\phi_\theta$\\[1pt]
                                     \scriptsize structured kinematics};
-    \node[dyn] (dr) at (4.8,-5.0)  {road transition $f_r$\\[1pt]
+    \node[dyn] (dr) at (5.5,-4.75) {road transition $f_r$\\[1pt]
                                     \scriptsize geometric advection};
     \begin{scope}[on background layer]
         \node[draw=black!35, dash pattern=on 2pt off 1.5pt, rounded corners=3pt,
               inner sep=7pt, fit=(dv)(dr)] (grp) {};
     \end{scope}
-    \node[lbl,anchor=north west] at ($(grp.south west)+(0,-0.1)$) {split dynamics};
-    \node[st]  (zn) at (10.6,-3.95) {$\hat{\zstar}_{t+1}$\\[2pt]
+    \node[lbl,anchor=north] at ($(grp.south)+(0,-0.12)$) {split dynamics};
+    \node[st]  (zn) at (9.6,-3.75) {$\hat{\zstar}_{t+1}$\\[2pt]
         \scriptsize $=[\hat{\zv}_{t+1},\,\hat{\zr}_{t+1}]$};
-    \node[blk,fill=black!4] (act) at (1.0,-2.9) {$a_t$};
+    \node[blk,fill=black!4] (act) at (5.5,-1.48) {$a_t$};
 
     %% z* splits into its two components, one per transition
-    \draw[ar] (zs.south) -- (11.4,-1.45) -- (4.8,-1.45)
-              -- node[right,lbl,pos=0.55]{$\zv_t$} (dv.north);
-    \draw[ar] (4.8,-1.45) -- (-1.1,-1.45) -- (-1.1,-5.0)
-              -- node[above,lbl,pos=0.55]{$\zr_t$} (dr.west);
+    \coordinate (sp) at (2.0,-3.75);
+    \draw[ar] (zs.south) -- (10.1,-0.95) -- (2.0,-0.95) -- (sp);
+    \draw[ar] (sp) |- node[above,lbl,pos=0.72]{$\zv_t$} (dv.west);
+    \draw[ar] (sp) |- node[below,lbl,pos=0.72]{$\zr_t$} (dr.west);
     \draw[ar] (act) -- (dv);
 
     %% coupling: the road is advected by the vehicle's own predicted motion
@@ -843,8 +856,8 @@ A high-level overview is shown in Figure~\ref{fig:arch}.
     \draw[ar] (dr.east) -| (zn.south);
 
     %% next step: the predicted state becomes the current state
-    \draw[dar] (zn.east) -- (13.0,-3.95) -- (13.0,0) -- (zs.east);
-    \node[lbl,rotate=90,anchor=south] at (13.15,-2.6) {autoregressive rollout};
+    \draw[dar] (zn.east) -- (12.2,-3.75) -- (12.2,0) -- (zs.east);
+    \node[lbl,rotate=-90,anchor=south] at (12.35,-1.95) {autoregressive rollout};
     \end{tikzpicture}}
     \caption{Overview of the PIWM architecture for partially observable driving.
     A vision encoder maps each observation to a visual latent; a physical encoder
