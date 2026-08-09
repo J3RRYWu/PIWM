@@ -38,8 +38,9 @@ M.~Alshiekh, R.~Bloem, R.~Ehlers, B.~K{\"o}nighofer, S.~Niekum, U.~Topcu, Safe
 
 \bibitem{piwm_conf}
 Z.~Mao, M.~E. Umasudhan, I.~Ruchkin, Physically interpretable world models via
-  weakly supervised representation learning, arXiv preprint arXiv:2412.12870
-  (2026).
+  weakly supervised representation learning, in: Proceedings of the 17th
+  ACM/IEEE International Conference on Cyber-Physical Systems (ICCPS), Saint
+  Malo, France, 2026, arXiv:2412.12870.
 
 \bibitem{fridovich2020confidence}
 D.~Fridovich-Keil, A.~Bajcsy, J.~F. Fisac, S.~L. Herbert, S.~Wang, A.~D.
