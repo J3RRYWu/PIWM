@@ -1,5 +1,129 @@
 # PIWM 交接文档(换机器继续跑)
 
+> ## ⚠️ 2026-08-08 这一轮的结论会推翻论文主表,先读这一节
+>
+> 分支 `journal-frenet-results`,7 个提交已入,**另有一批改动未提交**(见 §0.6)。
+> 一句话:**论文报的 0.267 m 复现不出来,而且效应量比训练噪声还小。**
+> 但同一轮也做出了一个站得住的模型改进(map-free 几乎免费)。细节见 §0。
+
+## 0. 2026-08-08 轮次纪要
+
+### 0.1 ❌ 主表的头号数字不可复现(已两次独立验证)
+
+用**同一个评估器**(`eval_frenet_vs_baselines` 的 201 个 val 窗口)测同一配置的重训:
+
+| 批次 | 结果 (E_xy@100, 感知 κ) |
+|---|---|
+| 未加种子,3 次 | 0.359 / 0.367 / 0.416 |
+| 加种子后 seed 0/1/2 | 0.383 / 0.506 / 0.346 → **均值 0.412 ± 0.080** |
+| **论文在用的 `dyn_k16.tar`** | **0.267** |
+
+`dyn_k16.tar` 存于 2026-06-19,**早于 Frenet 代码首次提交(06-23)**,且缺 `kappa_mode` 字段
+= 旧版脚本存的。我 diff 过此后 `train_frenet.py` 的全部改动,默认路径(`--kappa_mode map --delta 0`)
+上训练配方没变,所以**无法用"配方不同"解释**,但也无法完全排除(那个版本不在 git 里)。
+
+**含义**:论文主表 ours 0.267 vs 最强基线 0.383,效应量 0.116;而我方单侧跨度就有 ±0.080。
+**主表必须改成 mean ± range,不能再报单次。**
+
+### 0.2 ✅ 模型改进成立:map-free 几乎免费
+
+原来的"pure world model"说法是**夸大**的:`rollout_perceived` 虽然 κ 来自相机,但状态是
+**已知中心线上的 (s,d)**,转成位置还要 `track.npz`。等于预设了一条测绘过的赛道。
+
+修法与结果(全部 201 窗口):
+
+| 位置怎么得到 | @100 |
+|---|---|
+| 感知 κ + 已知中心线(论文现状) | 0.267 |
+| map-free,**积分曲率两次** (`rollout_perceived_local`) | 0.437 |
+| map-free,**直接读形状** (`rollout_perceived_shape`) | 0.307 |
+
+诊断:给**真值 κ** 时积分版仍是 0.414 → **那 15 cm 是二次积分的锅,不是感知**。
+所以让编码器直接预测道路形状(`RoadContextEncoder(predict_shape=True)`,监督来自
+`frenet_track.local_road_points`),位置直接读出、不积分。
+
+**3 seed 配对验证**(同一 `dyn_s{i}` 分别配 `kappa_s{i}` / `shape_s{i}`):
+
+| seed | (a) 有地图 | (c) map-free 形状 | 配对差 |
+|---|---|---|---|
+| 0 | 0.383 | 0.396 | +0.013 |
+| 1 | 0.506 | 0.496 | **−0.011** |
+| 2 | 0.346 | 0.356 | +0.009 |
+
+**配对差均值 +0.004 m** → 去掉地图依赖基本不要钱。之前单次测到的 +0.040 是抽样噪声。
+**这条结论不依赖任何基线数字,可以直接写进论文。**
+
+### 0.3 ❌ 基线三宗罪
+
+1. **保真度**:会议版(ICCPS 2026)把 GokuNet 和 Vid2Param **都**归为 intrinsic(吃观测),
+   DVBF/SINDy 才是跑在共享 AE 隐状态上。本仓库却删了 GOKU 的观测通路、留了 V2P 的
+   → 这就是 V2P 成为"最强基线"的唯一原因。
+2. **V2P 的 θ 会泄漏道路**:θ 从编码器 29 维输出推,而那是 `car(9)+lane(20)`。
+   它不是物理参数,是**道路几何的 8 维压缩**——等于我们方法的粗糙版。
+3. **选择准则失效**:基线按 K=32 归一化复合损失选 checkpoint,我方按 100 步 xy 误差(=报告指标)选。
+   证据:`goku_obs` 与 `v2p` **架构、参数量完全相同(58,220)**,val_loss 0.300 vs 0.290,
+   **@100 却是 0.561 vs 0.384**。选择准则几乎不预测报告指标。
+
+已实现的修正见 §0.5。
+
+### 0.4 ✅ VQ+Transformer 实测:输了,降为 baseline
+
+正文 §5.1 声称用会议版最强配置(VQ-VAE 512 + Transformer)——这是**忠实转述会议版摘要的**。
+实测(`RoadContextVQFormer`,容量对齐 1.59M vs 1.76M,4 倍 epoch,码本健康 273/512,已收敛):
+
+| | κ-RMSE (1/m) | E_xy@100 |
+|---|---|---|
+| CNN + 线性头 | **0.119** | **0.267** |
+| VQ + Transformer | 0.190 | 0.275 |
+
+→ CNN 留在论文,VQ+Transformer 作为 Table 2 的一行 baseline。
+⚠️ 朴素 VQ 会码本塌缩(12/512),必须**数据相关初始化 + 死码复活**,否则结论不成立。
+
+### 0.5 本轮新增/改动的代码
+
+| 文件 | 内容 |
+|---|---|
+| `src/models/frenet_dynamics.py` | 新增 `rollout_perceived_local`(积分 κ)、`rollout_perceived_shape`(读形状,Catmull-Rom 插值) |
+| `src/models/road_perception.py` | `predict_shape=True` + `shape_head` + `forward_both`;形状头输出 `(X−offset, Y)`,**调用方要把 offsets 加回去** |
+| `src/frenet_track.py` | `local_road_points()` 生成形状监督 |
+| `src/models/road_perception_vqformer.py` | **新**:逐帧 CNN → VQ-512 → Transformer(含防塌缩) |
+| `src/baselines/vid2param_kin.py` | **新**:忠实 Vid2Param(5 个物理参数 → 已知运动学) |
+| `src/baselines/shared_dynamics_lane.py` | `DynamicsGOKULane(theta_dim>0)` 恢复观测通路(默认 0,老 checkpoint 照常加载) |
+| `src/train/train_baselines_donkey.py` | 新变体 `goku_obs` / `v2p_kin`;抽出 `_train_obs_conditioned`;`PREDICTS_LANE` 标志 |
+| `src/train/train_*.py` ×3 | **`--seed`**(见 §0.7) |
+| `scripts/eval_mapfree.py` | 地图依赖代价的对照评估 |
+| `reports/repeats/ac_paired_3seeds.md` | (a)(c) 配对结果 |
+
+### 0.6 ⏳ 未完成 / 进行中
+
+- **基线重训 9 次(DVBF/GOKU/V2P × seed 0,1,2)还在跑**,存到 `checkpoints/{v}_lane_donkey_s{0,1,2}/`。
+  截至 08-08 23:57 完成 2/9,预计还要 2.5–3.5 小时。命令:
+  ```
+  .venv/Scripts/python.exe src/train/train_baselines_donkey.py --variant {dvbf|goku|v2p} \
+      --K 32 --suffix _s$SEED --batch 128 --batch_v2p 64 --epochs 60 --seed $SEED
+  ```
+- **忠实 Vid2Param 的 GRU 版训不出来**(试了 3 次,3 个不同病因:后验塌缩 → 修 logvar 无效 →
+  物理先验初始化后 ep1 好转但 ep2 就跳回并卡死)。**改用直接拟合 5 个全局参数**得到可用结果:
+  辨识出轴距 18.0 cm(真值 16.5),`E_xy@100 = 0.553`。GRU 版为什么训不出来仍未解决。
+- **论文尚未按这些结论改动**(用户要求等数据齐了一起改)。
+- 上述改动**未提交**:8 个修改 + 3 个新增。
+
+### 0.7 `--seed` 的设计(重要)
+
+三个训练脚本都加了 `--seed`,**只控制权重初始化和批次顺序**;
+**train/val 划分固定在 `seed=0` 不变**,所以重复实验在同一批验证 episode 上**配对**,
+测出的离散度是纯训练噪声。已验证:同种子两次结果完全一致(0.391/0.391),异种子不同(0.551)。
+
+### 0.8 下一步建议(按优先级)
+
+1. 等基线 9 次跑完 → 出**带误差棒的主表**,回答"0.412±0.080 对上基线还剩多少差距"。
+2. 主表改成 mean ± range;`map-free 形状版`这条可以直接写(§0.2)。
+3. 基线的 checkpoint 选择准则要么改成按报告指标选(和我方一致),要么在论文里披露不对称。
+4. `dyn_k16.tar` 要么弃用改报重训均值,要么说明它是如何得到的(但那个脚本版本不在 git 里)。
+
+---
+
+
 > 最后更新:2026-07-28 · HEAD `b6fb35d` · 远程 `git@github.com:J3RRYWu/PIWM.git`
 >
 > **仓库根在这台机器上是 `C:\Users\suian\OneDrive\桌面\PIWM\`,不是本文档旧版写的 `E:\Desktop\PIWM\`
