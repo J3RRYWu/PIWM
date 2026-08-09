@@ -52,6 +52,12 @@
 
 一键出全部论文图:`.venv/Scripts/python.exe src/paper_figures.py`
 → `figures/fig_{main,noise,stability}.{pdf,png}`(论文用 `.pdf`)。
+
+> **出图前要把 MiKTeX 加进 PATH**:`src/paper_style.py` 开了 `text.usetex`,
+> 图里的字由 LaTeX 排版,和正文用同一套 Latin Modern。没有 LaTeX 就调
+> `paper_style.apply(usetex=False)` 退回到相似的衬线体。
+> 另外图是按 `\textwidth` 的真实尺寸画的(`FIG_W`),所以正文里必须用
+> `width=\linewidth` 引入,声明的 pt 才等于页面上的 pt。
 **所有命令从 `piwm/` 运行**(checkpoint/figures 是 cwd 相对;源码在 `src/`)。
 
 ---

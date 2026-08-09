@@ -1059,7 +1059,10 @@ diagnostic in Section~\ref{sec:results}.
     \draw[color=black!60,line width=0.4pt] (2.15,1.02) arc (0:20:0.8);
     \node[slbl] at (2.52,1.22) {$e_\psi$};
     \draw[dbl] (1.28,0.60) -- (1.28,1.02);
-    \node[slbl,anchor=east] at (1.18,0.81) {$e_{\mathrm{CTE}}$};
+    %% label placed clear of the road band, with a thin leader to the arrow
+    \draw[color=black!50,line width=0.3pt] (1.28,0.81) -- (0.62,1.62);
+    \node[slbl,anchor=south east,color=red!65!black] at (0.66,1.58)
+        {$e_{\mathrm{CTE}}$};
 
     %% ---- curvature of the segment ahead ----------------------------
     \draw[ar,color=black!60] (5.75,1.05) .. controls (5.4,1.35) .. (5.55,1.68);
@@ -1805,7 +1808,9 @@ $E_{xy}(100)$ & 0.267 & 0.334 & 0.253 \\
 
 \begin{figure}[t]
     \centering
-    \includegraphics[width=0.8\linewidth]{fig_delta_supervision.pdf}
+    %% all result figures are authored at \textwidth (see src/paper_style.py), so
+    %% they must be included at \linewidth for declared pt to equal rendered pt
+    \includegraphics[width=\linewidth]{fig_delta_supervision.pdf}
     \caption{Robustness to corrupted road-context supervision. Position error
     against rollout step on the physical DonkeyCar when the labels used to train
     the road-context encoder carry biased uniform noise of relative width

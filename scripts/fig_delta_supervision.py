@@ -17,6 +17,10 @@ from models.frenet_dynamics import FrenetDynamics
 from models.road_perception import RoadContextEncoder
 from lane_utils import LANE_FRAME_STACK as FS
 from utils import load_checkpoint
+# same style as src/paper_figures.py, so this figure cannot drift away from the
+# others in font or size on the page (it used to: bare matplotlib defaults)
+from paper_style import apply as _apply_style, FIG_W
+_apply_style()
 
 K = 100
 ROOT = os.path.join(os.path.dirname(__file__), "..", "..")
@@ -74,18 +78,22 @@ def main():
 
     sty = {"0%": ("#3B33A0", 2.6, "-"), "5%": ("#E8820C", 2.0, "--"), "10%": ("#C0392B", 2.0, ":")}
     steps = np.arange(K + 1)
-    fig, ax = plt.subplots(figsize=(4.2, 3.0), constrained_layout=True)
+    fig, ax = plt.subplots(figsize=(FIG_W, 3.15), constrained_layout=True)
     print(f"\n{'delta':<6} {'xy@50':>8} {'xy@100':>8}")
     for tag, _ in levels:
         E = np.array(res[tag]); m = E.mean(0); se = E.std(0) / np.sqrt(len(E))
         c, lw, ls = sty[tag]
-        ax.plot(steps, m, color=c, lw=lw, ls=ls, label=f"delta={tag} (@100={m[100]:.3f} m)")
+        # tag is "0%" / "5%" / "10%": the per cent sign must be escaped, it starts
+        # a comment once the label is typeset by LaTeX
+        lab = rf"$\delta = {tag.rstrip('%')}\%$   (@100 $=$ {m[100]:.3f} m)"
+        ax.plot(steps, m, color=c, lw=lw, ls=ls, label=lab)
         ax.fill_between(steps, m - se, m + se, color=c, alpha=0.15, lw=0)
         print(f"{tag:<6} {m[50]:>7.3f}m {m[100]:>7.3f}m")
     ax.set_xlabel("rollout step"); ax.set_ylabel("position error (m)")
     ax.set_xlim(0, K); ax.set_ylim(bottom=0)
-    ax.set_title("Frenet (perceived $\\kappa$) under $\\delta$ weak-supervision noise", fontsize=10)
-    ax.grid(alpha=.3); ax.legend(loc="upper left", fontsize=9)
+    # no title: the figure caption in the paper carries it, and a title here would
+    # duplicate it (the other result figures have none either)
+    ax.legend(loc="upper left")
     os.makedirs("figures", exist_ok=True)
     fig.savefig("figures/fig_delta_supervision.png", dpi=150, bbox_inches="tight")
     fig.savefig("figures/fig_delta_supervision.pdf", bbox_inches="tight")

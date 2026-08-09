@@ -32,23 +32,9 @@ from models.road_perception import RoadContextEncoder
 from utils import load_checkpoint
 from eval_frenet_vs_baselines import build_state31, sd2xy, META, FRENET_DIR, K, OFFSETS
 
-# ---------------- publication style ----------------
-mpl.rcParams.update({
-    "font.family": "sans-serif",
-    "font.sans-serif": ["Arial", "Helvetica", "DejaVu Sans"],
-    "font.size": 9, "axes.labelsize": 10, "axes.titlesize": 10,
-    "legend.fontsize": 8.5, "xtick.labelsize": 9, "ytick.labelsize": 9,
-    "axes.linewidth": 0.8, "axes.spines.top": False, "axes.spines.right": False,
-    "lines.linewidth": 1.8, "lines.markersize": 4,
-    "legend.frameon": False, "figure.dpi": 150, "savefig.dpi": 300,
-    "savefig.bbox": "tight", "pdf.fonttype": 42, "ps.fonttype": 42,
-    "axes.grid": True, "grid.alpha": 0.25, "grid.linewidth": 0.5,
-})
-# consistent colourblind-safe palette
-COL = {"Frenet": "#3B33A0", "FrenetOr": "#8A83D8", "GOKU": "#2E9E4F",
-       "V2P": "#E8820C", "DVBF": "#C0457B", "SINDYc": "#C0392B"}
-LBL = {"Frenet": "PIWM-Frenet (ours)", "FrenetOr": "PIWM-Frenet (oracle $\\kappa$)",
-       "GOKU": "GOKU", "V2P": "Vid2Param", "DVBF": "DVBF", "SINDYc": "SINDYc"}
+# ---------------- publication style (shared with scripts/fig_delta_supervision.py) ----
+from paper_style import apply as _apply_style, FIG_W, COL, LBL
+_apply_style()
 std_xy = PHYSICS_STD_REL[:2]
 rng = np.random.default_rng(0)
 _os.makedirs("figures", exist_ok=True)
@@ -199,7 +185,7 @@ def main():
     for nm in ["Frenet", "FrenetOr", "V2P", "GOKU", "DVBF"]:
         print(f"  {LBL[nm]:<34} @25={curves[nm][:,25].mean():.3f}  "
               f"@50={curves[nm][:,50].mean():.3f}  @100={curves[nm][:,K].mean():.3f} m")
-    fig, ax = plt.subplots(figsize=(3.5, 2.7))
+    fig, ax = plt.subplots(figsize=(FIG_W, 3.15))
     ymax = 0.0
     for nm in ["Frenet", "FrenetOr", "V2P", "GOKU", "DVBF"]:
         mu, se = ms(curves[nm])
@@ -218,7 +204,7 @@ def main():
     ax.legend(loc="upper left"); fig.savefig("figures/fig_main.pdf"); fig.savefig("figures/fig_main.png"); plt.close(fig)
 
     # ===== Fig 2: stability log (incl SINDYc) =====  (sc_mean loaded above)
-    fig, ax = plt.subplots(figsize=(3.5, 2.7))
+    fig, ax = plt.subplots(figsize=(FIG_W, 3.15))
     order2 = (["SINDYc", "DVBF", "GOKU", "V2P", "FrenetOr", "Frenet"] if sc_mean is not None
               else ["DVBF", "GOKU", "V2P", "FrenetOr", "Frenet"])
     for nm in order2:
@@ -248,9 +234,11 @@ def main():
         for nm in MA: A[nm][0].append(vals[nm].mean()); A[nm][1].append(vals[nm].std()/np.sqrt(Wn))
         print(f"  init-noise sigma={sig:<4} " +
               "  ".join(f"{nm}={vals[nm].mean():.3f}" for nm in MA))
-    dims = {"localization $s$": (0, [0, .02, .05, .1, .2]), "CTE $d$": (1, [0, .02, .05, .1, .2]),
-            "heading $\\psi_e$": (2, [0, .05, .1, .2, .35]), "speed $v$": (3, [0, .05, .1, .2, .4]),
-            "yaw-rate $\\omega$": (4, [0, .1, .25, .5, 1.0])}
+    dims = {r"localization $s$": (0, [0, .02, .05, .1, .2]),
+            r"CTE $e_{\mathrm{CTE}}$": (1, [0, .02, .05, .1, .2]),
+            r"heading $e_\psi$": (2, [0, .05, .1, .2, .35]),
+            r"speed $v$": (3, [0, .05, .1, .2, .4]),
+            r"yaw-rate $\omega$": (4, [0, .1, .25, .5, 1.0])}
     Bv = {}
     for q, (di, mags) in dims.items():
         mu, se = [], []
@@ -260,7 +248,7 @@ def main():
             mu.append(e.mean()); se.append(e.std()/np.sqrt(Wn))
         Bv[q] = (mags, np.array(mu), np.array(se))
 
-    fig, axs = plt.subplots(1, 2, figsize=(7.0, 2.8))
+    fig, axs = plt.subplots(1, 2, figsize=(FIG_W, 2.55))
     for nm in MA:
         mu = np.array(A[nm][0]); se = np.array(A[nm][1]); lw = 2.4 if nm == "Frenet" else 1.6
         axs[0].plot(sigmas, mu, "-o", color=COL[nm], lw=lw, label=LBL[nm])
@@ -271,7 +259,9 @@ def main():
     for (q, (mags, mu, se)), c in zip(Bv.items(), qcol):
         axs[1].plot(mags, mu, "-o", color=c, lw=1.8, label=q)
         axs[1].fill_between(mags, mu-se, mu+se, color=c, alpha=0.15, lw=0)
-    axs[1].set_xlabel("physical noise std (m / rad / m·s$^{-1}$)"); axs[1].set_ylabel("position error @100 (m)")
+    # NB: keep this label ASCII -- a literal U+00B7 breaks the usetex pipeline
+    axs[1].set_xlabel(r"physical noise std (m / rad / m$\cdot$s$^{-1}$)")
+    axs[1].set_ylabel("position error @100 (m)")
     axs[1].set_title("(b) per-quantity sensitivity (Frenet)"); axs[1].legend(loc="upper left", fontsize=7.5)
     fig.savefig("figures/fig_noise.pdf"); fig.savefig("figures/fig_noise.png"); plt.close(fig)
 
