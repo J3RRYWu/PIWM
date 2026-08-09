@@ -1449,10 +1449,26 @@ We compare against the same families used in the conference paper.
 and \textbf{Vid2Param}~\cite{asenov2019vid2param} are physics-aware latent
 sequence models, and \textbf{SindyC}~\cite{BRUNTON2016710} is a classical
 dynamics-discovery baseline operating on the interpretable latent.
-All of them receive the same images and actions as our model; in addition, each
-baseline is given the ground-truth lane waypoints at the first timestep of the
-window, so the comparison is, if anything, generous to them: they start from a
-description of the road that our model must recover from pixels.
+Every baseline is initialized from the ground-truth vehicle state \emph{and} the
+ground-truth lane waypoints at the first timestep of the window, so each starts
+from an explicit description of the road that our model has to recover from
+pixels.
+They are then run as latent transition models, consuming only actions over the
+rollout.
+One asymmetry among them should be stated plainly, because it determines their
+ordering.
+Vid2Param additionally infers a latent parameter vector from the image window,
+since inferring physical parameters from video is the whole of that method; it is
+consequently the only baseline with any visual input, and it is also the strongest
+one we measure.
+DVBF and GokuNet are run without their own observation pathways---DVBF without
+its filtering step and GokuNet without its inference of ODE parameters from the
+observation sequence---so their numbers should be read as characterizing a
+\emph{dynamics-only} version of each method rather than the method as published.
+That reduction was made to hold the comparison at the level of the transition
+model, but it is a limitation of our evaluation, not a property of those methods,
+and the gap between our model and them is correspondingly easier to obtain than
+the gap against Vid2Param.
 To separate the contribution of \emph{perceiving} the road from that of
 \emph{representing} it, we also evaluate a privileged \textbf{oracle} variant of
 our own model in which $\kappa$ is read from the known track map instead of the
@@ -1636,8 +1652,11 @@ $\sim$\num{e17} by the end of the rollout.
 \centering
 \caption{Position error $E_{xy}$ in metres on the physical DonkeyCar, at three
 rollout horizons, averaged over the $201$ held-out validation windows (lower is
-better). All models see the same images and actions; the baselines additionally
-receive the ground-truth lane waypoints at $t_0$. The oracle row is a privileged
+better). All models are driven by the same actions and are initialized from the
+ground-truth state; the baselines additionally receive the ground-truth lane
+waypoints at $t_0$. Of the baselines only Vid2Param also sees the images---DVBF
+and GokuNet are run as dynamics-only models (Section~\ref{sec:setup}), which is
+why Vid2Param leads them. The oracle row is a privileged
 variant of our own model, not a competing method: it reads $\kappa$ from the known
 track map instead of the camera and therefore upper-bounds what perfect road
 perception could buy.}
@@ -1930,8 +1949,11 @@ Replacing the camera-derived curvature by a lookup into the true track map---the
 strongest form of privileged information available---improves the 100-step error
 only from \SI{0.267}{m} to \SI{0.246}{m}.
 The remaining \SI{0.12}{m} separating our model from the strongest baseline is
-therefore not information the baseline lacked; the baselines were in fact handed
-ground-truth lane waypoints at $t_0$, which our model never sees.
+therefore not privileged information on our side; the baselines were in fact
+handed ground-truth lane waypoints at $t_0$, which our model never sees.
+It is worth noting what the baseline ordering itself says: the single baseline
+that retains a visual pathway, Vid2Param, is also the best of them, which is the
+same lesson the road-context encoder teaches.
 What separates them is that our state variables are road-aligned physical
 quantities propagated by analytic geometry, rather than latent coordinates
 propagated by a learned map.
@@ -1990,6 +2012,14 @@ platform: the CarRacing comparison referred to in
 Section~\ref{sec:carracing_results} was run with a vehicle-only dynamics variant
 and has not been repeated with the road-context model, so this article does not
 claim a simulated-domain result.
+Seventh, two of the three baselines are evaluated in a reduced form. Holding the
+comparison at the level of the transition model meant running DVBF without its
+filtering and GokuNet without its inference of ODE parameters from observations,
+leaving Vid2Param as the only baseline with a visual pathway. This understates
+DVBF and GokuNet, and it is the most likely explanation for their ordering
+relative to Vid2Param reversing between our simulated and physical experiments;
+a comparison against full implementations of both would be a stronger test than
+the one we report.
 Finally, the method currently assumes a single vehicle and a single lane;
 multi-agent and multi-lane settings are future work.
 
