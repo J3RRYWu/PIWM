@@ -1,0 +1,108 @@
+% =====================================================================
+% DRAFT FIX for the factorized-state definition (Section 4).
+% NOT IN THE BUILD. Review, then merge into elsarticle-template-num.tex.
+%
+% THE DEFECT
+% The manuscript declares  z* = [z^v, z^r] in R^6  with
+%     z^v = (x_rel, y_rel, psi_rel)      and      z^r = (e_CTE, e_psi, kappa).
+% Four things are wrong, all checkable against src/models/frenet_dynamics.py:
+%
+%   1. v and omega are propagated by eqs. (16)-(19) and by the implementation
+%      (frenet_dynamics.py:103-104), but appear in neither component.
+%   2. The arc length s is propagated (line 100) and is what kappa is indexed by,
+%      but appears nowhere in the declared state.
+%   3. kappa is declared AS a state component but is never propagated: it is read,
+%      either from the map (kappa_at(s), line 82) or from the perceived preview.
+%      This is the paper's own central claim -- the road is re-indexed, not
+%      predicted -- so having kappa in the propagated state contradicts it.
+%   4. (x_rel, y_rel, psi_rel) is the conference/v5 parameterisation. The Frenet
+%      model replaces it with (s, d, psi_e); it does not carry both.
+%
+% Root cause: Section 4 is v5-era text that was never reconciled with the Frenet
+% formulation introduced in Section 5.
+%
+% THE ONE JUDGEMENT CALL FOR THE AUTHOR
+% The rewrite below keeps the z^v / z^r split, because the surrounding narrative
+% and Fig. 2 are built on it, and maps it onto the implemented state. The
+% alternative is to drop the split and present a single five-dimensional Frenet
+% state with the road as a separate perceived function. That is arguably cleaner
+% but touches more of Sections 4-5 and the architecture figure.
+% =====================================================================
+
+\paragraph{Vehicle state}
+In the road-aligned frame the vehicle's configuration is given by its arc length
+along the reference centerline, its speed and its yaw rate:
+\begin{equation}
+    \zv_t =
+    \begin{bmatrix}
+        s_t \\ v_t \\ \omega_t
+    \end{bmatrix},
+    \label{eq:vehicle_rel}
+\end{equation}
+where $s_t$ is the distance travelled along the centerline, $v_t$ the
+longitudinal speed and $\omega_t$ the yaw rate. Unlike the global-pose
+parameterization used in the fully observable setting, $s_t$ locates the vehicle
+\emph{along the road} rather than in the world, which is what allows the road
+description below to be indexed by it.
+
+\paragraph{Road-context state}
+The road-context component $\zr_t$ captures the vehicle's relationship to the
+road geometry:
+\begin{equation}
+    \zr_t =
+    \begin{bmatrix}
+        e_{\mathrm{CTE},t} \\ e_{\psi,t}
+    \end{bmatrix},
+    \label{eq:road_ctx}
+\end{equation}
+where $e_{\mathrm{CTE}}$ is the cross-track error (signed lateral distance from
+the lane center) and $e_{\psi}$ is the heading error (difference between the
+vehicle's heading and the road tangent at its current position).
+
+\paragraph{Factorized state}
+The complete \emph{factorized interpretable state} is
+\begin{equation}
+    \zstar_t = \left[ \zv_t,\; \zr_t \right]
+             = \left( s_t,\, v_t,\, \omega_t,\, e_{\mathrm{CTE},t},\, e_{\psi,t} \right)
+             \in \mathbb{R}^5 .
+    \label{eq:factorized_state}
+\end{equation}
+
+\paragraph{The road is not part of the state}
+The local curvature $\kappa$ is deliberately \emph{absent} from
+\eqref{eq:factorized_state}. It is not propagated. Instead the model carries a
+curvature profile $\hat\kappa(\cdot)$ over arc length, perceived once from the
+image window at the start of the rollout, and reads the curvature at the
+vehicle from it:
+\begin{equation}
+    \kappa_t = \hat\kappa\!\left(s_t - s_{t_0}\right).
+    \label{eq:kappa_readout}
+\end{equation}
+This is the distinction the rest of the article rests on. A model that carries
+curvature as a state variable must predict how it evolves, and that prediction
+compounds over a long rollout. Re-indexing a profile that was observed once
+cannot compound, because nothing about the road is being extrapolated --- only
+the vehicle's position along it advances.
+
+Consequently the Markov property holds for the pair
+$\left(\zstar_t,\, \hat\kappa(\cdot)\right)$, with $\hat\kappa$ held fixed
+across the rollout: given the current factorized state, the perceived profile
+and the action, the next factorized state is determined up to the unknown
+parameters $\theta^*$. It does \emph{not} hold for $\zstar_t$ alone, since
+\eqref{eq:kappa_readout} requires the profile. We state the condition in this
+form because it is the one the implementation satisfies, and because the fixed
+profile is exactly what bounds the long-horizon error.
+
+% ---------------------------------------------------------------------
+% KNOCK-ON EDITS REQUIRED ELSEWHERE (do not merge the above without these)
+%
+%   * Any prose describing z* as six-dimensional or listing kappa among the state
+%     components.
+%   * Figure 2's caption, if it enumerates the state components.
+%   * The claim that the two branches' "only coupling" is \hat{z*}_{t+1}: the
+%     actuation map inside phi_theta consumes z^r_t (frenet_dynamics.py:92-95
+%     feeds d, psi, v, omega and kappa into dv_net/dom_net). Either restate the
+%     coupling or drop the "only".
+%   * Figure 7(b) perturbs v and omega as state variables. Under this definition
+%     that is now consistent -- previously it was not.
+% =====================================================================

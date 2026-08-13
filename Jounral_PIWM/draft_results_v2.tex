@@ -1,0 +1,219 @@
+% =====================================================================
+% DRAFT REPLACEMENT for the real-vehicle results, discussion and limitations.
+%
+% NOT INCLUDED IN THE BUILD. Written as a separate file because the fixer agent
+% was editing the manuscript concurrently; merge into elsarticle-template-num.tex
+% once that build is verified.
+%
+% Every number below traces to reports/matrix/folds_table_symmetric.md, produced by
+%   <py311> scripts/eval_folds_table.py --selected
+% and to reports/matrix/selected_checkpoints.json. Curves for the figure are in
+% reports/matrix/folds_table_symmetric_curves.npz; the figure itself is
+% figures/fig_main_cv.pdf from scripts/fig_main_cv.py.
+%
+% WHAT CHANGED RELATIVE TO THE VERSION ON DISK, AND WHY
+%   * Every value is new. The old table reported ONE checkpoint per model on ONE
+%     split; controlled retrains showed both our row and the baseline rows were
+%     favourable single draws, so nothing from it survives.
+%   * The headline claim changes from "1.4x lower error" to "far less sensitive to
+%     which episodes are held out", because that is what the 5-fold data actually
+%     shows and it does not depend on a single lucky fit.
+%   * The delta-noise subsection inverts: the paper called the non-monotonicity
+%     single-run variance; across five folds the trend is monotone and reproducible.
+%     But a matched-magnitude Gaussian control reproduces the gain, so this is
+%     ordinary regularisation and must NOT be sold as a property of the
+%     conference's weak-supervision noise model.
+%   * SINDYc is now measured per fold instead of carried over from the old split.
+%
+% STILL MISSING -- do not merge without resolving:
+%   [ ] Table 2 (kappa-source ablation) is still single-split, from the same
+%       un-reproducible dyn_k16 checkpoint family as the old main table. Either
+%       re-run the ablation per fold (needs finetune/frozen/vqformer encoders for
+%       each of the 5 folds, ~15 jobs) or mark that table explicitly as
+%       single-split and not comparable to Table 1.
+%   [ ] The factorized-state dimension (R^6) contradicts the dynamics equations and
+%       the implementation. Method section fix, tracked separately.
+% =====================================================================
+
+\subsection{Real-vehicle results}\label{sec:donkey_results}
+
+All numbers in this subsection come from five-fold cross-validation over the
+$71$ recorded episodes. Each fold holds out one fifth of the episodes
+($14$--$15$ episodes, $301$--$647$ evaluation windows), and every model is
+trained on that fold's training episodes only. Because the folds hold out
+different episodes, window counts differ between them; we therefore average
+within a fold first and report the mean and half-range over the five fold-level
+means. Comparisons \emph{within} a fold are paired --- every model is rolled out
+from the same initial states over the same windows in the same order --- and all
+paired statistics below are computed that way. Comparisons across folds are not
+paired and we do not treat them as such.
+
+\paragraph{Checkpoint selection}
+Our dynamics keeps the epoch with the lowest $E_{xy}(100)$, the quantity we
+report. Selecting the baselines by their composite validation loss instead, as
+an earlier version of this evaluation did, penalises them: re-selecting each
+baseline by the reported metric improves DVBF from \SI{1.287}{m} to
+\SI{0.837}{m} and GOKU-net from \SI{0.815}{m} to \SI{0.725}{m}. We therefore
+apply the same rule to every model, choosing each baseline's epoch from
+saved snapshots by $E_{xy}(100)$. This makes selection symmetric; it does not
+make it unbiased, since both sides then select on the evaluation windows. We
+state the resulting numbers as such throughout.
+
+% ---------------------------------------------------------------- main table
+\begin{table}[t]
+\centering
+\caption{Position error $E_{xy}(k)$ in metres on the real vehicle, mean $\pm$
+half-range over five folds. Lower is better. Every model is selected by
+$E_{xy}(100)$ and rolled out for $100$ steps from the ground-truth state. The
+baselines lead by a wide margin at short horizons; the ordering inverts before
+step $100$. The rightmost column also shows the sensitivity of each model to
+which episodes are held out.}
+\label{tab:donkey_main}
+\begin{tabular}{lccc}
+\toprule
+Model & $E_{xy}(25)$ & $E_{xy}(50)$ & $E_{xy}(100)$ \\
+\midrule
+Vid2Param~\cite{asenov2019vid2param}  & $\mathbf{0.036 \pm 0.010}$ & $\mathbf{0.107 \pm 0.009}$ & $0.703 \pm 0.192$ \\
+GOKU-net~\cite{linial_generative_2021} & $0.046 \pm 0.015$ & $0.131 \pm 0.015$ & $0.725 \pm 0.122$ \\
+DVBF~\cite{karl2016deep}              & $0.061 \pm 0.011$ & $0.173 \pm 0.038$ & $0.837 \pm 0.160$ \\
+SINDYc~\cite{BRUNTON2016710}          & \multicolumn{3}{c}{diverges in all $2483$ windows of all five folds} \\
+\midrule
+\textbf{PIWM-Frenet (ours)}           & $0.141 \pm 0.011$ & $0.245 \pm 0.025$ & $\mathbf{0.463 \pm 0.046}$ \\
+\textit{PIWM-Frenet (map-free)}       & $0.146 \pm 0.013$ & $0.258 \pm 0.031$ & $0.516 \pm 0.068$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Long-horizon prediction}
+Table~\ref{tab:donkey_main} and Figure~\ref{fig:donkey_main} show the same
+crossover the conference version reported, now with the spread across folds made
+visible. Up to roughly step $65$ the baselines are ahead, and by a large factor:
+at step $25$ Vid2Param's error is a quarter of ours. This is not noise --- its
+half-range at that horizon is \SI{0.010}{m}. Beyond the crossover the ordering
+inverts and does not invert back. At step $100$ our model reaches
+\SI{0.463}{m} against \SI{0.703}{m} for the strongest baseline. Within each
+fold, where the comparison is paired, our model is ahead at step $100$ in
+\emph{all five} folds against every baseline: by \SI{0.241}{m} on average
+against Vid2Param, \SI{0.262}{m} against GOKU-net and \SI{0.374}{m} against
+DVBF. SINDYc diverges in every window of every fold; we report it as divergent
+rather than quoting a value, since past the point of divergence the number
+reflects only where the rollout was clamped.
+
+\paragraph{Sensitivity to the held-out episodes}
+The more informative quantity is the last column's spread. Changing which
+episodes are held out moves our error by $\pm\SI{0.046}{m}$, against
+$\pm\SI{0.192}{m}$ for Vid2Param, $\pm\SI{0.122}{m}$ for GOKU-net and
+$\pm\SI{0.160}{m}$ for DVBF --- a factor of three to four. The baselines' error
+at long horizons depends substantially on which part of the track they were
+trained on; ours much less so. We regard this as the more durable claim of the
+two, because it does not rest on any single trained model: the same conclusion
+holds in every fold, whereas a single-split comparison of best checkpoints can
+be, and in our earlier evaluation was, dominated by which draw each side
+happened to get.
+
+% ------------------------------------------------------------- delta noise
+\paragraph{Weak supervision with noisy labels}
+Table~\ref{tab:delta} repeats the evaluation with the conference weak-supervision
+noise applied to the training labels at $\delta \in \{0, 5\%, 10\%\}$. The two
+model families respond in opposite directions. Every baseline degrades as the
+labels get noisier. Our model improves, monotonically, from \SI{0.463}{m} at
+$\delta = 0$ to \SI{0.319}{m} at $\delta = 10\%$ --- a $31\%$ reduction, while
+Vid2Param worsens by $33\%$ over the same range. The trend is consistent across
+all five folds and the intervals do not overlap.
+
+\begin{table}[t]
+\centering
+\caption{$E_{xy}(100)$ in metres under weak-supervision label noise, mean $\pm$
+half-range over five folds. The structured model improves as the labels degrade;
+every baseline gets worse.}
+\label{tab:delta}
+\begin{tabular}{lccc}
+\toprule
+Model & $\delta = 0$ & $\delta = 5\%$ & $\delta = 10\%$ \\
+\midrule
+\textbf{PIWM-Frenet (ours)}     & $0.463 \pm 0.046$ & $0.452 \pm 0.047$ & $\mathbf{0.319 \pm 0.049}$ \\
+\textit{PIWM-Frenet (map-free)} & $0.516 \pm 0.068$ & $0.506 \pm 0.066$ & $0.390 \pm 0.040$ \\
+Vid2Param                       & $0.703 \pm 0.192$ & $0.919 \pm 0.252$ & $0.938 \pm 0.280$ \\
+GOKU-net                        & $0.725 \pm 0.122$ & $0.896 \pm 0.199$ & $0.864 \pm 0.185$ \\
+DVBF                            & $0.837 \pm 0.160$ & $1.067 \pm 0.240$ & $1.075 \pm 0.233$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{The gain is regularisation, not the noise model}
+It would be convenient to read Table~\ref{tab:delta} as evidence that the
+particular weak-supervision noise of the conference formulation benefits a
+structured model. It does not. Replacing that biased-uniform noise with a
+zero-mean Gaussian of the same per-dimension magnitude, holding everything else
+fixed, gives \SI{0.313 \pm 0.043}{m} against \SI{0.319 \pm 0.049}{m} --- a
+paired difference of \SI{-0.005}{m} whose sign is not even consistent across
+folds. Label noise at this magnitude regularises the structured model, and any
+zero-mean noise of that magnitude does it. The finding is the \emph{asymmetry}
+between the model families, not the form of the noise. We note that the
+baselines' selected epochs move sharply earlier as $\delta$ grows --- several
+select the fifth epoch at $\delta = 10\%$ --- which is consistent with their
+fitting the label noise almost immediately.
+
+% ------------------------------------------------------------- map-free
+\paragraph{The cost of dropping the known centerline}
+The rows labelled map-free obtain the vehicle's position without consulting the
+track map at all, reading the road geometry from the perception's shape output
+instead of indexing a surveyed centerline. Doing so costs \SI{0.053}{m} at step
+$100$, paired within folds and consistent in sign across all five
+($+0.049$, $+0.022$, $+0.069$, $+0.071$, $+0.056$). This is the version of the
+model that could be deployed on a track that has not been measured, and it
+remains ahead of every baseline at step $100$.
+
+% =====================================================================
+% DISCUSSION -- replacement for the corresponding paragraphs
+% =====================================================================
+
+\paragraph{What the crossover means}
+A model that is four times worse at step $25$ and a third better at step $100$
+is not uniformly better, and we do not claim it is. The baselines fit the local
+motion more tightly; what they do not do is stay bounded. Our error grows and
+then flattens, because the road is read once from the camera and re-indexed by
+arc length rather than extrapolated, so there is no compounding road prediction
+to diverge. For a controller that needs the next few tenths of a second, the
+baselines are the better choice on this data. For anything that must reason a
+few seconds ahead, they are not.
+
+\paragraph{Structure rather than information}
+Both model families see the same images and the same actions. The map-free
+result sharpens this: removing the surveyed centerline entirely costs
+\SI{0.053}{m}, which leaves the long-horizon gap largely intact. What
+distinguishes the two families is therefore not what they are given but how the
+road enters the state --- as a quantity that is advected geometrically, or as
+one that must be predicted forward and can drift.
+
+% =====================================================================
+% LIMITATIONS -- replacement
+% =====================================================================
+
+\paragraph{Limitations}
+Four limitations bound what these results support.
+
+First, the evidence is from a single vehicle on a single track. The
+cross-validation varies which episodes are held out, not which track or which
+platform, so it measures sensitivity to the driving data and not to the
+environment. Whether the advantage transfers to other road geometries is
+untested here.
+
+Second, every model's epoch is selected on the same held-out windows the table
+reports. We apply the rule symmetrically, which removes the asymmetry present in
+our earlier evaluation, but symmetric selection is not unbiased selection and
+the absolute values should be read with that in mind.
+
+Third, only one baseline receives images. Vid2Param infers a parameter vector
+from the image window because that is the whole of the method; DVBF and GOKU-net
+are run as transition models on the shared state. Restoring GOKU-net's
+observation pathway in the obvious way does not produce an independent
+comparison --- with a parameter head of matched width it becomes architecturally
+identical to Vid2Param and, trained under the same seed, reproduces it exactly.
+A genuinely independent observation-conditioned GOKU-net would require
+implementing its latent-ODE formulation, which we did not do.
+
+Fourth, the improvement under label noise is ordinary regularisation, as the
+Gaussian control shows. We report the asymmetry between model families, not a
+property of the weak-supervision formulation, and the mechanism behind that
+asymmetry is not established by these experiments.
