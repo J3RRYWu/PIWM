@@ -42,10 +42,14 @@ DELTAS = [0.0, 0.05, 0.10]
 VARIANTS = ["dvbf", "goku", "v2p"]
 
 
-def _py():
-    """The project interpreter, on either OS -- see piwm/README.md."""
-    win = ROOT / ".venv" / "Scripts" / "python.exe"
-    nix = ROOT / ".venv" / "bin" / "python"
+def _py(venv=".venv"):
+    """The project interpreter, on either OS -- see piwm/README.md.
+
+    `venv=".venv-sindy"` selects the CPU-torch + pysindy environment; pysindy
+    segfaults in the same process as the CUDA build, so SINDYc must run there.
+    """
+    win = ROOT / venv / "Scripts" / "python.exe"
+    nix = ROOT / venv / "bin" / "python"
     return str(win if win.exists() else nix)
 
 
@@ -112,6 +116,62 @@ def jobs_goku_obs(nfolds=5, epochs_bl=60, snap=5):
         for f in range(nfolds)]
 
 
+def jobs_kappa_ablation(nfolds=5):
+    """Per-fold encoders for the kappa-source ablation (paper Table 2).
+
+    That table is still measured on the single split, from the same checkpoint family
+    the main table turned out not to reproduce, so it cannot sit beside 5-fold numbers.
+    The `scratch` row already exists per fold as checkpoints/cv/kappa_f{f}.tar; this
+    adds the other three encoder variants.
+
+    NOTE the v6-backbone rows inherit a shared encoder trained on the legacy split,
+    which saw episodes these folds hold out. That leak favours THEM, so if they still
+    lose to scratch the ablation's conclusion is conservative -- but it must be stated.
+    """
+    v6 = "checkpoints/piwm_lane_v6_donkey/ae.tar"
+    variants = [("finetune", ["--mode", "finetune", "--backbone", v6]),
+                ("frozen",   ["--mode", "frozen",   "--backbone", v6]),
+                ("vqformer", ["--mode", "finetune", "--backbone", "scratch",
+                              "--arch", "vqformer", "--epochs", "100"])]
+    return [dict(
+        name=f"kappa_{tag}_f{f}", out=f"checkpoints/cv/kappa_{tag}_f{f}.tar",
+        argv=["src/train/train_kappa_perception.py", "--target", "kappa",
+              "--save", f"checkpoints/cv/kappa_{tag}_f{f}.tar",
+              "--fold", str(f), "--nfolds", str(nfolds)] + extra)
+        for f in range(nfolds) for tag, extra in variants]
+
+
+def jobs_sindyc(nfolds=5, deltas=(0.0,)):
+    """The FOURTH baseline, which the k-fold sweep so far has been missing.
+
+    The paper compares against DVBF, GokuNet, Vid2Param and SindyC, but the 5-fold
+    run covered only the first three -- SindyC's curve was still the legacy-split
+    cache. It runs in .venv-sindy (pysindy segfaults beside the CUDA torch build) and
+    each fit pickles ~133 MB, so this is deliberately kept to delta=0 and few workers.
+    """
+    return [dict(
+        name=f"sindyc_f{f}", out=f"checkpoints/sindyc_lane_donkey_f{f}/model.pkl",
+        venv=".venv-sindy",
+        argv=["src/train/train_baselines_donkey.py", "--variant", "sindyc",
+              "--K", "32", "--suffix", f"_f{f}",
+              "--fold", str(f), "--nfolds", str(nfolds)])
+        for f in range(nfolds) for d in deltas]
+
+
+def jobs_gauss(nfolds=5, delta=0.10):
+    """Matched-magnitude Gaussian label noise, one per fold, as the control for the
+    delta result: the 5-fold run found label noise makes our model monotonically
+    better, and this says whether that needs the conference's biased-uniform weak
+    supervision or is ordinary regularisation. Pairs with dyn_f{f}_d10."""
+    return [dict(
+        name=f"dyn_gauss_f{f}", out=f"checkpoints/cv/dyn_gauss_f{f}.tar",
+        argv=["src/train/train_frenet.py", "--K", "16",
+              "--save", f"checkpoints/cv/dyn_gauss_f{f}.tar",
+              "--delta", str(delta), "--noise_kind", "gauss",
+              "--fold", str(f), "--nfolds", str(nfolds)])
+        for f in range(nfolds)]
+
+
 def jobs_seeds(seeds=(0, 1, 2, 3, 4), variants=VARIANTS, epochs_bl=60):
     """Extend the single-split repeat study to more seeds (what produced
     reports/repeats/main_table_3seeds.md). Split stays the legacy hold-out, so
@@ -148,13 +208,17 @@ def _spawn(job, threads, logf):
         kw["creationflags"] = 0x00004000          # BELOW_NORMAL_PRIORITY_CLASS
     else:
         kw["preexec_fn"] = lambda: os.nice(10)
-    return subprocess.Popen([_py(), "-u"] + job["argv"], cwd=str(ROOT), env=env,
+    return subprocess.Popen([_py(job.get("venv", ".venv")), "-u"] + job["argv"],
+                            cwd=str(ROOT), env=env,
                             stdout=logf, stderr=subprocess.STDOUT, **kw)
 
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--preset", choices=["5fold", "seeds", "goku_obs"], default="5fold")
+    ap.add_argument("--preset",
+                    choices=["5fold", "seeds", "goku_obs", "gauss", "sindyc",
+                             "kappa_ablation"],
+                    default="5fold")
     ap.add_argument("--nfolds", type=int, default=5)
     ap.add_argument("--seeds", type=int, nargs="+", default=[0, 1, 2, 3, 4])
     ap.add_argument("--threads", type=int, default=2,
@@ -178,6 +242,12 @@ def main():
         jobs = jobs_5fold(a.nfolds, epochs_bl=a.epochs_bl, snap=a.snap)
     elif a.preset == "goku_obs":
         jobs = jobs_goku_obs(a.nfolds, epochs_bl=a.epochs_bl, snap=a.snap)
+    elif a.preset == "gauss":
+        jobs = jobs_gauss(a.nfolds)
+    elif a.preset == "sindyc":
+        jobs = jobs_sindyc(a.nfolds)
+    elif a.preset == "kappa_ablation":
+        jobs = jobs_kappa_ablation(a.nfolds)
     else:
         jobs = jobs_seeds(tuple(a.seeds), epochs_bl=a.epochs_bl)
     todo = [j for j in jobs if a.force or not (ROOT / j["out"]).exists()]

@@ -135,8 +135,24 @@ def delta_supervision_noise(Z, half):
     return Z + bias + resid
 
 
+#: matched-magnitude Gaussian: same per-dim std as delta_supervision_noise, whose
+#: variance is Var(bias) + Var(resid) = h^2/3 + h^2/150 = h^2 * 51/150.
+_GAUSS_SCALE = float(np.sqrt(51.0 / 150.0))
+
+
+def gaussian_supervision_noise(Z, half):
+    """Control for the delta noise: SAME per-dim magnitude, plain zero-mean Gaussian.
+
+    The 5-fold run found label noise makes this model monotonically BETTER while it
+    makes every baseline worse. That is only a statement about weak supervision if
+    the conference's biased-uniform structure is what does it; if a matched Gaussian
+    helps just as much, the effect is ordinary regularisation and must be described
+    as such. This exists to tell those two apart."""
+    return Z + torch.randn_like(Z) * (half * _GAUSS_SCALE)
+
+
 def run(K, epochs, save, kappa_mode="map", init=None, delta_sup=0.0, seed=0,
-        fold=-1, nfolds=5):
+        fold=-1, nfolds=5, noise_kind="delta"):
     set_train_seed(seed)
     ds = FrenetSeqDataset(K)
     tr, va, val_eps = split(ds, fold=fold, nfolds=nfolds)
@@ -152,7 +168,9 @@ def run(K, epochs, save, kappa_mode="map", init=None, delta_sup=0.0, seed=0,
     _allst = np.concatenate(ds.state, 0)
     _rng = torch.tensor(_allst.max(0) - _allst.min(0), dtype=torch.float32, device=DEVICE)
     half_sup = 0.5 * delta_sup * _rng
-    print(f"kappa_mode={kappa_mode}  delta_sup={delta_sup}  "
+    noise_fn = {"delta": delta_supervision_noise,
+                "gauss": gaussian_supervision_noise}[noise_kind]
+    print(f"kappa_mode={kappa_mode}  delta_sup={delta_sup}  noise={noise_kind}  "
           f"(|X|={np.round(_allst.max(0) - _allst.min(0), 3).tolist()}, "
           f"half-width={np.round(half_sup.cpu().numpy(), 3).tolist()})")
     opt = torch.optim.Adam(dyn.parameters(), lr=1e-3 if not init else 3e-4)
@@ -164,7 +182,7 @@ def run(K, epochs, save, kappa_mode="map", init=None, delta_sup=0.0, seed=0,
         for Z, A, P in tqdm(trl, desc=f"frenet K{K} {ep+1}/{epochs}"):
             Z = Z.to(DEVICE); A = A.to(DEVICE); P = P.to(DEVICE)
             # weak supervision: model only ever sees the δ-noised proxy labels (init + targets)
-            Zsup = delta_supervision_noise(Z, half_sup) if delta_sup > 0 else Z
+            Zsup = noise_fn(Z, half_sup) if delta_sup > 0 else Z
             s0 = Zsup[:, 0, 0].clone()
             z = Zsup[:, 0]; preds = [z]
             for k in range(K):
@@ -205,6 +223,10 @@ if __name__ == "__main__":
                    help="-1 = legacy single hold-out (default, reproduces every "
                         "existing checkpoint); 0..nfolds-1 selects a CV fold")
     p.add_argument("--nfolds", type=int, default=5)
+    p.add_argument("--noise_kind", choices=["delta", "gauss"], default="delta",
+                   help="delta = the conference's biased-uniform weak supervision; "
+                        "gauss = matched-magnitude Gaussian control (see the note on "
+                        "gaussian_supervision_noise)")
     a = p.parse_args()
     run(a.K, a.epochs, a.save, a.kappa_mode, a.init, a.delta, a.seed,
-        a.fold, a.nfolds)
+        a.fold, a.nfolds, a.noise_kind)

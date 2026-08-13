@@ -399,8 +399,11 @@ def fit_sindyc(degree=2, threshold=0.05, alpha=0.01,
               feature_names=state_names + act_names)
     print(f"  fit time: {time.time()-t0:.1f}s")
 
-    os.makedirs("checkpoints/sindyc_lane_donkey", exist_ok=True)
-    save_path = "checkpoints/sindyc_lane_donkey/model.pkl"
+    # SUFFIX matters here: without it a k-fold sweep silently overwrites one fit with
+    # the next, and every fold ends up reporting the last fold's model.
+    out_dir = f"checkpoints/sindyc_lane_donkey{SUFFIX}"
+    os.makedirs(out_dir, exist_ok=True)
+    save_path = f"{out_dir}/model.pkl"
     with open(save_path, "wb") as f:
         pickle.dump(model, f)
     print(f"  saved -> {save_path}")
@@ -415,9 +418,23 @@ def fit_sindyc(degree=2, threshold=0.05, alpha=0.01,
     for state31, action3 in eval_data:
         z = state31[0:1].copy()
         z_pred = [np.asarray(z, dtype=np.float32).flatten()]
+        dead = False
         for k in range(ROLLOUT_K):
             u = action3[k:k + 1]
-            z = np.asarray(model.predict(z, u=u), dtype=np.float32)
+            # SINDYc genuinely diverges on this system, and once the state overflows
+            # sklearn's predict() raises on the non-finite input rather than returning
+            # it. Freezing the trajectory at the blow-up keeps the run alive so the
+            # divergence is REPORTED instead of crashing the fit script after the
+            # model has already been pickled.
+            if not dead:
+                try:
+                    z = np.asarray(model.predict(z, u=u), dtype=np.float32)
+                except Exception:
+                    dead = True
+                if not np.isfinite(z).all() or np.abs(z).max() > 1e4:
+                    dead = True
+            if dead:
+                z = np.full_like(z, 1e4)
             z_pred.append(z.flatten())
         z_pred = np.stack(z_pred, axis=0)                         # (K+1, 31)
         err = (z_pred[1:] - state31[1:]) ** 2                     # (K, 31)
@@ -429,7 +446,7 @@ def fit_sindyc(degree=2, threshold=0.05, alpha=0.01,
     v_tot = v_car + LAMBDA_LANE * v_lane
     print(f"  SINDYc val: tot={v_tot:.5f} car={v_car:.5f} lane={v_lane:.5f}")
 
-    with open("checkpoints/sindyc_lane_donkey/metrics.txt", "w") as f:
+    with open(f"{out_dir}/metrics.txt", "w") as f:
         f.write(f"val_total={v_tot:.6f}\nval_car={v_car:.6f}\nval_lane={v_lane:.6f}\n"
                 f"degree={degree} threshold={threshold} alpha={alpha} "
                 f"window={window} stride={stride}\n")
