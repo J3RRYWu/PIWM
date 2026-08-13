@@ -94,6 +94,24 @@ def jobs_5fold(nfolds=5, deltas=DELTAS, variants=VARIANTS, epochs_bl=60, snap=5)
     return js
 
 
+def jobs_goku_obs(nfolds=5, epochs_bl=60, snap=5):
+    """GokuNet WITH its observation pathway, one per fold, delta=0.
+
+    HANDOFF §0.3: the conference version treats GokuNet and Vid2Param BOTH as
+    intrinsic (observation-consuming), but this repo kept only Vid2Param's -- which
+    is the sole reason Vid2Param is the strongest baseline. `goku_obs` restores it
+    at theta_dim=8, matching Vid2Param's parameter count exactly, so the 5-fold main
+    table can compare against a baseline the conference version would recognise.
+    """
+    return [dict(
+        name=f"goku_obs_f{f}", out=f"checkpoints/goku_obs_lane_donkey_f{f}/best.tar",
+        argv=["src/train/train_baselines_donkey.py", "--variant", "goku_obs",
+              "--K", "32", "--suffix", f"_f{f}", "--batch", "128",
+              "--batch_v2p", "64", "--epochs", str(epochs_bl),
+              "--snapshot-every", str(snap), "--fold", str(f), "--nfolds", str(nfolds)])
+        for f in range(nfolds)]
+
+
 def jobs_seeds(seeds=(0, 1, 2, 3, 4), variants=VARIANTS, epochs_bl=60):
     """Extend the single-split repeat study to more seeds (what produced
     reports/repeats/main_table_3seeds.md). Split stays the legacy hold-out, so
@@ -136,7 +154,7 @@ def _spawn(job, threads, logf):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--preset", choices=["5fold", "seeds"], default="5fold")
+    ap.add_argument("--preset", choices=["5fold", "seeds", "goku_obs"], default="5fold")
     ap.add_argument("--nfolds", type=int, default=5)
     ap.add_argument("--seeds", type=int, nargs="+", default=[0, 1, 2, 3, 4])
     ap.add_argument("--threads", type=int, default=2,
@@ -156,8 +174,12 @@ def main():
     ncpu = os.cpu_count() or 4
     workers = a.workers or max(1, (ncpu // 2) // max(1, a.threads))
 
-    jobs = (jobs_5fold(a.nfolds, epochs_bl=a.epochs_bl, snap=a.snap) if a.preset == "5fold"
-            else jobs_seeds(tuple(a.seeds), epochs_bl=a.epochs_bl))
+    if a.preset == "5fold":
+        jobs = jobs_5fold(a.nfolds, epochs_bl=a.epochs_bl, snap=a.snap)
+    elif a.preset == "goku_obs":
+        jobs = jobs_goku_obs(a.nfolds, epochs_bl=a.epochs_bl, snap=a.snap)
+    else:
+        jobs = jobs_seeds(tuple(a.seeds), epochs_bl=a.epochs_bl)
     todo = [j for j in jobs if a.force or not (ROOT / j["out"]).exists()]
     done_already = len(jobs) - len(todo)
 
