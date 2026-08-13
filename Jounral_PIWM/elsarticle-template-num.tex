@@ -1433,8 +1433,10 @@ The vision encoder maps each $64 \times 64$ observation to a compact latent, and
 the physical encoder aggregates a context window of $k = 15$ frames
 ($\approx$\SI{0.7}{s}) to infer the road context from image sequences
 (Section~\ref{sec:encoding}).
-Rollouts are trained on $16$-step horizons and evaluated at up to $100$ steps, so
-the reported horizon is more than six times the training horizon.
+Our rollouts are trained on $16$-step horizons and evaluated at up to $100$ steps,
+so the reported horizon is more than six times the training horizon; the baselines
+are trained on $32$-step rollouts, i.e.\ twice ours, which if anything favours
+them at the horizons where we claim an advantage.
 Dynamics are trained with Adam, a cosine learning-rate schedule and early stopping
 on validation loss.
 All baselines are trained under identical conditions with the same data, the same
@@ -1645,8 +1647,10 @@ Beyond the crossover the ordering inverts and does not invert back.
 By step $100$ every baseline has entered superlinear error growth, while our model
 has not: \SI{0.267}{m} against \SI{0.383}{m} for the strongest baseline, a factor
 of $1.4$, growing to $1.8\times$ against GokuNet and $2.3\times$ against DVBF.
-SindyC diverges outright, exceeding the plot range before step $25$ and reaching
-$\sim$\num{e17} by the end of the rollout.
+SindyC diverges outright: it is already at \SI{7.5}{m} by step $25$ and
+\SI{79}{m} by step $50$, at which point the rollout is meaningless on a track
+whose lap is a few metres across. Our evaluation clamps it at \SI{100}{m}, so we
+report it as divergent rather than quoting an error value.
 
 \begin{table}[t]
 \centering
@@ -1669,7 +1673,7 @@ Model & $E_{xy}(25)$ & $E_{xy}(50)$ & $E_{xy}(100)$ \\
 Vid2Param~\cite{asenov2019vid2param}   & \textbf{0.036} & \textbf{0.076} & 0.383 \\
 GokuNet~\cite{linial_generative_2021}  & 0.061 & 0.130 & 0.478 \\
 DVBF~\cite{karl2016deep}               & 0.071 & 0.167 & 0.610 \\
-SindyC~\cite{BRUNTON2016710}           & \multicolumn{3}{c}{diverges ($\sim$\num{e17} at step 100)} \\
+SindyC~\cite{BRUNTON2016710}           & \multicolumn{3}{c}{diverges (\SI{7.5}{m} at step 25; clamped at \SI{100}{m})} \\
 \midrule
 \textbf{PIWM-Frenet (ours, perceived $\kappa$)} & 0.090 & 0.158 & \textbf{0.267} \\
 \midrule
