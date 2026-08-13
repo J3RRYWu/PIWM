@@ -234,9 +234,9 @@ A.~Lei, B.~Sch{\"o}lkopf, I.~Posner, Spartan: A sparse transformer learning
   local causation, arXiv preprint arXiv:2411.06890 (2024).
 
 \bibitem{karl2016deep}
-M.~Karl, M.~Soelch, J.~Bayer, P.~Van~der Smagt, Deep variational bayes filters:
-  Unsupervised learning of state space models from raw data, arXiv preprint
-  arXiv:1605.06432 (2016).
+M.~Karl, M.~Soelch, J.~Bayer, P.~{van der Smagt}, Deep variational {B}ayes
+  filters: Unsupervised learning of state space models from raw data, in:
+  International Conference on Learning Representations (ICLR), 2017.
 
 \bibitem{chen2018neural}
 R.~T. Chen, Y.~Rubanova, J.~Bettencourt, D.~K. Duvenaud, Neural ordinary
@@ -306,13 +306,15 @@ Y.~Liang, N.~Kumar, H.~Tang, A.~Weller, J.~B. Tenenbaum, T.~Silver, J.~F.
 
 \bibitem{asenov2019vid2param}
 M.~Asenov, M.~Burke, D.~Angelov, T.~Davchev, K.~Subr, S.~Ramamoorthy,
-  Vid2param: Modeling of dynamics parameters from video, IEEE Robotics and
-  Automation Letters 5~(2) (2019) 414--421.
+  {Vid2Param}: Modeling of dynamics parameters from video, IEEE Robotics and
+  Automation Letters 5~(2) (2020) 414--421.
+\newblock \href {https://doi.org/10.1109/LRA.2019.2959476}
+  {\path{doi:10.1109/LRA.2019.2959476}}.
 
 \bibitem{BRUNTON2016710}
 S.~L. Brunton, J.~L. Proctor, J.~N. Kutz,
   \href{https://www.sciencedirect.com/science/article/pii/S2405896316318298}{Sparse
-  identification of nonlinear dynamics with control (sindyc).},
+  identification of nonlinear dynamics with control ({SINDYc})},
   IFAC-PapersOnLine 49~(18) (2016) 710--715, 10th IFAC Symposium on Nonlinear
   Control Systems NOLCOS 2016.
 \newblock \href {https://doi.org/https://doi.org/10.1016/j.ifacol.2016.10.249}

@@ -191,8 +191,7 @@ future.
 Driving is different.
 Consider two vehicles with identical position, heading, and speed.
 If one is approaching a tight curve while the other is on a straight segment,
-their future trajectories diverge substantially even under the same control
-inputs.
+their future trajectories diverge even under the same control inputs.
 The vehicle's physical state $x_t = (x, y, \psi, v)$ does not capture this
 difference.
 The missing information is the \emph{road context}: the shape of the lane ahead
@@ -224,8 +223,7 @@ it is about to enter.
 Predicting the road, like encoding it, should be physically interpretable so that
 the forecasted environment can be inspected, trusted, and monitored.
 
-\
-These two facets, encoding and predicting the external environment, are precisely
+These two facets, encoding and predicting the external environment, are
 what distinguishes a driving world model from the vehicle-centric formulation of
 the conference paper, which modeled only the state of the controlled body.
 They are also why partial observability cannot be papered over by simply adding
@@ -277,7 +275,7 @@ bounded.
 
 \subsection*{Contributions}
 
-This journal article substantially extends the conference version~\cite{piwm_conf}
+This journal article extends the conference version~\cite{piwm_conf}
 along three axes, which constitute its three contributions.
 
 \begin{enumerate}
@@ -315,15 +313,11 @@ along three axes, which constitute its three contributions.
     We show that this geometric treatment, rather than propagating the road as a
     free latent, is what keeps long-horizon rollout bounded, and that the road
     context can be perceived from the onboard camera at a cost of roughly
-    \SI{2}{cm} in \SI{100}{}-step position error relative to a privileged map
+    \SI{2}{cm} in \num{100}-step position error relative to a privileged map
     lookup.
 \end{enumerate}
 
 \noindent
-Throughout, we precede the technical development of each extension with the
-specific challenge and motivation that makes it necessary, in keeping with the
-two facets of partial observability identified above.
-
 The remainder of this article is organized as follows.
 Section~\ref{sec:related} surveys related work.
 Section~\ref{sec:preliminaries} reviews background on autonomous CPS, world
@@ -409,8 +403,10 @@ These methods improve organization or modularity, yet none guarantees
 correspondence to measurable physical quantities.
 
 Closer to physical grounding, several models steer latents toward physics.
-GOKU-Net restricts latent variables to plausible physical ranges without binding
-them to specific quantities~\cite{linial_generative_2021}; SPARTAN produces
+GOKU-net constrains the latent dynamics to a known ODE and infers that ODE's
+parameters~\cite{linial_generative_2021}, but the functional form must be fixed a
+priori and the latents are tied to it rather than to quantities that can be
+measured from the observation; SPARTAN produces
 semantically structured outputs but incorporates neither known dynamics nor
 action-conditioned prediction~\cite{lei2024spartan}; Deep Variational Bayes
 Filters add latent state-space dynamics to VAEs~\cite{karl2016deep} but, absent
@@ -867,7 +863,7 @@ A high-level overview is shown in Figure~\ref{fig:arch}.
     then rolls the state forward: the two components are advanced by
     \emph{separate} transitions, $\zv$ by a structured kinematic model and $\zr$
     by a geometry-driven one, and the predicted components recombine into
-    $\hat{\zstar}_{t+1}$. Their only coupling is the arrow labelled
+    $\hat{\zstar}_{t+1}$. Their only coupling is the arrow labeled
     $\hat{\zv}_{t+1}$---the road is advected by the vehicle's own predicted
     motion, which is also why the action $a_t$ enters the vehicle branch alone.
     The encoder (Section~\ref{sec:encoding}) infers the external
@@ -964,9 +960,9 @@ $\Xi^r$:
     + \lambda_r\,\mathcal{L}_{\mathrm{interp}}(\zr, \Xi^r).
     \label{eq:interp_loss_drive}
 \end{equation}
-The separate weighting of the road-context term $\lambda_r$ reflects its central
-role: it is the term that forces the encoder to commit capacity to the external
-environment rather than only to the vehicle.
+The separate weighting of the road-context term $\lambda_r$ is what forces the
+encoder to commit capacity to the external environment rather than only to the
+vehicle.
 
 %% --------------------------------------------------------------
 \subsection{Encoding the Road Environment}\label{sec:encoding}  %% [NEW]
@@ -1018,8 +1014,7 @@ The encoder~\eqref{eq:temporal_encoder} is thus trained to predict, from the
 onboard image stream alone, the road context that the privileged signal supplied
 during training.
 This is precisely a teacher--student / learning-from-privileged-information
-setup~\cite{chen2020learning}: the privileged road context teaches the encoder
-what to extract, and at deployment the encoder reconstructs it from images.
+setup~\cite{chen2020learning}.
 Because $\zr$ is physically interpretable, the recovered road context can be
 inspected and compared against the true lane geometry, which we use as a
 diagnostic in Section~\ref{sec:results}.
@@ -1049,7 +1044,7 @@ diagnostic in Section~\ref{sec:results}.
               (-0.3,0.6) .. controls (2.5,0.6) and (3.9,1.3) .. (6.6,2.2);
     \end{scope}
     \draw[centre] (-0.3,0.6) .. controls (2.5,0.6) and (3.9,1.3) .. (6.6,2.2);
-    \node[slbl,anchor=north] at (0.3,-0.05) {lane centre};
+    \node[slbl,anchor=north] at (0.3,-0.05) {lane center};
 
     %% ---- vehicle, offset from the centreline and yawed -------------
     \fill[red!75!black,draw=black!55,line width=0.3pt]
@@ -1093,7 +1088,7 @@ diagnostic in Section~\ref{sec:results}.
     \end{tikzpicture}}
     \caption{Encoding the road environment. The road-context state
     $\zr=(e_{\mathrm{CTE}}, e_\psi, \kappa)$ is defined geometrically with
-    respect to the lane centre: the cross-track error is the signed lateral
+    respect to the lane center: the cross-track error is the signed lateral
     offset, the heading error is the angle between the vehicle heading and the
     road tangent, and $\kappa$ is the local curvature. For a forward-facing
     camera the road is visible only over a short preview (shaded), so the
@@ -1158,7 +1153,7 @@ In the body frame this is the classical \emph{bicycle kinematic model}
 \end{align}
 with slip angle
 $\beta_t = \arctan\!\left(\frac{l_r}{l_f + l_r}\tan(\delta_{f,t})\right)$, where
-$l_f$ and $l_r$ are the distances from the centre of mass to the front and rear
+$l_f$ and $l_r$ are the distances from the center of mass to the front and rear
 axles (unknown and learned during training), $\delta_{f,t}$ is the steering
 angle, $v_t$ the longitudinal speed and $\psi_t$ the heading.
 
@@ -1194,7 +1189,7 @@ length the vehicle has covered.
 
 Concretely, we work in a road-aligned (Frenet) frame in which the vehicle state
 is $(s, e_{\mathrm{CTE}}, e_\psi, v, \omega)$, with $s$ the arc length along the
-lane centre, $v$ the longitudinal speed and $\omega$ the yaw rate.
+lane center, $v$ the longitudinal speed and $\omega$ the yaw rate.
 Writing $\kappa_t = \hat{\kappa}(s_t)$ for the perceived curvature at the current
 arc length and $\eta_t = 1 - e_{\mathrm{CTE},t}\kappa_t$ for the Jacobian of the
 road-aligned parameterization, the transition is
@@ -1221,7 +1216,7 @@ residual and the actuation map~\eqref{eq:actuation} are learned.
 Equation~\eqref{eq:frenet_kappa} is the crucial one.
 The curvature is a \emph{lookup into the curvature profile already perceived at
 the start of the rollout} (Section~\ref{sec:encoding}), indexed by how far the
-predicted vehicle has travelled.
+predicted vehicle has traveled.
 It is therefore not a free latent that the dynamics must propagate, and it cannot
 accumulate error over the horizon: the road is \emph{observed} once and then
 re-indexed, not extrapolated.
@@ -1281,7 +1276,7 @@ lane geometry that can be visualized and checked, not an opaque feature.
     \draw[{Stealth[length=1.5mm]}-{Stealth[length=1.5mm]},
           line width=0.45pt,color=black!65] (0.95,-0.25) -- (4.65,-0.25);
     \node[slbl,anchor=north] at (2.8,-0.32)
-        {travelled arc length $\Delta s=\textstyle\int v\,dt$ from the
+        {traveled arc length $\Delta s=\textstyle\int v\,dt$ from the
          predicted vehicle motion};
     \end{tikzpicture}}
     \caption{Predicting the road environment. The curvature profile ahead is
@@ -1359,8 +1354,8 @@ new partially observable driving case studies (Contribution~1).
 \textbf{CartPole} and \textbf{Lunar Lander}~\cite{brockman2016openai} are retained
 from the conference paper as controlled settings where the system state is a
 complete Markov description.
-These results establish continuity with the conference version and a clean
-baseline for physically interpretable prediction under simple dynamics.
+These results establish a clean baseline for physically interpretable prediction
+under simple dynamics.
 
 \paragraph{Tier~2: Partially observable simulated driving (CarRacing)}
 \textbf{CarRacing}~\cite{brockman2016openai} is a top-down simulated racing
@@ -1420,10 +1415,10 @@ $\Delta t = 1/22\,\mathrm{s}$ and the 100-step evaluation horizon corresponds to
 about \SI{4.5}{s} of driving.
 Trajectories are segmented into clean contiguous laps; brief sensing artifacts
 (dropped or interpolated frames, pose glitches) are filtered out before training.
-Ground-truth road context is computed from the known track centreline and the
+Ground-truth road context is computed from the known track centerline and the
 logged pose (privileged supervision), and is withheld at test time.
 Laps are split into disjoint training and validation sets; all numbers reported
-below are computed on the $201$ held-out validation windows, in real metres.
+below are computed on the $201$ held-out validation windows, in real meters.
 
 \paragraph{Architecture and training}
 The driving experiments use the extrinsic PIWM variant (a vision encoder followed
@@ -1435,7 +1430,7 @@ the physical encoder aggregates a context window of $k = 15$ frames
 (Section~\ref{sec:encoding}).
 Our rollouts are trained on $16$-step horizons and evaluated at up to $100$ steps,
 so the reported horizon is more than six times the training horizon; the baselines
-are trained on $32$-step rollouts, i.e.\ twice ours, which if anything favours
+are trained on $32$-step rollouts, i.e.\ twice ours, which if anything favors
 them at the horizons where we claim an advantage.
 Dynamics are trained with Adam, a cosine learning-rate schedule and early stopping
 on validation loss.
@@ -1444,12 +1439,12 @@ optimizer and the same evaluation protocol, and with the batch sizes at which ea
 baseline was tuned; we verified that increasing the batch size degrades these
 small, latency-bound baselines and would therefore have flattered our model.
 
-\subsection{Baselines}
+\subsection{Baselines}\label{sec:baselines}
 
 We compare against the same families used in the conference paper.
-\textbf{DVBF}~\cite{karl2016deep}, \textbf{GokuNet}~\cite{linial_generative_2021}
+\textbf{DVBF}~\cite{karl2016deep}, \textbf{GOKU-net}~\cite{linial_generative_2021}
 and \textbf{Vid2Param}~\cite{asenov2019vid2param} are physics-aware latent
-sequence models, and \textbf{SindyC}~\cite{BRUNTON2016710} is a classical
+sequence models, and \textbf{SINDYc}~\cite{BRUNTON2016710} is a classical
 dynamics-discovery baseline operating on the interpretable latent.
 Every baseline is initialized from the ground-truth vehicle state \emph{and} the
 ground-truth lane waypoints at the first timestep of the window, so each starts
@@ -1463,8 +1458,8 @@ Vid2Param additionally infers a latent parameter vector from the image window,
 since inferring physical parameters from video is the whole of that method; it is
 consequently the only baseline with any visual input, and it is also the strongest
 one we measure.
-DVBF and GokuNet are run without their own observation pathways---DVBF without
-its filtering step and GokuNet without its inference of ODE parameters from the
+DVBF and GOKU-net are run without their own observation pathways---DVBF without
+its filtering step and GOKU-net without its inference of ODE parameters from the
 observation sequence---so their numbers should be read as characterizing a
 \emph{dynamics-only} version of each method rather than the method as published.
 That reduction was made to hold the comparison at the level of the transition
@@ -1479,7 +1474,7 @@ camera; the gap between the two is the cost of perception.
 \subsection{Metrics}
 
 The primary driving metric is the \emph{position error at rollout step $k$}: the
-Euclidean distance, in metres, between the predicted and the true vehicle
+Euclidean distance, in meters, between the predicted and the true vehicle
 position after $k$ autoregressive steps, averaged over the $N = 201$ held-out
 validation windows,
 \begin{equation}
@@ -1495,7 +1490,7 @@ We report $E_{xy}$ at $k \in \{25, 50, 100\}$ and plot the full curve
 $k \mapsto E_{xy}(k)$; all rollouts are initialized from the ground-truth state at
 $k=0$ so that the comparison isolates the dynamics rather than the encoder.
 Because $E_{xy}$ is a distance and not a squared error, its values are directly
-readable as centimetres of drift.
+readable as centimeters of drift.
 We additionally report the curvature error of the road-context encoder,
 $\mathrm{RMSE}_\kappa$ in $\mathrm{m}^{-1}$, to evaluate the encoded road
 directly.
@@ -1563,7 +1558,7 @@ partial observability genuine rather than nominal.
 %%     \caption{Prediction performance on CarRacing. State error over a 100-step
 %%     horizon for $x_{\mathrm{rel}}$, $y_{\mathrm{rel}}$, and $\psi_{\mathrm{rel}}$,
 %%     comparing PIWM (with factorized state and split dynamics) against PIWM-linear,
-%%     PIWM-bicycle (vehicle state only, no road context), SindyC, GokuNet, DVBF, and
+%%     PIWM-bicycle (vehicle state only, no road context), SINDYc, GOKU-net, DVBF, and
 %%     Vid2Param. Methods that encode and predict the road context remain accurate at
 %%     long horizons, while vehicle-only and data-driven baselines diverge.}
 %%     \label{fig:carracing}
@@ -1590,10 +1585,10 @@ partial observability genuine rather than nominal.
 %% \midrule
 %% PIWM-linear            & 0.015 & 0.124 & 0.559 & 1.985 \\
 %% PIWM-bicycle (veh.\ only) & 0.008 & 0.186 & 0.696 & 2.020 \\
-%% SindyC                 & 0.046 & 0.927 & 4.493 & 15.03 \\
+%% SINDYc                 & 0.046 & 0.927 & 4.493 & 15.03 \\
 %% DVBF                   & 0.009 & 0.182 & 1.242 & 3.556 \\
 %% Vid2Param              & 0.001 & 0.094 & 1.093 & 6.044 \\
-%% GokuNet                & 0.001 & 0.038 & 0.324 & 1.405 \\
+%% GOKU-net                & 0.001 & 0.038 & 0.324 & 1.405 \\
 %% \textbf{PIWM (ours, full)} & \textbf{0.002} & \textbf{0.026} & \textbf{0.074} & \textbf{0.306} \\
 %% \bottomrule
 %% \end{tabular}
@@ -1611,7 +1606,7 @@ partial observability genuine rather than nominal.
 %% rollout enters curvature that was not represented, errors compound; the full
 %% model, which encodes the road context and predicts its evolution, steers the
 %% predicted vehicle through the correct geometry and stays accurate.
-%% Data-driven baselines (LSTM-style and GokuNet) and the physics-aware DVBF and
+%% Data-driven baselines (LSTM-style and GOKU-net) and the physics-aware DVBF and
 %% Vid2Param exhibit rapid error growth at long horizons, consistent with the
 %% conference findings.
 %% 
@@ -1646,20 +1641,20 @@ had to recover from pixels.
 Beyond the crossover the ordering inverts and does not invert back.
 By step $100$ every baseline has entered superlinear error growth, while our model
 has not: \SI{0.267}{m} against \SI{0.383}{m} for the strongest baseline, a factor
-of $1.4$, growing to $1.8\times$ against GokuNet and $2.3\times$ against DVBF.
-SindyC diverges outright: it is already at \SI{7.5}{m} by step $25$ and
+of $1.4$, growing to $1.8\times$ against GOKU-net and $2.3\times$ against DVBF.
+SINDYc diverges outright: it is already at \SI{7.5}{m} by step $25$ and
 \SI{79}{m} by step $50$, at which point the rollout is meaningless on a track
-whose lap is a few metres across. Our evaluation clamps it at \SI{100}{m}, so we
+whose lap is a few meters across. Our evaluation clamps it at \SI{100}{m}, so we
 report it as divergent rather than quoting an error value.
 
 \begin{table}[t]
 \centering
-\caption{Position error $E_{xy}$ in metres on the physical DonkeyCar, at three
+\caption{Position error $E_{xy}$ in meters on the physical DonkeyCar, at three
 rollout horizons, averaged over the $201$ held-out validation windows (lower is
 better). All models are driven by the same actions and are initialized from the
 ground-truth state; the baselines additionally receive the ground-truth lane
 waypoints at $t_0$. Of the baselines only Vid2Param also sees the images---DVBF
-and GokuNet are run as dynamics-only models (Section~\ref{sec:setup}), which is
+and GOKU-net are run as dynamics-only models (Section~\ref{sec:baselines}), which is
 why Vid2Param leads them. The oracle row is a privileged
 variant of our own model, not a competing method: it reads $\kappa$ from the known
 track map instead of the camera and therefore upper-bounds what perfect road
@@ -1671,9 +1666,9 @@ perception could buy.}
 Model & $E_{xy}(25)$ & $E_{xy}(50)$ & $E_{xy}(100)$ \\
 \midrule
 Vid2Param~\cite{asenov2019vid2param}   & \textbf{0.036} & \textbf{0.076} & 0.383 \\
-GokuNet~\cite{linial_generative_2021}  & 0.061 & 0.130 & 0.478 \\
+GOKU-net~\cite{linial_generative_2021}  & 0.061 & 0.130 & 0.478 \\
 DVBF~\cite{karl2016deep}               & 0.071 & 0.167 & 0.610 \\
-SindyC~\cite{BRUNTON2016710}           & \multicolumn{3}{c}{diverges (\SI{7.5}{m} at step 25; clamped at \SI{100}{m})} \\
+SINDYc~\cite{BRUNTON2016710}           & \multicolumn{3}{c}{diverges (\SI{7.5}{m} at step 25; clamped at \SI{100}{m})} \\
 \midrule
 \textbf{PIWM-Frenet (ours, perceived $\kappa$)} & 0.090 & 0.158 & \textbf{0.267} \\
 \midrule
@@ -1690,7 +1685,7 @@ SindyC~\cite{BRUNTON2016710}           & \multicolumn{3}{c}{diverges (\SI{7.5}{m
     rollouts initialized from the ground-truth state). The baselines lead over
     short horizons and then enter superlinear growth; the proposed model stays
     close to linear because the road it rolls out over was observed rather than
-    extrapolated. SindyC leaves the plot range before step $25$. The privileged
+    extrapolated. SINDYc leaves the plot range before step $25$. The privileged
     oracle curve (dotted) is our own model with $\kappa$ read from the track map
     and sits only $\sim$\SI{2}{cm} below the perceived model at step $100$.}
     \label{fig:donkey_main}
@@ -1765,7 +1760,7 @@ branch, consistent with the sensitivity analysis below.
 \caption{Where the curvature comes from. All rows use the identical dynamics and
 differ only in how $\kappa$ is obtained. $\mathrm{RMSE}_\kappa$ is the encoder's
 own curvature error in \si{m^{-1}} and $E_{xy}(100)$ the resulting 100-step
-position error in metres, both on the physical DonkeyCar. The first two rows are
+position error in meters, both on the physical DonkeyCar. The first two rows are
 privileged upper bounds, not deployable models; the remaining four read the front
 camera alone and differ only in encoder architecture or initialization. Note how
 little of the wide spread in perception quality survives into the rollout: a
@@ -1811,7 +1806,7 @@ condition over multiple folds, which we leave to future work.
 \begin{table}[t]
 \centering
 \caption{Weak-supervision noise on the physical DonkeyCar. Position error
-$E_{xy}$ in metres when the road-context labels used for training are corrupted
+$E_{xy}$ in meters when the road-context labels used for training are corrupted
 by biased uniform noise of relative width $\delta$
 (\ref{sec:interp_loss_def}). The last column is the strongest baseline
 from Table~\ref{tab:donkey_main}, trained on clean labels, for reference.}
@@ -1854,7 +1849,7 @@ This is a \emph{test-time} perturbation of the state and should not be confused
 with the $\delta$ \emph{training-label} noise of Table~\ref{tab:delta}; the two
 probe different failure modes.
 The ranking is unchanged at every level: at $\sigma = 1.5$ our model is at
-\SI{0.749}{m} against \SI{0.889}{m} (Vid2Param), \SI{1.186}{m} (GokuNet) and
+\SI{0.749}{m} against \SI{0.889}{m} (Vid2Param), \SI{1.186}{m} (GOKU-net) and
 \SI{1.393}{m} (DVBF).
 We note that our relative degradation over this range ($2.8\times$) is in fact
 slightly larger than the baselines' ($2.3$--$2.5\times$), which is what one
@@ -1933,12 +1928,6 @@ is where sensing effort should go on this platform.
 The horizon at which our model overtakes the baselines
 (Figure~\ref{fig:donkey_main}) is the horizon at which the initial observation
 stops describing the road the vehicle is on.
-Before it, the task is smooth extrapolation and a flexible latent model does it
-better than we do.
-After it, the question is whether the model knows the geometry it has entered, and
-this is where a free-latent road representation fails: it must be propagated, its
-propagation error compounds, and the vehicle branch that consumes it inherits that
-error.
 The structural answer this article proposes is to make the road not a predicted
 quantity at all but an \emph{observed} one that is re-indexed by the vehicle's own
 predicted motion~\eqref{eq:frenet_kappa}.
@@ -1955,7 +1944,7 @@ only from \SI{0.267}{m} to \SI{0.246}{m}.
 The remaining \SI{0.12}{m} separating our model from the strongest baseline is
 therefore not privileged information on our side; the baselines were in fact
 handed ground-truth lane waypoints at $t_0$, which our model never sees.
-It is worth noting what the baseline ordering itself says: the single baseline
+The baseline ordering itself points the same way: the single baseline
 that retains a visual pathway, Vid2Param, is also the best of them, which is the
 same lesson the road-context encoder teaches.
 What separates them is that our state variables are road-aligned physical
@@ -1986,8 +1975,6 @@ withholds it at test.
 This reflects practical deployability: external localization (a mapped track, or
 an overhead view) is available in instrumented training environments but not on a
 freely deployed car.
-The model must therefore learn to read road context from onboard images, guided
-during training by the privileged signal.
 The fact that the learned encoding transfers to the unaided setting is what makes
 the approach viable on real hardware.
 
@@ -2008,7 +1995,7 @@ Fourth, privileged supervision requires an instrumented training environment to
 obtain ground-truth road context; reducing this requirement (e.g., via
 self-supervised road estimation) is open.
 Fifth, each configuration is trained once on a single train/validation split, so
-differences of a few centimetres---including the non-monotone ordering across
+differences of a few centimeters---including the non-monotone ordering across
 $\delta$ in Table~\ref{tab:delta}---are within run-to-run variance; a
 cross-validated repetition is needed to resolve them.
 Sixth, the quantitative evaluation reported here is confined to the physical
@@ -2018,9 +2005,9 @@ and has not been repeated with the road-context model, so this article does not
 claim a simulated-domain result.
 Seventh, two of the three baselines are evaluated in a reduced form. Holding the
 comparison at the level of the transition model meant running DVBF without its
-filtering and GokuNet without its inference of ODE parameters from observations,
+filtering and GOKU-net without its inference of ODE parameters from observations,
 leaving Vid2Param as the only baseline with a visual pathway. This understates
-DVBF and GokuNet, and it is the most likely explanation for their ordering
+DVBF and GOKU-net, and it is the most likely explanation for their ordering
 relative to Vid2Param reversing between our simulated and physical experiments;
 a comparison against full implementations of both would be a stronger test than
 the one we report.
