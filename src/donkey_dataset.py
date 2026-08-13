@@ -41,6 +41,7 @@ import torch
 from torch.utils.data import Dataset, DataLoader, Subset
 
 from config import PHYSICS_MEAN_REL, PHYSICS_STD_REL
+from folds import fold_split
 from lane_utils import LANE_MEAN, LANE_STD, LANE_DIM
 from train_piwm_lane_v5 import SeqLaneDataset
 
@@ -167,15 +168,15 @@ def make_donkey_loaders(data_dir, seq_len, batch_size,
 # ----------------------------------------------------------------------
 # Segment-level split helpers shared with baseline scripts (SINDYc etc.)
 # ----------------------------------------------------------------------
-def split_segments(base, val_frac=0.10, seed=0):
+def split_segments(base, val_frac=0.10, seed=0, fold=-1, nfolds=5):
     """Return (train_ep_set, val_ep_set) for a SeqLaneDataset `base`, using
     the SAME deterministic split as `make_donkey_loaders`.
+
+    Delegates to `folds.fold_split` so the Frenet scripts partition episodes
+    identically -- with the default fold=-1 this is bit-identical to the
+    hold-out this function has always returned.
     """
-    n_eps = len(base.imgs_list)
-    rng = np.random.default_rng(seed)
-    perm = rng.permutation(n_eps)
-    n_val = max(1, int(round(n_eps * val_frac)))
-    return set(perm[n_val:].tolist()), set(perm[:n_val].tolist())
+    return fold_split(len(base.imgs_list), fold, nfolds, val_frac, seed)
 
 
 def collect_state31_windows(base, ep_set, window=50, stride=25, with_flip=False):

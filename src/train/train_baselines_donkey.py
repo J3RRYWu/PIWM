@@ -43,6 +43,7 @@ from config import (DEVICE, DATA_DIR, ENCODER_DIM as CAR_ENCODER_DIM,
                     PHYSICS_MEAN_REL, PHYSICS_STD_REL)
 from lane_utils import LANE_DIM, LANE_MEAN, LANE_STD, LANE_FRAME_STACK
 from relative_coords import to_relative_np
+from baselines.vid2param_kin import Vid2ParamKin
 from baselines.shared_dynamics_lane import (DynamicsDVBFLane, DynamicsGOKULane,
                                             DynamicsVid2ParamLane)
 from models.encoder_lane import PhysicsEncoderLane
@@ -63,9 +64,16 @@ BATCH_V2P  = 64
 LR         = 1e-3
 LAMBDA_LANE = 2.0
 GRAD_CLIP  = 5.0
-SEED       = 0
+SEED       = 0                      # train/val SPLIT seed -- never varied, so that
+                                    # repeats stay paired on the same episodes
+TRAIN_SEED = 0                      # weight init + batch order, set from --seed
 SUFFIX     = ""                     # checkpoint dir suffix (e.g. "_longK"), set in __main__
 SUP_DELTA  = 0.0                    # conference δ weak-supervision noise level, set in __main__
+FOLD       = -1                     # -1 = legacy single hold-out; >=0 selects a CV fold
+NFOLDS     = 5                      # both set from --fold/--nfolds in __main__
+SNAP_EVERY = 0                      # >0: also dump ep{n}.tar every n epochs, so checkpoint
+                                    # selection can be redone post-hoc by the REPORTED metric
+                                    # instead of the composite val loss (see HANDOFF §0.3)
 
 ENCODER_CK = "checkpoints/piwm_lane_v6_donkey/ae.tar"
 
@@ -173,7 +181,8 @@ def _train_nn_baseline(model_factory, name, save_path, batch_size=None):
     batch_size = BATCH_NN if batch_size is None else batch_size   # read global at call time
     print("=" * 60); print(f"Train {name} [donkey]"); print("=" * 60)
     base = _get_base()
-    train_eps, val_eps = split_segments(base, val_frac=0.10, seed=SEED)
+    train_eps, val_eps = split_segments(base, val_frac=0.10, seed=SEED,
+                                        fold=FOLD, nfolds=NFOLDS)
     Ztr, Atr = _precompute_nn(base, train_eps)
     Zval, Aval = _precompute_nn(base, val_eps)
     N = Ztr.shape[0]
@@ -222,6 +231,10 @@ def _train_nn_baseline(model_factory, name, save_path, batch_size=None):
             best = v_loss
             save_checkpoint({'model': model.state_dict(), 'val_loss': v_loss,
                              'val_car': v_car, 'val_lane': v_lane}, save_path)
+        if SNAP_EVERY and (epoch + 1) % SNAP_EVERY == 0:
+            save_checkpoint({'model': model.state_dict(), 'val_loss': v_loss,
+                             'val_car': v_car, 'val_lane': v_lane, 'epoch': epoch + 1},
+                            os.path.join(os.path.dirname(save_path), f"ep{epoch+1}.tar"))
     print(f"{name} best val_total: {best:.5f}")
 
 
@@ -238,15 +251,24 @@ def train_goku():
 # ----------------------------------------------------------------------
 # V2P-lane: needs frozen donkey encoder for theta inference
 # ----------------------------------------------------------------------
-def train_v2p():
-    print("=" * 60); print("Train V2P-lane [donkey]"); print("=" * 60)
+def _train_obs_conditioned(make_model, name, ckpt_dir):
+    """Shared trainer for the observation-conditioned ("intrinsic") baselines.
+
+    Both Vid2Param and, once its observation pathway is restored, GokuNet infer a
+    latent parameter vector from the encoder's observation history and then roll
+    out. Training them through one code path keeps optimizer, schedule, batch
+    size, KL weight and checkpoint criterion identical, so the comparison between
+    them isolates the model rather than the training loop.
+    """
+    print("=" * 60); print(f"Train {name} [donkey]"); print("=" * 60)
     if not os.path.exists(ENCODER_CK):
         raise FileNotFoundError(
             f"Encoder checkpoint not found: {ENCODER_CK}. "
             "Run PIWM Stage 1 first (train_piwm_lane_v6_donkey.py --stage ae).")
 
     base = _get_base()
-    train_eps, val_eps = split_segments(base, val_frac=0.10, seed=SEED)
+    train_eps, val_eps = split_segments(base, val_frac=0.10, seed=SEED,
+                                        fold=FOLD, nfolds=NFOLDS)
 
     enc = PhysicsEncoderLane().to(DEVICE)
     ck = load_checkpoint(ENCODER_CK)
@@ -258,12 +280,18 @@ def train_v2p():
     N = Ztr.shape[0]
     half = _half_width(Ztr)                      # δ weak-supervision noise half-widths (31,)
 
-    model = DynamicsVid2ParamLane().to(DEVICE)
+    model = make_model().to(DEVICE)
     opt = torch.optim.Adam(model.parameters(), lr=LR)
     sch = torch.optim.lr_scheduler.ReduceLROnPlateau(opt, patience=3, factor=0.5)
     best = float('inf')
     print(f"  param count: {sum(p.numel() for p in model.parameters()):,}  "
           f"windows: {N} train / {Zval.shape[0]} val (obs precomputed, batch={BATCH_V2P})")
+
+    # A model with no road model (the faithful Vid2Param) passes the lane
+    # dimensions through unchanged, so the lane term is a constant it cannot
+    # affect; training and selecting on it would be meaningless. Those models
+    # declare PREDICTS_LANE = False and are trained on the car term alone.
+    predicts_lane = getattr(model, "PREDICTS_LANE", True)
 
     def _rollout(Z, A, O):
         theta, mu, lv = model.infer_theta(O.unsqueeze(1))          # (B,1,29)
@@ -271,6 +299,8 @@ def train_v2p():
         for k in range(ROLLOUT_K):
             z = model.step(z, A[:, k], theta)
             lt, lc, ll = _split_loss(z, Z[:, k + 1])
+            if not predicts_lane:
+                lt = lc
             l_total = l_total + lt; l_car = l_car + lc; l_lane = l_lane + ll
         kl = -0.5 * (1 + lv - mu.pow(2) - lv.exp()).mean()
         return l_total / ROLLOUT_K, l_car / ROLLOUT_K, l_lane / ROLLOUT_K, kl
@@ -303,8 +333,32 @@ def train_v2p():
             best = v_loss
             save_checkpoint({'model': model.state_dict(), 'val_loss': v_loss,
                              'val_car': v_car, 'val_lane': v_lane},
-                            f"checkpoints/v2p_lane_donkey{SUFFIX}/best.tar")
-    print(f"V2P-lane best val_total: {best:.5f}")
+                            f"checkpoints/{ckpt_dir}{SUFFIX}/best.tar")
+        if SNAP_EVERY and (epoch + 1) % SNAP_EVERY == 0:
+            save_checkpoint({'model': model.state_dict(), 'val_loss': v_loss,
+                             'val_car': v_car, 'val_lane': v_lane, 'epoch': epoch + 1},
+                            f"checkpoints/{ckpt_dir}{SUFFIX}/ep{epoch+1}.tar")
+    print(f"{name} best val_total: {best:.5f}")
+
+
+def train_v2p():
+    _train_obs_conditioned(DynamicsVid2ParamLane, "V2P-lane", "v2p_lane_donkey")
+
+
+def train_v2p_kin():
+    """Faithful Vid2Param: physical-parameter system ID + known kinematics.
+    See baselines/vid2param_kin.py for why it replaces the shared_dynamics_lane
+    version as the Vid2Param baseline."""
+    _train_obs_conditioned(Vid2ParamKin, "V2P-kin", "v2p_kin_lane_donkey")
+
+
+def train_goku_obs():
+    """GokuNet with its observation pathway restored -- the form the conference
+    paper treats it in. See the note in DynamicsGOKULane: with theta enabled this
+    is architecturally near-identical to V2P, which is itself the finding."""
+    theta_dim = DynamicsVid2ParamLane.THETA_DIM      # 8, matched to V2P
+    _train_obs_conditioned(lambda: DynamicsGOKULane(theta_dim=theta_dim),
+                           "GOKU-obs-lane", "goku_obs_lane_donkey")
 
 
 # ----------------------------------------------------------------------
@@ -316,7 +370,8 @@ def fit_sindyc(degree=2, threshold=0.05, alpha=0.01,
     import pysindy as ps
 
     base = SeqLaneDataset(DATA_DIR, seq_len=ROLLOUT_K + 1)
-    train_eps, val_eps = split_segments(base, val_frac=0.10, seed=SEED)
+    train_eps, val_eps = split_segments(base, val_frac=0.10, seed=SEED,
+                                        fold=FOLD, nfolds=NFOLDS)
     print(f"  segments: {len(train_eps)} train / {len(val_eps)} val")
 
     # Fit on train windows (orig + flipped).
@@ -383,7 +438,7 @@ def fit_sindyc(degree=2, threshold=0.05, alpha=0.01,
 if __name__ == "__main__":
     p = argparse.ArgumentParser()
     p.add_argument("--variant", default="all",
-                   choices=["dvbf", "goku", "v2p", "sindyc", "all"])
+                   choices=["dvbf", "goku", "goku_obs", "v2p", "v2p_kin", "sindyc", "all"])
     p.add_argument("--K", type=int, default=8, help="training rollout horizon (longK uses 32)")
     p.add_argument("--suffix", default="", help="checkpoint dir suffix, e.g. _longK")
     p.add_argument("--batch", type=int, default=BATCH_NN, help="NN-baseline batch (DVBF/GOKU)")
@@ -391,6 +446,16 @@ if __name__ == "__main__":
     p.add_argument("--epochs", type=int, default=EPOCHS, help="training epochs")
     p.add_argument("--delta", type=float, default=0.0,
                    help="conference δ weak-supervision noise on 31-dim state labels (e.g. 0.05)")
+    p.add_argument("--seed", type=int, default=0,
+                   help="seeds weight init + batch order; the train/val split is "
+                        "fixed at SEED=0 so repeats stay paired")
+    p.add_argument("--fold", type=int, default=-1,
+                   help="-1 = legacy single hold-out (default, reproduces every existing "
+                        "checkpoint); 0..nfolds-1 selects a CV fold")
+    p.add_argument("--nfolds", type=int, default=5)
+    p.add_argument("--snapshot-every", type=int, default=0, dest="snapshot_every",
+                   help="also dump ep{n}.tar every n epochs so checkpoint selection can be "
+                        "redone post-hoc by the reported metric (HANDOFF §0.3); 0=off")
     p.add_argument("--degree",    type=int,   default=2)
     p.add_argument("--threshold", type=float, default=0.05)
     p.add_argument("--alpha",     type=float, default=0.01)
@@ -401,15 +466,25 @@ if __name__ == "__main__":
     BATCH_V2P = args.batch_v2p
     EPOCHS = args.epochs
     SUP_DELTA = args.delta
+    TRAIN_SEED = args.seed
+    FOLD = args.fold
+    NFOLDS = args.nfolds
+    SNAP_EVERY = args.snapshot_every
+    torch.manual_seed(TRAIN_SEED)
+    torch.cuda.manual_seed_all(TRAIN_SEED)
+    np.random.seed(TRAIN_SEED)
     print(f"[baselines] ROLLOUT_K={ROLLOUT_K}  SUFFIX='{SUFFIX}'  BATCH_NN={BATCH_NN}  "
-          f"BATCH_V2P={BATCH_V2P}  EPOCHS={EPOCHS}  delta={SUP_DELTA}")
+          f"BATCH_V2P={BATCH_V2P}  EPOCHS={EPOCHS}  delta={SUP_DELTA}  seed={TRAIN_SEED}  "
+          f"fold={FOLD}/{NFOLDS}")
 
     for v in ("dvbf", "goku", "v2p"):
         os.makedirs(f"checkpoints/{v}_lane_donkey{SUFFIX}", exist_ok=True)
 
-    if args.variant in ("dvbf",   "all"): train_dvbf()
-    if args.variant in ("goku",   "all"): train_goku()
-    if args.variant in ("v2p",    "all"): train_v2p()
+    if args.variant in ("dvbf",     "all"): train_dvbf()
+    if args.variant in ("goku",     "all"): train_goku()
+    if args.variant in ("goku_obs", "all"): train_goku_obs()
+    if args.variant in ("v2p",      "all"): train_v2p()
+    if args.variant in ("v2p_kin",  "all"): train_v2p_kin()
     if args.variant in ("sindyc", "all"): fit_sindyc(degree=args.degree,
                                                      threshold=args.threshold,
                                                      alpha=args.alpha)

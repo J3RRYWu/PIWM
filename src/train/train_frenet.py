@@ -11,6 +11,7 @@ from torch.utils.data import Dataset, DataLoader, Subset
 from tqdm import tqdm
 
 from models.frenet_dynamics import FrenetDynamics
+from folds import fold_split, describe as describe_split
 
 DATA = _os.path.join(_os.path.dirname(__file__), "..", "..", "..", "Data_Donkeycar_frenet")
 META = _os.path.join(DATA, "_meta")
@@ -44,12 +45,23 @@ class FrenetSeqDataset(Dataset):
                 torch.tensor(self.prof[ep][t]))
 
 
-def split(ds, val_frac=0.10, seed=0):
-    n_eps = len(ds.files)
-    rng = np.random.default_rng(seed)
-    perm = rng.permutation(n_eps)
-    nval = max(1, int(round(n_eps * val_frac)))
-    val_eps = set(perm[:nval].tolist())
+def set_train_seed(seed):
+    """Seed weight init and batch order ONLY.
+
+    The train/val split is deliberately NOT reseeded: it stays at seed=0 in
+    `split` below, so repeats of an experiment are paired on the same validation
+    episodes and their spread measures training noise rather than a change of
+    data. Without this, a fresh run of an identical configuration moved the
+    100-step error from 0.246 m to 0.34-0.40 m with no way to attribute it.
+    """
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+    np.random.seed(seed)
+
+
+def split(ds, val_frac=0.10, seed=0, fold=-1, nfolds=5):
+    """fold=-1 is the legacy single hold-out; see src/folds.py."""
+    _, val_eps = fold_split(len(ds.files), fold, nfolds, val_frac, seed)
     tr = [i for i, (e, _) in enumerate(ds.idx) if e not in val_eps]
     va = [i for i, (e, _) in enumerate(ds.idx) if e in val_eps]
     return Subset(ds, tr), Subset(ds, va), val_eps
@@ -123,9 +135,12 @@ def delta_supervision_noise(Z, half):
     return Z + bias + resid
 
 
-def run(K, epochs, save, kappa_mode="map", init=None, delta_sup=0.0):
+def run(K, epochs, save, kappa_mode="map", init=None, delta_sup=0.0, seed=0,
+        fold=-1, nfolds=5):
+    set_train_seed(seed)
     ds = FrenetSeqDataset(K)
-    tr, va, val_eps = split(ds)
+    tr, va, val_eps = split(ds, fold=fold, nfolds=nfolds)
+    print(f"  split -> {describe_split(len(ds.files), fold, nfolds)}")
     trl = DataLoader(tr, batch_size=128, shuffle=True, drop_last=True)
     dyn = FrenetDynamics(_os.path.join(META, "track.npz"),
                          _os.path.join(META, "stats.npz")).to(DEVICE)
@@ -182,7 +197,14 @@ if __name__ == "__main__":
     p.add_argument("--kappa_mode", choices=["map", "profile"], default="map",
                    help="map=known-track lookup (oracle); profile=t0 preview + shift (pure WM)")
     p.add_argument("--init", type=str, default=None, help="warm-start dynamics checkpoint")
+    p.add_argument("--seed", type=int, default=0,
+                   help="seeds weight init + batch order; train/val split stays fixed")
     p.add_argument("--delta", type=float, default=0.0,
                    help="conference δ weak-supervision noise on state labels (e.g. 0.05, 0.10)")
+    p.add_argument("--fold", type=int, default=-1,
+                   help="-1 = legacy single hold-out (default, reproduces every "
+                        "existing checkpoint); 0..nfolds-1 selects a CV fold")
+    p.add_argument("--nfolds", type=int, default=5)
     a = p.parse_args()
-    run(a.K, a.epochs, a.save, a.kappa_mode, a.init, a.delta)
+    run(a.K, a.epochs, a.save, a.kappa_mode, a.init, a.delta, a.seed,
+        a.fold, a.nfolds)
