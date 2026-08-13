@@ -23,10 +23,32 @@ from lane_utils import LANE_FRAME_STACK
 
 
 class RoadContextEncoder(nn.Module):
-    def __init__(self, n_offsets=10, frame_stack=LANE_FRAME_STACK, freeze_backbone=False):
+    """Perceives the road ahead in two equivalent parameterizations.
+
+    kappa_head : kappa(s + offsets)          -- what the DYNAMICS consumes.
+    shape_head : the same road as GEOMETRY   -- the local centreline sampled at
+        those arc-lengths, in the road frame at the car: (X_j - offsets_j, Y_j).
+        Predicting the along-track residual keeps both outputs at the same
+        (centimetre) scale, and Y is the lateral offset of the road ahead.
+
+    Why both. Position can be recovered from kappa alone, but only by
+    integrating it twice (heading, then position), and that squares the error:
+    measured map-free, a PERFECT kappa profile still gives 0.414 m @100 vs
+    0.437 m for the perceived one -- i.e. only ~2 cm of the map-free penalty is
+    perception, the rest is the double integration. The shape head reads the
+    same geometry off directly, so that term is gone by construction. kappa is
+    kept because the Frenet ODE genuinely needs curvature at the car, and at
+    that it is accurate enough. Both come from the camera; neither touches the
+    map, so the model stays a pure world model.
+    """
+    def __init__(self, n_offsets=10, frame_stack=LANE_FRAME_STACK, freeze_backbone=False,
+                 predict_shape=False):
         super().__init__()
         self.backbone = PhysicsEncoderLane(frame_stack=frame_stack)
         self.kappa_head = nn.Linear(256, n_offsets)
+        self.predict_shape = predict_shape
+        # linear like kappa_head: the comparison is about the target, not capacity
+        self.shape_head = nn.Linear(256, 2 * n_offsets) if predict_shape else None
         self.freeze_backbone = freeze_backbone
         if freeze_backbone:
             for p in self.backbone.parameters():
@@ -42,11 +64,23 @@ class RoadContextEncoder(nn.Module):
             self.backbone.eval()
         return self
 
-    def forward(self, x):
-        """x: (B, FRAME_STACK, 64, 64) -> (B, n_offsets) perceived kappa profile."""
+    def features(self, x):
         if self.freeze_backbone:
             with torch.no_grad():
-                feat = self.backbone.features(x)
-        else:
-            feat = self.backbone.features(x)
-        return self.kappa_head(feat)
+                return self.backbone.features(x)
+        return self.backbone.features(x)
+
+    def forward(self, x):
+        """x: (B, FRAME_STACK, 64, 64) -> (B, n_offsets) perceived kappa profile."""
+        return self.kappa_head(self.features(x))
+
+    def forward_both(self, x):
+        """-> (kappa (B,n_off), road points (B,n_off,2) in the local road frame).
+
+        The shape head predicts (X - offset, Y); the caller adds the offsets
+        back to get X. Requires predict_shape=True.
+        """
+        feat = self.features(x)
+        kap = self.kappa_head(feat)
+        shp = self.shape_head(feat).view(len(x), -1, 2)
+        return kap, shp

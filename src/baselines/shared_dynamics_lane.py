@@ -66,10 +66,36 @@ class DynamicsDVBFLane(nn.Module):
 # GOKU on 31-dim
 # =====================================================================
 class DynamicsGOKULane(nn.Module):
-    """Known kinematics on car part + learned forces; PURELY learned for lane part."""
-    def __init__(self, latent_dim=TOTAL_DIM, action_dim=3):
+    """Known kinematics on car part + learned forces; PURELY learned for lane part.
+
+    `theta_dim > 0` restores GOKU-net's observation pathway. In the conference
+    paper (ICCPS 2026) GokuNet and Vid2Param are both *intrinsic* baselines, i.e.
+    both infer their latent quantities from the observation sequence; inferring
+    parameters from observations is what the "Known Unknowns" in GOKU-net refers
+    to. This harness had dropped that pathway for GokuNet while keeping it for
+    Vid2Param, which is the whole reason Vid2Param came out strongest.
+
+    NOTE, and this matters when reading the result: with theta_dim > 0 this class
+    becomes architecturally near-identical to DynamicsVid2ParamLane below -- same
+    three MLP heads, same known-kinematics integration, same GRU over the same
+    29-dim observation history. The two then differ only in initialization and
+    training noise. That is a property of *this harness*, not of the two published
+    methods, and any comparison between them here should be reported as such.
+
+    theta_dim = 0 keeps the original parameter-free model, so existing
+    checkpoints load unchanged.
+    """
+    OBS_DIM = 9 + LANE_DIM      # 29, the v5/v6 encoder output width
+
+    def __init__(self, latent_dim=TOTAL_DIM, action_dim=3, theta_dim=0,
+                 obs_dim=OBS_DIM):
         super().__init__()
-        inp = latent_dim + action_dim
+        self.theta_dim = theta_dim
+        if theta_dim:
+            self.theta_rnn = nn.GRU(obs_dim, 64, batch_first=True)
+            self.theta_head_mu = nn.Linear(64, theta_dim)
+            self.theta_head_lv = nn.Linear(64, theta_dim)
+        inp = latent_dim + action_dim + theta_dim
         self.force_net = MLP(inp, 3, h=64)             # dvx, dvy, domega
         self.wheel_net = MLP(inp, 5, h=64)             # dw0..3, dsteer
         self.lane_net  = MLP(inp, LANE_DIM, h=128)     # entire lane delta
@@ -81,8 +107,22 @@ class DynamicsGOKULane(nn.Module):
         self.register_buffer("m_vy_y", torch.tensor(float(mean[4] * DT / std[1])))
         self.register_buffer("m_om_yaw", torch.tensor(float(mean[5] * DT / std[2])))
 
-    def forward(self, z, a):
-        inp = torch.cat([z, a], dim=-1)
+    def infer_theta(self, obs_hist):
+        """obs_hist: (B, T_hist, obs_dim) -> (theta, mu, logvar). Same mechanism as
+        DynamicsVid2ParamLane.infer_theta, deliberately, so that enabling it tests
+        the observation pathway rather than a different way of using it."""
+        out, _ = self.theta_rnn(obs_hist)
+        h = out[:, -1]
+        mu = self.theta_head_mu(h); lv = self.theta_head_lv(h)
+        theta = mu + (0.5 * lv).exp() * torch.randn_like(mu)
+        return theta, mu, lv
+
+    def step(self, z, a, theta):
+        """V2P-compatible call signature so the two share a training path."""
+        return self.forward(z, a, theta)
+
+    def forward(self, z, a, theta=None):
+        inp = torch.cat([z, a] if theta is None else [z, theta, a], dim=-1)
         x, y, yaw = z[:, 0], z[:, 1], z[:, 2]
         vx, vy, omega = z[:, 3], z[:, 4], z[:, 5]
         wheels, steer = z[:, 6:10], z[:, 10]

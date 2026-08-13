@@ -127,6 +127,47 @@ class FrenetTrack:
         return self.kappa[i].astype(np.float32)
 
 
+def local_road_points(centers, heading, total_len, grid_ds, s, offsets):
+    """Centreline geometry ahead, expressed in the LOCAL road frame at s.
+
+    Frame: origin at the centreline point C(s), x-axis along the track tangent
+    there, y-axis = left normal (so the frame the car sees at t0, with no
+    reference to where on the map it is). Returns the centreline sampled at
+    arc-lengths s+offsets:
+
+        P_j = R(-heading(s)) . (C(s + offsets_j) - C(s))         (N, K, 2)
+
+    This is the SHAPE-space counterpart of curvature_profile: same information,
+    but readable as a position without integrating twice. `centers`/`heading`
+    are the persisted track grid (track.npz), so the convention matches
+    kappa = d(heading)/ds and normal = (-sin h, cos h) exactly.
+
+    s (N,) or scalar, offsets (K,). Centreline lookup is linearly interpolated
+    on the grid (the nearest-index lookup used elsewhere would put a 2.5 cm
+    quantisation floor on targets we care about at the centimetre level).
+    """
+    centers = np.asarray(centers, np.float32)
+    heading = np.asarray(heading, np.float32)
+    M = len(centers)
+    s = np.atleast_1d(np.asarray(s, np.float32))
+    offsets = np.asarray(offsets, np.float32)
+
+    def _c(q):                       # linear interp of the closed centreline at arc-length q
+        u = np.mod(q, total_len) / grid_ds
+        i0 = np.floor(u).astype(int) % M
+        i1 = (i0 + 1) % M
+        w = (u - np.floor(u))[..., None]
+        return centers[i0] * (1 - w) + centers[i1] * w
+
+    i = (np.mod(s, total_len) / grid_ds).astype(int) % M
+    th0 = heading[i]                                       # (N,)
+    diff = _c(s[:, None] + offsets[None, :]) - _c(s)[:, None, :]      # (N,K,2)
+    c, sn = np.cos(th0)[:, None], np.sin(th0)[:, None]
+    x = diff[..., 0] * c + diff[..., 1] * sn
+    y = -diff[..., 0] * sn + diff[..., 1] * c
+    return np.stack([x, y], -1).astype(np.float32)
+
+
 if __name__ == "__main__":
     d1 = np.load('../Data_Donkeycar/traj1_64x64.npz', allow_pickle=True)
     st = d1['state'][:].astype(np.float32); m = ~np.isnan(st).any(axis=1)

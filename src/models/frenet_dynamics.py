@@ -138,6 +138,141 @@ class FrenetDynamics(nn.Module):
             out.append(z[0].clone())
         return torch.stack(out)
 
+    @torch.no_grad()
+    def rollout_perceived_local(self, z0, actions, kappa_profile0, offsets):
+        """Map-FREE rollout: returns the vehicle pose relative to its own start,
+        reconstructed entirely from the perceived curvature profile.
+
+        WHY THIS EXISTS
+        `rollout_perceived` already takes kappa from the camera rather than the
+        map, but it returns the state as (s, d): arc length along a *known*
+        centreline and lateral offset from it. Turning that into a position still
+        needs the track file, so the model was only map-free in its dynamics, not
+        in its state parameterization -- it presupposed a surveyed track. That is
+        a real generality limit, and it is also an asymmetry against the
+        baselines, which predict a track-agnostic body-relative displacement.
+
+        The fix is that the perceived profile is *already enough* to rebuild the
+        road locally. With kappa(sigma) known along the path the vehicle takes,
+            theta_road(sigma) = integral of kappa,
+            centreline(sigma) = integral of (cos theta_road, sin theta_road),
+        and the vehicle sits at centreline(sigma) + d * normal(sigma). So we
+        integrate the road forward alongside the vehicle and read the pose off it.
+        Nothing here touches self.kappa_grid or the centreline.
+
+        Frame: origin at the centreline point beneath the vehicle at t0, x-axis
+        along the road tangent there (theta_road(0) = 0). Matches the track
+        convention normal = (-sin theta, cos theta).
+
+          z0 (5,), actions (K,2), kappa_profile0 (n_off,), offsets (n_off,)
+          returns (K+1, 3) of (x, y, psi_vehicle) in metres / radians.
+        """
+        dev = z0.device
+        offs = torch.as_tensor(offsets, dtype=torch.float32, device=dev)
+        prof = torch.as_tensor(kappa_profile0, dtype=torch.float32, device=dev)
+        s0 = z0[0].clone()
+
+        z = z0.unsqueeze(0)
+        theta = torch.zeros((), device=dev)          # road heading, relative to t0
+        cx = torch.zeros((), device=dev)             # centreline point, local frame
+        cy = torch.zeros((), device=dev)
+
+        def _pose(th, cx, cy, d, psi_e):
+            # vehicle = centreline + d * left-normal ; heading = road + heading error
+            return torch.stack([cx - d * torch.sin(th),
+                                cy + d * torch.cos(th),
+                                th + psi_e])
+
+        out = [_pose(theta, cx, cy, z0[1], z0[2])]
+        for k in range(len(actions)):
+            s_prev = z[0, 0].clone()
+            delta = torch.remainder(z[0, 0] - s0, self.total_len)
+            kap = self._interp1d(offs, prof, delta).reshape(1)
+            z = self.forward(z, actions[k:k + 1], kappa_override=kap)
+            ds = z[0, 0] - s_prev                    # arc length covered this step
+            # advance the road with the same Euler step the dynamics used
+            cx = cx + torch.cos(theta) * ds
+            cy = cy + torch.sin(theta) * ds
+            theta = theta + kap[0] * ds
+            out.append(_pose(theta, cx, cy, z[0, 1], z[0, 2]))
+        return torch.stack(out)
+
+    @torch.no_grad()
+    def rollout_perceived_shape(self, z0, actions, kappa_profile0, road_pts0, offsets):
+        """Map-FREE rollout that READS the road shape instead of integrating it.
+
+        Same contract as `rollout_perceived_local` -- pose relative to the start,
+        nothing from the map -- but the local road comes from the perception's
+        SHAPE head (centreline points at the preview arc-lengths, in the road
+        frame at t0) rather than from integrating the curvature profile twice.
+        That double integration, not perception, is where the map-free penalty
+        came from: with a perfect kappa profile the integrated version still
+        lost 0.15 m at 100 steps.
+
+        Per step: advance the Frenet state with perceived kappa (the ODE needs
+        curvature at the car), then place the vehicle by interpolating the
+        perceived centreline at the arc length covered so far:
+            pose = P(delta) + d * normal(delta),  heading = theta(delta) + psi_e
+        where theta is the polyline's tangent angle. Past the preview reach the
+        interpolation holds the last knot, exactly as the kappa version does.
+
+          z0 (5,), actions (K,2), kappa_profile0 (n_off,),
+          road_pts0 (n_off,2) = perceived (X, Y) at s0+offsets, offsets (n_off,)
+          returns (K+1, 3) of (x, y, psi_vehicle) in metres / radians.
+        """
+        dev = z0.device
+        offs = torch.as_tensor(offsets, dtype=torch.float32, device=dev)
+        prof = torch.as_tensor(kappa_profile0, dtype=torch.float32, device=dev)
+        P = torch.as_tensor(road_pts0, dtype=torch.float32, device=dev)     # (n_off,2)
+        h = (offs[1] - offs[0]).clamp(min=1e-6)          # knots are uniform in arc length
+
+        # Catmull-Rom tangents. Straight-line interpolation between 0.5 m knots is
+        # not good enough here: the tightest corner has R = 0.31 m, so the chord
+        # cuts 10 cm off the arc. The cubic drops the readout floor from 3.3 cm to
+        # 1.6 cm mean (4.3 -> 2.2 cm at 100 steps).
+        m = torch.zeros_like(P)
+        m[1:-1] = (P[2:] - P[:-2]) / 2
+        m[0] = P[1] - P[0]
+        m[-1] = P[-1] - P[-2]
+        # knot tangent angles, made continuous, so the spline angle can be
+        # unwrapped onto the right branch (the 4.5 m preview can turn > pi)
+        dP = torch.zeros_like(P)
+        dP[1:-1] = P[2:] - P[:-2]
+        dP[0] = P[1] - P[0]
+        dP[-1] = P[-1] - P[-2]
+        a = torch.atan2(dP[:, 1], dP[:, 0])
+        step = torch.remainder(a[1:] - a[:-1] + torch.pi, 2 * torch.pi) - torch.pi
+        thk = torch.cat([a[:1], a[:1] + torch.cumsum(step, 0)])
+        thk = thk - thk[0]                    # frame convention: theta_road(0) = 0
+
+        n = len(P)
+        s0 = z0[0].clone()
+        z = z0.unsqueeze(0)
+
+        def _pose(delta, d, psi_e):
+            dl = delta.clamp(offs[0], offs[-1])          # hold-last past the preview
+            j = ((dl - offs[0]) / h).floor().long().clamp(0, n - 2)
+            u = (dl - offs[j]) / h
+            u2, u3 = u * u, u * u * u
+            pos = ((2*u3 - 3*u2 + 1) * P[j] + (u3 - 2*u2 + u) * m[j]
+                   + (-2*u3 + 3*u2) * P[j + 1] + (u3 - u2) * m[j + 1])
+            dv = ((6*u2 - 6*u) * P[j] + (3*u2 - 4*u + 1) * m[j]
+                  + (-6*u2 + 6*u) * P[j + 1] + (3*u2 - 2*u) * m[j + 1])
+            aa = torch.atan2(dv[1], dv[0])
+            t = thk[j] + (torch.remainder(aa - thk[j] + torch.pi, 2 * torch.pi) - torch.pi)
+            return torch.stack([pos[0] - d * torch.sin(t), pos[1] + d * torch.cos(t),
+                                t + psi_e])
+
+        zero = torch.zeros((), device=dev)
+        out = [_pose(zero, z0[1], z0[2])]
+        for k in range(len(actions)):
+            delta = torch.remainder(z[0, 0] - s0, self.total_len)
+            kap = self._interp1d(offs, prof, delta).reshape(1)
+            z = self.forward(z, actions[k:k + 1], kappa_override=kap)
+            delta = torch.remainder(z[0, 0] - s0, self.total_len)
+            out.append(_pose(delta, z[0, 1], z[0, 2]))
+        return torch.stack(out)
+
     # --- loss helper: per-dim normalized error (s uses fixed 0.5 m scale) ---
     def state_loss(self, z_pred, z_gt):
         scale = torch.tensor([0.5, self.state_std[1].item(), self.state_std[2].item(),
