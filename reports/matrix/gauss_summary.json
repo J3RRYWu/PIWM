@@ -1,0 +1,32 @@
+[
+ {
+  "name": "dyn_gauss_f0",
+  "rc": 0,
+  "ok": true,
+  "secs": 814.2
+ },
+ {
+  "name": "dyn_gauss_f2",
+  "rc": 0,
+  "ok": true,
+  "secs": 836.2
+ },
+ {
+  "name": "dyn_gauss_f1",
+  "rc": 0,
+  "ok": true,
+  "secs": 858.2
+ },
+ {
+  "name": "dyn_gauss_f3",
+  "rc": 0,
+  "ok": true,
+  "secs": 600.1
+ },
+ {
+  "name": "dyn_gauss_f4",
+  "rc": 0,
+  "ok": true,
+  "secs": 600.1
+ }
+]

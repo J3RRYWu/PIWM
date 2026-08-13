@@ -54,8 +54,17 @@ K, STRIDE = est.K, est.STRIDE
 OFFSETS = est.OFFSETS
 DELTAS = [0.0, 0.05, 0.10]
 BASELINES = [("DVBF", DynamicsDVBFLane), ("GOKU", DynamicsGOKULane),
-             ("V2P", DynamicsVid2ParamLane)]
+             ("V2P", DynamicsVid2ParamLane),
+             # GokuNet with the observation pathway the conference version gives it,
+             # at Vid2Param's exact parameter count -- see HANDOFF §0.3.
+             ("goku_obs", lambda: DynamicsGOKULane(
+                 theta_dim=DynamicsVid2ParamLane.THETA_DIM))]
+# these infer a theta from the shared image encoder rather than running on state alone
+OBS_COND = {"V2P", "goku_obs"}
+# trained at delta=0 only, so do not report them as missing at the other noise levels
+DELTA0_ONLY = {"goku_obs"}
 REPORT = _os.path.join("reports", "matrix", "folds_table.md")
+REPORT_SEL = _os.path.join("reports", "matrix", "folds_table_symmetric.md")
 
 
 def dtag(d):
@@ -66,7 +75,8 @@ def _exists(p):
     return _os.path.exists(p)
 
 
-def eval_one_fold(base, fr_files, fold, nfolds, deltas, log, eps_override=None):
+def eval_one_fold(base, fr_files, fold, nfolds, deltas, log, eps_override=None,
+                  selected=None):
     """Every model of one fold, measured on that fold's held-out episodes.
 
     `eps_override` restricts the evaluation to a subset of them (used by the
@@ -101,17 +111,35 @@ def eval_one_fold(base, fr_files, fold, nfolds, deltas, log, eps_override=None):
         else:
             log(f"  ! missing {p}")
         for v, cls in BASELINES:
-            p = f"checkpoints/{v.lower()}_lane_donkey_f{fold}{dtag(d)}/best.tar"
+            if d != 0 and v in DELTA0_ONLY:
+                continue
+            run = f"{v.lower()}_lane_donkey_f{fold}{dtag(d)}"
+            p = f"checkpoints/{run}/best.tar"
+            if selected and run in selected:
+                # symmetric selection: the epoch chosen by the REPORTED metric, the
+                # same rule our dynamics already uses. See scripts/select_checkpoints.py
+                # -- and note this leaves BOTH sides selected on the evaluation windows.
+                p = selected[run]["metric_tar"]
+                log(f"  [sel] {run} -> {_os.path.basename(p)}")
             if _exists(p):
                 m = cls(); m.load_state_dict(load_checkpoint(p)["model"]); m.eval()
                 bl[(v, d)] = m
             else:
                 log(f"  ! missing {p}")
+    # control for the delta result: same dynamics, same noise MAGNITUDE, plain Gaussian
+    # instead of the conference's biased-uniform weak supervision (train_frenet
+    # --noise_kind gauss). Trained at delta=0.10, so it pairs with dyn_f{fold}_d10.
+    dyn_ctl = {}
+    p = f"checkpoints/cv/dyn_gauss_f{fold}.tar"
+    if _exists(p):
+        dyn_ctl["gauss"] = est._load_frenet(p)
+
     if not dyn and not bl:
         return None
 
     rows = ([f"{v}{dtag(d)}" for v, _ in BASELINES for d in deltas]
-            + [f"ours-a{dtag(d)}" for d in deltas] + [f"ours-c{dtag(d)}" for d in deltas])
+            + [f"ours-a{dtag(d)}" for d in deltas] + [f"ours-c{dtag(d)}" for d in deltas]
+            + [f"ours-a_{t}" for t in dyn_ctl])
     res = {r: [] for r in rows}
 
     for ep in sorted(val_eps):
@@ -151,9 +179,9 @@ def eval_one_fold(base, fr_files, fold, nfolds, deltas, log, eps_override=None):
                     if m is None:
                         continue
                     z = torch.tensor(s31[0]).unsqueeze(0); xy = [s31[0, :2]]
-                    theta = m.infer_theta(obs)[0] if v == "V2P" else None
+                    theta = m.infer_theta(obs)[0] if v in OBS_COND else None
                     for k in range(K):
-                        if v == "V2P":
+                        if theta is not None:
                             z = m.step(z, acts_b[k], theta)
                         else:
                             out = m(z, acts_b[k])
@@ -171,6 +199,13 @@ def eval_one_fold(base, fr_files, fold, nfolds, deltas, log, eps_override=None):
                         p = fr.rollout_perceived_shape(z0, acts_f, torch.tensor(kap_s),
                                                        shp_t, OFFSETS).numpy()
                         res[f"ours-c{dtag(d)}"].append(np.linalg.norm(p[:, :2] - gt_loc, axis=-1))
+                # the Gaussian control, measured exactly like ours-(a)
+                for tag, fr in dyn_ctl.items():
+                    if kenc is None:
+                        continue
+                    f = fr.rollout_perceived(z0, acts_f, torch.tensor(prof), OFFSETS).numpy()
+                    res[f"ours-a_{tag}"].append(np.linalg.norm(
+                        est.sd2xy_nn(f[:, 0], f[:, 1]) - gt_xy_nn, axis=-1))
 
     out = {}
     counts = set()
@@ -265,6 +300,11 @@ def main():
     ap.add_argument("--folds", type=int, nargs="+", default=None)
     ap.add_argument("--nfolds", type=int, default=5)
     ap.add_argument("--deltas", type=float, nargs="+", default=DELTAS)
+    ap.add_argument("--selected", nargs="?", const=_os.path.join(
+                        "reports", "matrix", "selected_checkpoints.json"), default=None,
+                    help="use the baselines' metric-selected epochs from this json "
+                         "(scripts/select_checkpoints.py) instead of their val_loss "
+                         "best.tar, making selection symmetric with ours")
     ap.add_argument("--leak-audit", action="store_true", dest="leak_audit",
                     help="quantify the shared v6 encoder's leakage into V2P. Only V2P "
                          "uses that encoder (for theta); DVBF/GOKU/ours do not, so they "
@@ -288,9 +328,17 @@ def main():
                        if "_meta" not in f])
     folds = a.folds if a.folds is not None else list(range(a.nfolds))
 
+    selected = None
+    if a.selected:
+        with open(a.selected, encoding="utf-8") as fh:
+            selected = json.load(fh)
+        log(f"SYMMETRIC SELECTION: baselines take the epoch chosen by E_xy@100 "
+            f"({a.selected}, {len(selected)} runs). Ours already selects this way; "
+            f"both sides are therefore selected on the evaluation windows.")
+
     per_fold = {}
     for f in folds:
-        r = eval_one_fold(base, fr_files, f, a.nfolds, a.deltas, log)
+        r = eval_one_fold(base, fr_files, f, a.nfolds, a.deltas, log, selected=selected)
         if r:
             per_fold[f] = r
         else:
@@ -314,7 +362,8 @@ def main():
     log("=" * 74)
     log(f"{'model':<18} {'@25':>16} {'@50':>16} {'@100':>16} {'k':>3}")
     log("-" * 74)
-    for row, label in [("DVBF", "DVBF"), ("GOKU", "GokuNet"), ("V2P", "Vid2Param"),
+    for row, label in [("DVBF", "DVBF"), ("GOKU", "GokuNet"),
+                       ("goku_obs", "GokuNet (obs)"), ("V2P", "Vid2Param"),
                        ("ours-a", "ours (map)"), ("ours-c", "ours (map-free)")]:
         cells, n = [], 0
         for j, c in enumerate((0, 1, 2)):
@@ -332,7 +381,8 @@ def main():
     log(f"{'model':<18} " + " ".join(f"{'d=' + str(int(d*100)) + '%':>16}" for d in a.deltas))
     log("-" * 74)
     for row, label in [("ours-a", "ours (map)"), ("ours-c", "ours (map-free)"),
-                       ("V2P", "Vid2Param"), ("GOKU", "GokuNet"), ("DVBF", "DVBF")]:
+                       ("V2P", "Vid2Param"), ("GOKU", "GokuNet"),
+                       ("goku_obs", "GokuNet (obs)"), ("DVBF", "DVBF")]:
         cells = []
         for d in a.deltas:
             (m_s), n = cell(f"{row}{dtag(d)}", 2)
@@ -356,6 +406,31 @@ def main():
             log(f"  vs {v:<5} mean {g.mean():+.3f}m  per fold "
                 f"[{', '.join(f'{x:+.3f}' for x in g)}]  ours better in {wins}/{len(g)}")
 
+    # ---- is the delta effect specific to the weak-supervision noise? ----
+    if any("ours-a_gauss" in per_fold[f] for f in got):
+        log("\n" + "=" * 74)
+        log("IS THE DELTA GAIN ABOUT WEAK SUPERVISION, OR JUST NOISE?")
+        log("same dynamics, same per-dim noise MAGNITUDE, delta=10%:")
+        log("=" * 74)
+        trio = [("ours-a", "no noise (delta=0)"),
+                ("ours-a_d10", "biased-uniform (conference)"),
+                ("ours-a_gauss", "matched Gaussian (control)")]
+        for row, label in trio:
+            (m_s), n = cell(row, 2)
+            if m_s:
+                log(f"  {label:<30} {m_s[0]:.3f} +/- {m_s[1]:.3f} m   (k={n})")
+        pf = [f for f in got
+              if "ours-a_gauss" in per_fold[f] and "ours-a_d10" in per_fold[f]]
+        if pf:
+            d = [(per_fold[f]["ours-a_gauss"][2][:, 2]
+                  - per_fold[f]["ours-a_d10"][2][:, 2]).mean() for f in pf]
+            log(f"\n  paired gauss - biased-uniform: {np.mean(d):+.3f}m  "
+                f"per fold [{', '.join(f'{x:+.3f}' for x in d)}]")
+            log("  -> a gain of the same size under both means the effect is ordinary "
+                "regularisation\n     and must be described that way; only a clear "
+                "advantage for the biased-uniform\n     form makes it a statement about "
+                "weak supervision.")
+
     # ---- map-free cost -------------------------------------------------
     log("\npaired (a) vs (c): cost of dropping the known centreline, delta=0")
     gaps = [(per_fold[f]["ours-c"][2][:, 2] - per_fold[f]["ours-a"][2][:, 2]).mean()
@@ -363,12 +438,15 @@ def main():
     if gaps:
         log(f"  mean {np.mean(gaps):+.3f}m  per fold [{', '.join(f'{x:+.3f}' for x in gaps)}]")
 
-    _os.makedirs(_os.path.dirname(REPORT), exist_ok=True)
-    with open(REPORT, "w", encoding="utf-8") as fh:
-        fh.write("# 5-fold CV tables\n\n```\n" + "\n".join(lines) + "\n```\n")
+    out_md = REPORT_SEL if selected else REPORT
+    _os.makedirs(_os.path.dirname(out_md), exist_ok=True)
+    with open(out_md, "w", encoding="utf-8") as fh:
+        fh.write("# 5-fold CV tables"
+                 + (" (symmetric checkpoint selection)" if selected else "")
+                 + "\n\n```\n" + "\n".join(lines) + "\n```\n")
     curves = {f"f{f}_{r}": per_fold[f][r][1] for f in got for r in per_fold[f]}
-    np.savez_compressed(REPORT.replace(".md", "_curves.npz"), **curves)
-    print(f"\nsaved -> {REPORT}\n({time.time()-t0:.0f}s)")
+    np.savez_compressed(out_md.replace(".md", "_curves.npz"), **curves)
+    print(f"\nsaved -> {out_md}\n({time.time()-t0:.0f}s)")
 
 
 if __name__ == "__main__":

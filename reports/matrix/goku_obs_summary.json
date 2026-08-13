@@ -1,0 +1,32 @@
+[
+ {
+  "name": "goku_obs_f0",
+  "rc": 0,
+  "ok": true,
+  "secs": 4207.0
+ },
+ {
+  "name": "goku_obs_f3",
+  "rc": 0,
+  "ok": true,
+  "secs": 4265.0
+ },
+ {
+  "name": "goku_obs_f2",
+  "rc": 0,
+  "ok": true,
+  "secs": 4311.1
+ },
+ {
+  "name": "goku_obs_f1",
+  "rc": 0,
+  "ok": true,
+  "secs": 4407.1
+ },
+ {
+  "name": "goku_obs_f4",
+  "rc": 0,
+  "ok": true,
+  "secs": 1548.3
+ }
+]

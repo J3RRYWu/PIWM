@@ -1,0 +1,32 @@
+[
+ {
+  "name": "sindyc_f0",
+  "rc": 1,
+  "ok": false,
+  "secs": 182.1
+ },
+ {
+  "name": "sindyc_f1",
+  "rc": 1,
+  "ok": false,
+  "secs": 190.1
+ },
+ {
+  "name": "sindyc_f3",
+  "rc": 1,
+  "ok": false,
+  "secs": 152.0
+ },
+ {
+  "name": "sindyc_f2",
+  "rc": 1,
+  "ok": false,
+  "secs": 190.1
+ },
+ {
+  "name": "sindyc_f4",
+  "rc": 1,
+  "ok": false,
+  "secs": 152.0
+ }
+]
