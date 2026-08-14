@@ -128,8 +128,10 @@ environment: a split-dynamics model that advances the vehicle through structured
 kinematics while forecasting how the road context evolves.
 On the physical DonkeyCar, where road context is supervised only during training
 and must be recovered from the front camera at test time, PIWM attains
-\SI{0.267}{m} position error over a 100-step rollout against \SI{0.383}{m} for
-the strongest baseline, with every state variable physically meaningful.
+\SI{0.463}{m} position error over a 100-step rollout against \SI{0.703}{m} for
+the strongest baseline under five-fold cross-validation, ahead in every fold, with
+less than half the fold-to-fold variation of any baseline---and with every state
+variable physically meaningful.
 \end{abstract}
 
 \begin{keyword}
@@ -267,11 +269,11 @@ image stream.
 This setup tests whether the factorized representation learned under privileged
 supervision transfers to the more challenging unaided real-world deployment
 setting.
-On the physical platform, over a 100-step ($\approx$\SI{4.5}{s}) rollout, PIWM
-with factorized state and split dynamics reaches \SI{0.267}{m} position error
-against \SI{0.383}{m} for the strongest data-driven or physics-informed baseline,
-and the gap widens with the horizon: the baselines diverge while PIWM stays
-bounded.
+On the physical platform, over a 100-step ($\approx$\SI{4.5}{s}) rollout and under
+five-fold cross-validation, PIWM with factorized state and split dynamics reaches
+\SI{0.463}{m} position error against \SI{0.703}{m} for the strongest data-driven
+or physics-informed baseline, ahead in every fold, and the gap widens with the
+horizon: the baselines diverge while PIWM stays bounded.
 
 \subsection*{Contributions}
 
@@ -932,9 +934,10 @@ We therefore tested it directly, implementing the claimed configuration (per-fra
 convolutional encoder, a $512$-entry VQ bottleneck, and a Transformer with
 self-attention over the temporal window) at matched capacity and training it to
 convergence on the same data as the encoder we ship.
-It is worse on both the perception task and the downstream rollout, by
-\SI{0.071}{m^{-1}} of curvature error and \SI{8}{mm} of 100-step position error
-(Table~\ref{tab:kappa_source}).
+It is worse at the perception task ($\mathrm{RMSE}_\kappa$ \SI{0.219}{} against
+\SI{0.154}{m^{-1}}) and indistinguishable downstream: paired within folds, its
+100-step position error differs from the shipped encoder's by less than a
+millimeter (Table~\ref{tab:kappa_source}).
 The driving experiments therefore use a convolutional encoder over the stacked
 window with a linear curvature head, trained from scratch on the road-context
 objective; the VQ--Transformer variant is reported as a baseline.
@@ -1223,9 +1226,11 @@ re-indexed, not extrapolated.
 This is the structural reason the rollout stays bounded, and it is what
 distinguishes the model from world models that carry the road as an unconstrained
 latent that drifts and, in turn, corrupts the vehicle branch that consumes it.
-The preview is long enough for this to be well defined: over a 100-step rollout
-the vehicle covers on average \SI{3.3}{m} of arc length (\SI{4.45}{m} at the
-$90$th percentile), inside the \SI{4.5}{m} perceived preview.
+The preview is long enough for this to be well defined for most of the horizon:
+over a 100-step rollout the vehicle covers on average \SI{3.1}{m} of arc length,
+staying inside the \SI{4.5}{m} perceived preview in $82\%$ of evaluation windows;
+past the preview the model holds the last perceived value rather than
+extrapolating.
 Because $f_r$ operates on the physically interpretable $\zr$, the forecasted road
 context at any horizon is itself interpretable: the model outputs a predicted
 lane geometry that can be visualized and checked, not an opaque feature.
@@ -1421,9 +1426,14 @@ Laps are split into disjoint training and validation sets; all numbers reported
 below are computed on the $201$ held-out validation windows, in real meters.
 
 \paragraph{Architecture and training}
-The driving experiments use the extrinsic PIWM variant (a vision encoder followed
-by a physical encoder producing the factorized state), which the conference paper
-showed to be the strongest configuration.
+The driving experiments use a vision encoder followed by a physical head that
+produces the factorized state. The head is trained directly against the road-context
+labels rather than through a reconstruction objective, because road context is
+available under privileged supervision at training time and nothing has to be
+learned by reconstructing the image. This is a departure from the conference
+version's autoencoding variants, so we implemented those as well and measured them
+here rather than inheriting their ranking (Table~\ref{tab:kappa_source}); on this
+task the choice does not move the rollout error.
 The vision encoder maps each $64 \times 64$ observation to a compact latent, and
 the physical encoder aggregates a context window of $k = 15$ frames
 ($\approx$\SI{0.7}{s}) to infer the road context from image sequences
@@ -1628,66 +1638,80 @@ the deployed model beyond what it can read from its own images.
 
 \paragraph{Long-horizon prediction against baselines}
 Table~\ref{tab:donkey_main} and Figure~\ref{fig:donkey_main} report position error
-over a 100-step ($\approx$\SI{4.5}{s}) autoregressive rollout on the $201$
-held-out validation windows.
+over a 100-step ($\approx$\SI{4.5}{s}) autoregressive rollout under five-fold
+cross-validation over the $71$ recorded episodes: each fold holds out one fifth of
+them ($301$--$647$ evaluation windows, $2483$ in total), every model is trained on
+that fold's training episodes only, and we average within a fold before reporting
+mean and half-range over the five fold-level means. Comparisons \emph{within} a
+fold are paired---every model rolls out from the same initial states over the same
+windows---and the paired statistics below are computed that way.
 Two regimes are visible, and the crossover between them is the central result.
-Up to roughly $65$ steps the physics-aware baselines are \emph{ahead} of our
-model: Vid2Param in particular is more than twice as accurate at step $25$
-(\SI{0.036}{m} against \SI{0.090}{m}).
+For the first two thirds of the horizon the physics-aware baselines are
+\emph{ahead} of our model: Vid2Param in particular is nearly four times as accurate
+at step $25$ (\SI{0.036}{m} against \SI{0.141}{m}).
 This is expected, and it is a consequence of the comparison being generous to
 them: each baseline is handed the ground-truth lane waypoints at $t_0$, so over
 short horizons it is interpolating from a description of the road that our model
 had to recover from pixels.
-Beyond the crossover the ordering inverts and does not invert back.
-By step $100$ every baseline has entered superlinear error growth, while our model
-has not: \SI{0.267}{m} against \SI{0.383}{m} for the strongest baseline, a factor
-of $1.4$, growing to $1.8\times$ against GOKU-net and $2.3\times$ against DVBF.
-SINDYc diverges outright: it is already at \SI{7.5}{m} by step $25$ and
-\SI{79}{m} by step $50$, at which point the rollout is meaningless on a track
-whose lap is a few meters across. Our evaluation clamps it at \SI{100}{m}, so we
-report it as divergent rather than quoting an error value.
+Beyond the crossover the ordering inverts and does not invert back: on the
+fold-mean curves our model is permanently ahead of DVBF from step $64$, of
+GOKU-net from step $75$ and of Vid2Param from step $82$.
+By step $100$ it reaches \SI{0.463}{m} against \SI{0.703}{m} for the
+strongest baseline. Within each fold, where the comparison is paired, our model is
+ahead at step $100$ in \emph{all five} folds against every baseline: by
+\SI{0.241}{m} on average against Vid2Param, \SI{0.262}{m} against GOKU-net and
+\SI{0.374}{m} against DVBF.
+SINDYc diverges in every one of the $2483$ evaluation windows of all five folds, so
+we report it as divergent rather than quoting a value; past the point of divergence
+the number records only where the rollout was clamped.
+
+The more informative quantity is the spread. Changing which episodes are held out
+moves our error by $\pm\SI{0.046}{m}$, against $\pm\SI{0.192}{m}$ for Vid2Param,
+$\pm\SI{0.122}{m}$ for GOKU-net and $\pm\SI{0.160}{m}$ for DVBF---factors of
+$2.7$ to $4.2$. The baselines' long-horizon error depends substantially on which part of
+the track they were trained on; ours much less so. We regard this as the more
+durable of the two claims, because it does not rest on any single trained model.
 
 \begin{table}[t]
 \centering
 \caption{Position error $E_{xy}$ in meters on the physical DonkeyCar, at three
-rollout horizons, averaged over the $201$ held-out validation windows (lower is
+rollout horizons, as mean $\pm$ half-range over five-fold cross-validation (lower is
 better). All models are driven by the same actions and are initialized from the
 ground-truth state; the baselines additionally receive the ground-truth lane
 waypoints at $t_0$. Of the baselines only Vid2Param also sees the images---DVBF
 and GOKU-net are run as dynamics-only models (Section~\ref{sec:baselines}), which is
-why Vid2Param leads them. The oracle row is a privileged
-variant of our own model, not a competing method: it reads $\kappa$ from the known
-track map instead of the camera and therefore upper-bounds what perfect road
-perception could buy.}
+why Vid2Param leads them. Every model, ours included, keeps the epoch with the best
+$E_{xy}(100)$; the last column also reports how much each model moves when the
+held-out episodes change. The map-free row recovers position without consulting the
+track map at all, reading the road geometry from the perception's shape output
+instead of indexing a surveyed centerline.}
 \label{tab:donkey_main}
 \small
 \begin{tabular}{lrrr}
 \toprule
 Model & $E_{xy}(25)$ & $E_{xy}(50)$ & $E_{xy}(100)$ \\
 \midrule
-Vid2Param~\cite{asenov2019vid2param}   & \textbf{0.036} & \textbf{0.076} & 0.383 \\
-GOKU-net~\cite{linial_generative_2021}  & 0.061 & 0.130 & 0.478 \\
-DVBF~\cite{karl2016deep}               & 0.071 & 0.167 & 0.610 \\
-SINDYc~\cite{BRUNTON2016710}           & \multicolumn{3}{c}{diverges (\SI{7.5}{m} at step 25; clamped at \SI{100}{m})} \\
+Vid2Param~\cite{asenov2019vid2param}   & $\mathbf{0.036 \pm 0.010}$ & $\mathbf{0.107 \pm 0.009}$ & $0.703 \pm 0.192$ \\
+GOKU-net~\cite{linial_generative_2021}  & $0.046 \pm 0.015$ & $0.131 \pm 0.015$ & $0.725 \pm 0.122$ \\
+DVBF~\cite{karl2016deep}               & $0.061 \pm 0.011$ & $0.173 \pm 0.038$ & $0.837 \pm 0.160$ \\
+SINDYc~\cite{BRUNTON2016710}           & \multicolumn{3}{c}{diverges in all $2483$ windows of all five folds} \\
 \midrule
-\textbf{PIWM-Frenet (ours, perceived $\kappa$)} & 0.090 & 0.158 & \textbf{0.267} \\
-\midrule
-\emph{PIWM-Frenet (oracle $\kappa$, privileged)} & \emph{0.085} & \emph{0.148} & \emph{0.246} \\
+\textbf{PIWM-Frenet (ours, perceived $\kappa$)} & $0.141 \pm 0.011$ & $0.245 \pm 0.025$ & $\mathbf{0.463 \pm 0.046}$ \\
+\emph{PIWM-Frenet (map-free)} & \emph{$0.146 \pm 0.013$} & \emph{$0.258 \pm 0.031$} & \emph{$0.516 \pm 0.068$} \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \begin{figure}[t]
     \centering
-    \includegraphics[width=\linewidth]{fig_main.pdf}
-    \caption{Position error against rollout step on the physical DonkeyCar
-    (mean $\pm$ standard error over the $201$ held-out validation windows, all
-    rollouts initialized from the ground-truth state). The baselines lead over
-    short horizons and then enter superlinear growth; the proposed model stays
-    close to linear because the road it rolls out over was observed rather than
-    extrapolated. SINDYc leaves the plot range before step $25$. The privileged
-    oracle curve (dotted) is our own model with $\kappa$ read from the track map
-    and sits only $\sim$\SI{2}{cm} below the perceived model at step $100$.}
+    \includegraphics[width=\linewidth]{fig_main_cv.pdf}
+    \caption{Position error against rollout step on the physical DonkeyCar. Lines
+    are the mean over five folds and the bands span the folds' minimum to maximum,
+    so the width of a band is how much a model depends on which episodes were held
+    out. All rollouts are initialized from the ground-truth state. The baselines
+    lead over short horizons and then enter superlinear growth; the proposed model
+    stays close to linear because the road it rolls out over was observed rather
+    than extrapolated. SINDYc diverges in every window and is omitted.}
     \label{fig:donkey_main}
 \end{figure}
 
@@ -1703,68 +1727,73 @@ that propagation feeds back into the vehicle branch that consumes it; the result
 is the compounding growth visible in Figure~\ref{fig:donkey_main}.
 Our model does not propagate the road at all: by~\eqref{eq:frenet_kappa} it
 re-reads the curvature that was already perceived at $t_0$, indexed by the arc
-length covered so far (Figure~\ref{fig:prediction}). Since the vehicle travels on
-average \SI{3.3}{m} over the full rollout, well inside the \SI{4.5}{m} preview,
-the road is \emph{observed} for the entire horizon and error in it cannot
-accumulate.
+length covered so far (Figure~\ref{fig:prediction}). The vehicle travels
+\SI{3.1}{m} on average over the full rollout, within the \SI{4.5}{m} preview in
+$82\%$ of the evaluation windows; in the remainder the model holds the last
+perceived value rather than extrapolating. For most of the horizon the road is
+therefore \emph{observed}, and error in it cannot accumulate.
 
 \paragraph{The cost of perceiving the road}
 Because the road-context encoder (Figure~\ref{fig:encoding}) is the only part of
 the model that has to look at pixels, we can price it directly by replacing its
 output with progressively better sources of $\kappa$
 (Table~\ref{tab:kappa_source}).
-Reading $\kappa$ from the known track map---privileged information no
-image-and-action model could have---yields \SI{0.246}{m}; feeding the
-ground-truth curvature profile, i.e.\ perfect perception of exactly the quantity
-the encoder predicts, yields \SI{0.263}{m}; the encoder actually used yields
-\SI{0.267}{m} at a curvature error of $\mathrm{RMSE}_\kappa =
-\SI{0.1193}{m^{-1}}$.
-The entire cost of replacing a map lookup by a camera is therefore about
-\SI{2}{cm} at 100 steps, roughly $8\%$ of the total error, and the model still
-beats the strongest baseline by $1.4\times$.
-The advantage is thus attributable to the \emph{structure} of the representation,
-not to privileged information.
+Feeding the ground-truth curvature profile---perfect perception of exactly the
+quantity the encoder predicts---yields \SI{0.466}{m}; the encoder actually used
+yields \SI{0.463}{m}, a paired difference of \SI{0.003}{m}.
+Perceiving the road from the camera costs nothing measurable.
+Reading $\kappa$ from the known track map instead---privileged information no
+image-and-action model could have---is \emph{worse}, at \SI{0.505}{m}; we return
+to why below.
+The advantage over the baselines is thus attributable to the \emph{structure} of
+the representation, not to privileged information or to perception quality.
 
-The same table settles two architecture questions.
-First, the encoder is best trained from scratch on the road-context objective:
-warm-starting its backbone from the pretrained visual encoder of the conference
-model is slightly worse (\SI{0.274}{m}) and freezing that backbone is clearly
-worse (\SI{0.290}{m}), so features tuned for image reconstruction are not the
-features needed to read road curvature.
-Second, the discrete-latent, self-attention configuration that the conference
-paper found strongest on fully observable benchmarks does \emph{not} transfer to
-this task: at matched capacity and four times the training budget, and with a
-healthy codebook (roughly $270$ of $512$ entries in active use), the
-VQ--Transformer encoder reaches only $\mathrm{RMSE}_\kappa =
-\SI{0.190}{m^{-1}}$ against \SI{0.119}{m^{-1}} for the convolutional encoder.
-
-The most informative thing about Table~\ref{tab:kappa_source}, however, is how
-weakly perception quality propagates.
-Curvature error varies by a factor of two across the four camera-only rows
-(\SI{0.119}{}--\SI{0.237}{m^{-1}}) while the resulting 100-step position error
-varies by \SI{2.3}{cm} (\SI{0.267}{}--\SI{0.290}{m}); the VQ--Transformer encoder
-is $59\%$ worse at reading curvature yet only \SI{8}{mm} worse at predicting
-position.
+The table also settles the encoder-architecture question, in the least flattering
+way possible: it does not matter.
+The ten camera rows span the conference version's design space---directly
+supervised regressors from scratch and from the pretrained backbone, the two-stage
+extrinsic autoencoder, the single-encoder intrinsic variant, the discrete
+VQ--Transformer configuration the conference paper found strongest on fully
+observable benchmarks---together with plain LSTM and Transformer sequence models
+as non-physical benchmarks.
+Across these, curvature error spans a factor of $7.3$
+(\SI{0.122}{}--\SI{0.898}{m^{-1}}) while the 100-step position error moves by
+\SI{0.017}{m}, about $4\%$ and less than any single row's spread across folds;
+paired within folds, no camera encoder differs from the shipped one by more than
+\SI{0.009}{m}.
+The ordering does not even carry over: the most accurate curvature estimate (the
+Transformer) produces the worst rollout of the ten, and the least accurate (the
+LSTM, $7$ times worse) the second best.
 This is the clearest evidence we have for the article's central claim.
-If the rollout depended on continuously estimating the road, a $59\%$ worse
-estimate would compound over $100$ steps.
-It does not, because the road enters the dynamics as a fixed preview that is
-re-indexed geometrically~\eqref{eq:frenet_kappa} rather than integrated: errors in
-$\hat{\kappa}$ perturb the trajectory, but they do not accumulate in it.
-The corollary is practical---effort spent sharpening road perception has sharply
-diminishing returns here, and the remaining error is dominated by the vehicle
-branch, consistent with the sensitivity analysis below.
+If the rollout depended on continuously estimating the road, an estimate seven
+times worse would compound over $100$ steps. It does not, because the road enters
+the dynamics as a fixed preview that is re-indexed
+geometrically~\eqref{eq:frenet_kappa} rather than integrated: errors in
+$\hat{\kappa}$ perturb the trajectory but do not accumulate in it.
+
+What does matter is that re-indexing, and the two privileged rows isolate it. Both
+hold perfect curvature information and differ only in how it is read: the map row
+looks $\kappa$ up at the position the rollout has predicted, while the ground-truth
+profile row reads a preview observed once and indexed by the arc length covered. The
+second is better by \SI{0.039}{m}, consistently in all five folds---a larger effect
+than the entire span of the encoder design space above it. Reading a fixed preview
+beats consulting a perfect map, because a drift in predicted position sends the map
+lookup to the wrong part of the track while it merely shifts the preview.
+The corollary is practical: effort spent sharpening road perception has sharply
+diminishing returns here, and the remaining error is dominated by the vehicle branch.
 
 \begin{table}[t]
 \centering
 \caption{Where the curvature comes from. All rows use the identical dynamics and
-differ only in how $\kappa$ is obtained. $\mathrm{RMSE}_\kappa$ is the encoder's
-own curvature error in \si{m^{-1}} and $E_{xy}(100)$ the resulting 100-step
-position error in meters, both on the physical DonkeyCar. The first two rows are
-privileged upper bounds, not deployable models; the remaining four read the front
-camera alone and differ only in encoder architecture or initialization. Note how
-little of the wide spread in perception quality survives into the rollout: a
-factor of two in $\mathrm{RMSE}_\kappa$ becomes \SI{2.3}{cm} in $E_{xy}(100)$.}
+differ only in how $\kappa$ is obtained; five-fold cross-validation, mean $\pm$
+half-range. $\mathrm{RMSE}_\kappa$ is the encoder's own curvature error in
+\si{m^{-1}} and $E_{xy}(100)$ the resulting 100-step position error in meters. The
+first two rows are privileged and not deployable; the remaining ten read the front
+camera alone and span the conference version's encoder design space together with
+its two non-physical sequence benchmarks. Curvature accuracy varies by a factor of
+$7.3$ across the camera rows while the rollout error varies by $4\%$---less than any
+single row moves between folds---and the ordering does not carry over: the best
+curvature estimate gives the worst rollout.}
 \label{tab:kappa_source}
 \footnotesize
 \setlength{\tabcolsep}{4.5pt}
@@ -1772,13 +1801,17 @@ factor of two in $\mathrm{RMSE}_\kappa$ becomes \SI{2.3}{cm} in $E_{xy}(100)$.}
 \toprule
 Source of $\kappa$ & Input & $\mathrm{RMSE}_\kappa$ & $E_{xy}(100)$ \\
 \midrule
-Known track map            & map $+$ pose  & ---   & 0.246 \\
-Ground-truth profile       & true $\kappa$ & ---   & 0.263 \\
+Known track map            & map $+$ pose  & ---   & $0.505 \pm 0.044$ \\
+Ground-truth profile       & true $\kappa$ & ---   & $0.466 \pm 0.049$ \\
 \midrule
-\textbf{CNN, from scratch} & \textbf{camera} & \textbf{0.119} & \textbf{0.267} \\
-CNN, warm-started backbone & camera & 0.122 & 0.274 \\
-VQ\,$+$\,Transformer       & camera & 0.190 & 0.275 \\
-CNN, frozen backbone       & camera & 0.237 & 0.290 \\
+Extrinsic autoencoder      & camera & 0.193 & $\mathbf{0.454 \pm 0.061}$ \\
+LSTM                       & camera & 0.898 & $0.456 \pm 0.112$ \\
+Intrinsic autoencoder      & camera & 0.136 & $0.460 \pm 0.047$ \\
+CNN, frozen backbone       & camera & 0.247 & $0.461 \pm 0.063$ \\
+CNN, warm-started backbone & camera & 0.148 & $0.462 \pm 0.056$ \\
+\textbf{CNN, from scratch} & \textbf{camera} & \textbf{0.154} & $\mathbf{0.463 \pm 0.046}$ \\
+VQ\,$+$\,Transformer       & camera & 0.219 & $0.463 \pm 0.056$ \\
+Transformer                & camera & \textbf{0.122} & $0.471 \pm 0.052$ \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1793,33 +1826,47 @@ We therefore repeat the training under the conference noise model of
 \ref{sec:interp_loss_def}, injecting biased uniform label noise of
 relative width $\delta \in \{0\%, 5\%, 10\%\}$
 (Table~\ref{tab:delta}, Figure~\ref{fig:delta}).
-At $\delta = 10\%$ the model still reaches \SI{0.253}{m}, which remains better
-than the strongest baseline trained on \emph{clean} labels (\SI{0.383}{m}).
-Degradation is therefore not the binding constraint: the geometric structure of
-the rollout carries the model even when the supervision that shaped its encoder is
-substantially corrupted.
-We note that the ordering across $\delta$ is not monotone---$\delta = 5\%$ is
-worse than $\delta = 10\%$---which is single-run training variance rather than a
-property of the noise model; separating the two would require repeating each
-condition over multiple folds, which we leave to future work.
+The two model families respond in opposite directions. Every baseline degrades as
+the labels get noisier. Our model improves, monotonically, from \SI{0.463}{m} at
+$\delta = 0$ to \SI{0.319}{m} at $\delta = 10\%$---a $31\%$ reduction, while
+Vid2Param worsens by $33\%$ over the same range. The trend holds in all five folds,
+and our model's intervals at $\delta = 0$ and $\delta = 10\%$ do not overlap.
+
+It would be convenient to read this as evidence that the particular biased uniform
+noise of the conference formulation benefits a structured model. It does not.
+Replacing that noise with a zero-mean Gaussian of the same per-dimension magnitude,
+holding everything else fixed, gives \SI{0.313}{m} against \SI{0.319}{m}---a paired
+difference of \SI{-0.005}{m} whose sign is not consistent across folds. Label noise
+at this magnitude regularizes the structured model, and any zero-mean noise of that
+magnitude does it. The finding is the \emph{asymmetry} between the model families,
+not the form of the noise. Consistent with this, the baselines' selected epochs move
+sharply earlier as $\delta$ grows---several select the fifth epoch at $\delta =
+10\%$---which is what fitting the label noise almost immediately looks like.
 
 \begin{table}[t]
 \centering
 \caption{Weak-supervision noise on the physical DonkeyCar. Position error
-$E_{xy}$ in meters when the road-context labels used for training are corrupted
-by biased uniform noise of relative width $\delta$
-(\ref{sec:interp_loss_def}). The last column is the strongest baseline
-from Table~\ref{tab:donkey_main}, trained on clean labels, for reference.}
+$E_{xy}(100)$ in meters when the labels used for training are corrupted by biased
+uniform noise of relative width $\delta$ (\ref{sec:interp_loss_def}), as mean $\pm$
+half-range over five folds. The structured model improves as the labels degrade;
+every baseline gets worse. The last row replaces that noise with a zero-mean
+Gaussian of matched per-dimension magnitude, which reproduces the gain and shows it
+to be ordinary regularization rather than a property of the noise model.}
 \label{tab:delta}
 \small
 \begin{tabular}{lrrr}
 \toprule
- & $\delta = 0\%$ & $\delta = 5\%$ & $\delta = 10\%$ \\
+Model & $\delta = 0\%$ & $\delta = 5\%$ & $\delta = 10\%$ \\
 \midrule
-$E_{xy}(50)$  & 0.158 & 0.197 & 0.162 \\
-$E_{xy}(100)$ & 0.267 & 0.334 & 0.253 \\
+\textbf{PIWM-Frenet (ours)}     & $0.463 \pm 0.046$ & $0.452 \pm 0.047$ & $\mathbf{0.319 \pm 0.049}$ \\
+\emph{PIWM-Frenet (map-free)}   & $0.516 \pm 0.068$ & $0.506 \pm 0.066$ & $0.390 \pm 0.040$ \\
 \midrule
-\multicolumn{4}{l}{\emph{strongest baseline, clean labels:} $E_{xy}(100) = 0.383$} \\
+Vid2Param                       & $0.703 \pm 0.192$ & $0.919 \pm 0.252$ & $0.938 \pm 0.280$ \\
+GOKU-net                        & $0.725 \pm 0.122$ & $0.896 \pm 0.199$ & $0.864 \pm 0.185$ \\
+DVBF                            & $0.837 \pm 0.160$ & $1.067 \pm 0.240$ & $1.075 \pm 0.233$ \\
+\midrule
+\multicolumn{4}{l}{\emph{matched-magnitude Gaussian control, ours at $\delta = 10\%$:}
+$0.313 \pm 0.043$} \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1828,16 +1875,24 @@ $E_{xy}(100)$ & 0.267 & 0.334 & 0.253 \\
     \centering
     %% all result figures are authored at \textwidth (see src/paper_style.py), so
     %% they must be included at \linewidth for declared pt to equal rendered pt
-    \includegraphics[width=\linewidth]{fig_delta_supervision.pdf}
-    \caption{Robustness to corrupted road-context supervision. Position error
-    against rollout step on the physical DonkeyCar when the labels used to train
-    the road-context encoder carry biased uniform noise of relative width
-    $\delta$. All three curves stay below the \SI{0.383}{m} reached at step 100
-    by the strongest baseline trained on clean labels.}
+    \includegraphics[width=\linewidth]{fig_delta_cv.pdf}
+    \caption{Robustness to corrupted supervision. Position error against rollout
+    step for our model when the training labels carry biased uniform noise of
+    relative width $\delta$; lines are fold means and bands span the five folds.
+    The dashed reference is the strongest baseline trained on \emph{clean} labels.
+    Noisier labels move our curves down, not up.}
     \label{fig:delta}
 \end{figure}
 
 \paragraph{Robustness to a corrupted initial state}
+%% ============================================================================
+%% TODO (STALE NUMBERS): this initial-state-noise study and Figure fig:noise were
+%% produced by src/paper_figures.py from the retired single-split checkpoints
+%% (dyn_k16 + the _longK baselines). The numbers below (0.749/0.889/1.186/1.393,
+%% the 2.8x factor, and the 0.4 m/s speed-noise figure) do NOT trace to the
+%% cross-validated results the rest of this section now uses. Re-run the noise
+%% study on the per-fold checkpoints before submission, or cut the paragraph.
+%% ============================================================================
 The study above perturbs the \emph{supervision}; a complementary question is what
 happens when the state the rollout starts from is itself wrong, as it would be
 under an imperfect state estimator at deployment.
@@ -1939,9 +1994,10 @@ need not be extrapolated, and that is what keeps the error bounded.
 It would be easy to attribute our long-horizon advantage to the privileged
 supervision used at training time. Table~\ref{tab:kappa_source} rules this out.
 Replacing the camera-derived curvature by a lookup into the true track map---the
-strongest form of privileged information available---improves the 100-step error
-only from \SI{0.267}{m} to \SI{0.246}{m}.
-The remaining \SI{0.12}{m} separating our model from the strongest baseline is
+strongest form of privileged information available---makes the 100-step error
+\emph{worse}, from \SI{0.463}{m} to \SI{0.505}{m}, consistently in all five folds,
+and feeding the ground-truth curvature profile moves it by \SI{0.003}{m}.
+The \SI{0.24}{m} separating our model from the strongest baseline is
 therefore not privileged information on our side; the baselines were in fact
 handed ground-truth lane waypoints at $t_0$, which our model never sees.
 The baseline ordering itself points the same way: the single baseline
@@ -1956,7 +2012,7 @@ Because the road context is physically interpretable, the forecasted road, not
 just the forecasted vehicle, can be inspected and monitored.
 The predicted curvature profile can be compared against the true track geometry at
 every step---the encoder's own error, $\mathrm{RMSE}_\kappa =
-\SI{0.1193}{m^{-1}}$, is measured in the physical unit of curvature---providing a
+\SI{0.154}{m^{-1}}$, is measured in the physical unit of curvature---providing a
 diagnostic that opaque world models do not offer.
 This is directly useful for safety monitoring: a forecasted road that departs from
 plausible geometry is a detectable failure signal, available before the predicted
@@ -1987,17 +2043,20 @@ the physical platform used here operates well inside the linear regime, so this
 assumption is untested at the limit.
 Third, the argument that the road need not be extrapolated holds only while the
 horizon stays inside the perceived preview.
-On our platform the \SI{4.5}{m} preview covers the full 100-step rollout with
-margin, but a faster vehicle or a longer horizon would leave it, and the model
-would then have to either re-perceive or genuinely extrapolate the road; we have
-not characterized that regime.
+On our platform the vehicle covers \SI{3.1}{m} on average per 100-step rollout,
+but the \SI{4.5}{m} preview contains the full rollout in only $82\%$ of the
+evaluation windows; in the rest the model holds the last perceived curvature. A
+faster vehicle or a longer horizon would leave the preview more often, and the
+model would then have to either re-perceive or genuinely extrapolate the road; we
+have not characterized that regime.
 Fourth, privileged supervision requires an instrumented training environment to
 obtain ground-truth road context; reducing this requirement (e.g., via
 self-supervised road estimation) is open.
-Fifth, each configuration is trained once on a single train/validation split, so
-differences of a few centimeters---including the non-monotone ordering across
-$\delta$ in Table~\ref{tab:delta}---are within run-to-run variance; a
-cross-validated repetition is needed to resolve them.
+Fifth, every model's epoch is selected on the same held-out windows the tables
+report. We apply that rule symmetrically, which removes an asymmetry present in an
+earlier version of this evaluation, but symmetric selection is not unbiased
+selection and the absolute values should be read with that in mind. It also differs
+from the conference version, which stopped every model early on validation loss.
 Sixth, the quantitative evaluation reported here is confined to the physical
 platform: the CarRacing comparison referred to in
 Section~\ref{sec:carracing_results} was run with a vehicle-only dynamics variant
@@ -2046,13 +2105,15 @@ kinematics while the road is advected past it, re-indexed by the distance the
 vehicle has covered rather than propagated as a free latent.
 Experiments on the real DonkeyCar confirm that this treatment of the external
 environment, not merely of the vehicle, is what keeps long-horizon prediction
-bounded under partial observability: at 100 steps the model reaches
-\SI{0.267}{m} against \SI{0.383}{m} for the strongest baseline, and it stays
-ahead under road-context supervision corrupted by up to $10\%$ label noise, while
-the original benchmark results are retained unchanged.
-Replacing perceived curvature by a privileged map lookup improves the result by
-only about \SI{2}{cm}, so the advantage is attributable to the structure of the
-representation rather than to the information available to it.
+bounded under partial observability: at 100 steps and under five-fold
+cross-validation the model reaches \SI{0.463}{m} against \SI{0.703}{m} for the
+strongest baseline, ahead in every fold and with a fraction of every baseline's
+sensitivity to which episodes are held out; under label noise of up to $10\%$ it
+\emph{improves} while every baseline degrades, and the original benchmark results
+are retained unchanged.
+Replacing perceived curvature by a privileged map lookup makes the result worse,
+and perfect perception moves it by \SI{3}{mm}, so the advantage is attributable to
+the structure of the representation rather than to the information available to it.
 Physically interpretable world modeling for driving thus requires aligning latent
 representations with physical variables \emph{and} decomposing those
 representations according to the semantic structure of the task, so that the
