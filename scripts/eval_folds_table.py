@@ -1,4 +1,4 @@
-﻿"""5-fold CV tables: main comparison and the delta-noise sweep, with error bars.
+"""5-fold CV tables: main comparison and the delta-noise sweep, with error bars.
 
 WHAT IS DIFFERENT FROM `eval_seeds_table.py`
 That script varies the TRAINING seed on ONE fixed split, so every model walks the
@@ -258,6 +258,9 @@ def leak_audit(a):
         subsets[tag] = eval_one_fold(base, fr_files, 0, a.nfolds, [0.0], log,
                                      eps_override=eps)
 
+    if not all(subsets.values()):
+        log("\n! one subset has no usable checkpoints -- audit incomplete, stopping")
+        return
     log("\n" + "=" * 70)
     log("E_xy@100 (m) by v6 exposure, fold 0, delta=0")
     log("=" * 70)

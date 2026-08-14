@@ -80,22 +80,25 @@ def _load_enc(tag, path):
     forward(stack) -> (B, n_offsets), which is what makes them interchangeable in
     the rollout below."""
     n = len(OFFSETS)
+    ck = load_checkpoint(path)          # read the recorded architecture, not defaults
     if tag == "vqformer":
         m = RoadContextVQFormer(n_offsets=n, frame_stack=FS)
     elif tag == "extrinsic":
         # the checkpoint carries the stage-1 weights as a submodule, so a freshly
         # constructed VAE is only a shape template here
-        m = ExtrinsicRoadEncoder(ExtrinsicVisionVAE(frame_stack=FS),
-                                 n_offsets=n, frame_stack=FS)
+        m = ExtrinsicRoadEncoder(
+            ExtrinsicVisionVAE(latent_dim=ck.get("latent_dim", 128), frame_stack=FS),
+            n_offsets=n, frame_stack=FS, head=ck.get("head", "mlp"))
     elif tag.startswith("intrinsic"):
-        m = IntrinsicRoadEncoder(n_offsets=n, frame_stack=FS)
+        m = IntrinsicRoadEncoder(n_offsets=n, frame_stack=FS,
+                                 visual_dim=ck.get("visual_dim", 118))
     elif tag == "lstm":
         m = LSTMRoadEncoder(n_offsets=n, frame_stack=FS)
     elif tag == "transformer":
         m = TransformerRoadEncoder(n_offsets=n, frame_stack=FS)
     else:
         m = est.RoadContextEncoder(n_offsets=n, freeze_backbone=True)
-    m.load_state_dict(load_checkpoint(path)["model"]); m.eval()
+    m.load_state_dict(ck["model"]); m.eval()
     return m
 
 

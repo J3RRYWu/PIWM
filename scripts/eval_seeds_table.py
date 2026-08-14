@@ -1,4 +1,4 @@
-﻿"""Main table with error bars: every model retrained on 3 seeds, one evaluator.
+"""Main table with error bars: every model retrained on 3 seeds, one evaluator.
 
 WHY THIS EXISTS
 `src/eval_frenet_vs_baselines.py` reports ONE checkpoint per model, and the

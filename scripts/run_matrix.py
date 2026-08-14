@@ -195,13 +195,15 @@ def jobs_kappa_ablation(nfolds=5):
         for f in range(nfolds) for tag, extra in variants]
 
 
-def jobs_sindyc(nfolds=5, deltas=(0.0,)):
+def jobs_sindyc(nfolds=5):
     """The FOURTH baseline, which the k-fold sweep so far has been missing.
 
     The paper compares against DVBF, GokuNet, Vid2Param and SindyC, but the 5-fold
     run covered only the first three -- SindyC's curve was still the legacy-split
     cache. It runs in .venv-sindy (pysindy segfaults beside the CUDA torch build) and
     each fit pickles ~133 MB, so this is deliberately kept to delta=0 and few workers.
+    Delta variants would need the suffix to carry the level; without that they would
+    collide on one model.pkl, so they are not generated here.
     """
     return [dict(
         name=f"sindyc_f{f}", out=f"checkpoints/sindyc_lane_donkey_f{f}/model.pkl",
@@ -209,7 +211,7 @@ def jobs_sindyc(nfolds=5, deltas=(0.0,)):
         argv=["src/train/train_baselines_donkey.py", "--variant", "sindyc",
               "--K", "32", "--suffix", f"_f{f}",
               "--fold", str(f), "--nfolds", str(nfolds)])
-        for f in range(nfolds) for d in deltas]
+        for f in range(nfolds)]
 
 
 def jobs_gauss(nfolds=5, delta=0.10):

@@ -290,9 +290,17 @@ def run(mode, save, epochs, backbone_ckpt, arch="cnn", target="kappa", seed=0,
         if score < best:
             best = score
             os.makedirs(_os.path.dirname(save), exist_ok=True)
+            # Record what the evaluator needs to rebuild this exact architecture.
+            # Without these it reconstructs with defaults, so a checkpoint trained
+            # with --head transformer or a non-default latent size cannot be loaded.
             ck = {"model": model.state_dict(), "mode": mode, "arch": arch,
                   "target": target, "val_rmse": rmse.tolist(),
-                  "offsets": offsets.tolist()}
+                  "offsets": offsets.tolist(), "frame_stack": FS,
+                  "head": head, "lambda_interp": lambda_interp, "beta": beta}
+            if arch == "extrinsic":
+                ck["latent_dim"] = model.vae.latent_dim
+            if arch == "intrinsic":
+                ck["visual_dim"] = model.visual_dim
             if target == "shape":
                 ck["val_shape_rmse"] = srmse.tolist()
             torch.save(ck, save)

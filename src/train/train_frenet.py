@@ -164,14 +164,20 @@ def run(K, epochs, save, kappa_mode="map", init=None, delta_sup=0.0, seed=0,
         from utils import load_checkpoint
         dyn.load_state_dict(load_checkpoint(init)["dynamics"])
         print(f"warm-started dynamics from {init}")
-    # per-dim valid range |X_i| over the data, for the δ weak-supervision noise
-    _allst = np.concatenate(ds.state, 0)
+    # Per-dim valid range |X_i| for the delta weak-supervision noise, taken over the
+    # TRAINING episodes only. Using every episode would let the held-out ones set the
+    # noise scale -- negligible in size but still information crossing the split, and
+    # train_baselines_donkey.py already computes its own range from train windows,
+    # so this also makes "the same delta" mean the same thing in both scripts.
+    _train_eps = [e for e in range(len(ds.state)) if e not in val_eps]
+    _allst = np.concatenate([ds.state[e] for e in _train_eps], 0)
     _rng = torch.tensor(_allst.max(0) - _allst.min(0), dtype=torch.float32, device=DEVICE)
     half_sup = 0.5 * delta_sup * _rng
     noise_fn = {"delta": delta_supervision_noise,
                 "gauss": gaussian_supervision_noise}[noise_kind]
     print(f"kappa_mode={kappa_mode}  delta_sup={delta_sup}  noise={noise_kind}  "
-          f"(|X|={np.round(_allst.max(0) - _allst.min(0), 3).tolist()}, "
+          f"(|X| over {len(_train_eps)} train eps"
+          f"={np.round(_allst.max(0) - _allst.min(0), 3).tolist()}, "
           f"half-width={np.round(half_sup.cpu().numpy(), 3).tolist()})")
     opt = torch.optim.Adam(dyn.parameters(), lr=1e-3 if not init else 3e-4)
     sch = torch.optim.lr_scheduler.ReduceLROnPlateau(opt, patience=3, factor=0.5)

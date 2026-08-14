@@ -1,4 +1,4 @@
-﻿"""fig_delta, redrawn from the 5-fold curves instead of the retired single split.
+"""fig_delta, redrawn from the 5-fold curves instead of the retired single split.
 
 The previous fig_delta_supervision.pdf was produced from the dyn_k16 checkpoint
 family whose numbers did not reproduce, and its caption cited the old baseline
@@ -41,6 +41,11 @@ def main():
     base = np.array(mpl.colors.to_rgb(COL["Frenet"]))
     steps = None
     for row, lbl, shade in SERIES:
+        have = [f for f in folds if f"f{f}_{row}" in z.files]
+        if len(have) != len(folds):
+            raise SystemExit(f"{row} is missing from folds "
+                             f"{sorted(set(folds) - set(have))} in {CURVES}; "
+                             "the cache was written before the matrix finished")
         C = np.stack([z[f"f{f}_{row}"] for f in folds])
         steps = np.arange(C.shape[1])
         col = tuple(base * shade + (1 - shade) * 0.82)   # lighter = noisier

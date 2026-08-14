@@ -25,6 +25,7 @@ _sys.path.insert(0, _os.path.join(_SRC, "train"))
 import donkey_config; donkey_config.patch_globals()
 
 import argparse
+import glob
 import pickle
 import time
 import numpy as np
@@ -39,6 +40,7 @@ from folds import fold_split
 K = 100
 STRIDE = 4
 CLAMP_M = 100.0          # the reporting convention for a diverged rollout
+FRENET_DIR = _os.path.join(_SRC, "..", "..", "Data_Donkeycar_frenet")
 OUT = _os.path.join("reports", "matrix", "sindyc_curves.npz")
 
 
@@ -84,6 +86,9 @@ def main():
 
     t0 = time.time()
     base = SeqLaneDataset(DATA_DIR, seq_len=2)
+    # index-aligned with base.imgs_list, exactly as in eval_folds_table.py
+    fr_files = sorted(f for f in glob.glob(_os.path.join(FRENET_DIR, "*.npz"))
+                      if "_meta" not in f)
     out = {}
     for f in a.folds:
         ck = f"checkpoints/sindyc_lane_donkey_f{f}/model.pkl"
@@ -96,7 +101,10 @@ def main():
         for ep in sorted(val_eps):
             phys = base.phys_list[ep]; acts31 = base.acts_list[ep]
             wpw = base.wp_world_list[ep]
-            T = len(phys)
+            # same bound as eval_folds_table.py: the two sources are equal length on
+            # the current data, but taking the min is what keeps this row walking the
+            # same windows as the others if that ever stops being true
+            T = min(len(phys), len(np.load(fr_files[ep])["state"]))
             if T < K + 1 or T < FS:
                 continue
             for t in range(FS - 1, T - K - 1, a.stride):

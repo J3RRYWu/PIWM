@@ -1,4 +1,4 @@
-﻿"""fig_main, redrawn from the 5-fold run instead of one checkpoint per model.
+"""fig_main, redrawn from the 5-fold run instead of one checkpoint per model.
 
 WHY A SECOND FIGURE RATHER THAN AN EDIT TO paper_figures.py
 `src/paper_figures.py` recomputes its curves from a single checkpoint per model on
@@ -100,6 +100,9 @@ def main():
         print(f"  {row:<9} n={len(got)}  @100 {mu[-1]:.3f} +/- {half:.3f}  "
               f"fold range [{C[:, -1].min():.3f}, {C[:, -1].max():.3f}]")
 
+    if steps is None:
+        raise SystemExit(f"none of the expected rows are in {a.curves}; "
+                         "run scripts/eval_folds_table.py first")
     ax.set_xlabel("rollout step")
     ax.set_ylabel("position error (m)")
     ax.set_xlim(0, steps[-1])

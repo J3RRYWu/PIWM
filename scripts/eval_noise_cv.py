@@ -1,4 +1,4 @@
-﻿"""Initial-state noise robustness, per fold.
+"""Initial-state noise robustness, per fold.
 
 The published version of this study (src/noise_robustness.py, figures/fig_noise)
 was computed from the retired single-split checkpoints, so its numbers cannot sit
