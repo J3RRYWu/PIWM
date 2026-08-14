@@ -65,3 +65,9 @@ papers/
 *.fls
 *.fdb_latexmk
 *.synctex.gz
+
+# LaTeX build artefacts (the pdf/bbl are tracked deliberately)
+*.aux
+*.out
+*.blg
+*.synctex.gz
