@@ -33,7 +33,8 @@
 \citation{chen2018neural}
 \citation{tomar2021learningrepresentationspixelbasedcontrol}
 \citation{hafner2019learning,hafner2020mastering,hafner2023mastering}
-\citation{micheli2022transformers,seo2023masked,wu2023daydreamer}
+\citation{micheli2022transformers,seo2023masked}
+\citation{wu2023daydreamer}
 \citation{ha2018world,zhang2021world,zhao2024decomposed}
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Representation Learning for Dynamical Systems}{7}{}\protected@file@percent }
 \newlabel{sec:rw_repr}{{2.2}{7}{}{subsection.2.2}{}}
@@ -55,12 +56,12 @@
 \citation{bai2018empirical}
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.4}Physics-Informed and Interpretable Learning}{8}{}\protected@file@percent }
 \newlabel{sec:rw_phys}{{2.4}{8}{}{subsection.2.4}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.5}Partial Observability, Privileged Learning, and Road Structure}{8}{}\protected@file@percent }
-\newlabel{sec:rw_po}{{2.5}{8}{}{subsection.2.5}{}}
 \citation{chen2020learning,gou2021knowledge}
 \citation{salzmann2020trajectron++,itkina2023interpretable}
 \citation{kong2015kinematic}
-\citation{viitala2021learning,hussein2017imitation}
+\citation{viitala2021learning}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.5}Partial Observability, Privileged Learning, and Road Structure}{9}{}\protected@file@percent }
+\newlabel{sec:rw_po}{{2.5}{9}{}{subsection.2.5}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {3}Preliminaries}{9}{}\protected@file@percent }
 \newlabel{sec:preliminaries}{{3}{9}{}{section.3}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Autonomous CPS and World Models}{9}{}\protected@file@percent }
@@ -148,8 +149,8 @@
 \citation{BRUNTON2016710}
 \@writefile{toc}{\contentsline {subsection}{\numberline {6.3}Baselines}{25}{}\protected@file@percent }
 \newlabel{sec:baselines}{{6.3}{25}{}{subsection.6.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.4}Metrics}{25}{}\protected@file@percent }
 \citation{piwm_conf}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.4}Metrics}{26}{}\protected@file@percent }
 \newlabel{eq:metric_exy}{{22}{26}{}{equation.22}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {7}Results}{26}{}\protected@file@percent }
 \newlabel{sec:results}{{7}{26}{}{section.7}{}}
@@ -166,10 +167,10 @@
 \citation{BRUNTON2016710}
 \@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Position error $E_{xy}$ in meters on the physical DonkeyCar, at three rollout horizons, as mean $\pm $ standard deviation over five-fold cross-validation (lower is better). All models are driven by the same actions and are initialized from the ground-truth state; the baselines additionally receive the ground-truth lane waypoints at $t_0$. Of the baselines only Vid2Param also sees the images---DVBF and GOKU-net are run as dynamics-only models (Section~\ref {sec:baselines}), which is why Vid2Param leads them. Every model, ours included, keeps the epoch with the best $E_{xy}(100)$; the last column also reports how much each model moves when the held-out episodes change. The map-free row recovers position without consulting the track map at all, reading the road geometry from the perception's shape output instead of indexing a surveyed centerline.}}{28}{}\protected@file@percent }
 \newlabel{tab:donkey_main}{{1}{28}{}{table.1}{}}
-\@writefile{toc}{\contentsline {paragraph}{What the crossover means}{28}{}\protected@file@percent }
 \@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Position error against rollout step on the physical DonkeyCar. Lines are the mean over five folds and the bands span the folds' minimum to maximum, so the width of a band is how much a model depends on which episodes were held out. All rollouts are initialized from the ground-truth state. The baselines lead over short horizons and then enter superlinear growth; the proposed model stays close to linear because the road it rolls out over was observed rather than extrapolated. SINDYc diverges in every window and is omitted.}}{29}{}\protected@file@percent }
 \newlabel{fig:donkey_main}{{5}{29}{}{figure.5}{}}
-\@writefile{toc}{\contentsline {paragraph}{The cost of perceiving the road}{29}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{What the crossover means}{29}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{The cost of perceiving the road}{30}{}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Where the curvature comes from. All rows use the identical dynamics and differ only in how $\kappa $ is obtained; five-fold cross-validation, mean $\pm $ standard deviation. $\mathrm  {RMSE}_\kappa $ is the encoder's own curvature error in \si {m^{-1}} and $E_{xy}(100)$ the resulting 100-step position error in meters. The first two rows are privileged and not deployable; the remaining ten read the front camera alone and span the conference version's encoder design space together with its two non-physical sequence benchmarks. Curvature accuracy varies by a factor of $7.3$ across the camera rows while the rollout error varies by $4\%$---less than any single row moves between folds---and the ordering does not carry over: the best curvature estimate gives the worst rollout.}}{31}{}\protected@file@percent }
 \newlabel{tab:kappa_source}{{2}{31}{}{table.2}{}}
 \@writefile{toc}{\contentsline {paragraph}{Robustness to weak supervision}{31}{}\protected@file@percent }
@@ -184,7 +185,7 @@
 \@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Robustness to a corrupted \emph  {initial state} (test-time perturbation; distinct from the training-label noise of Table~\ref {tab:delta}). (a) 100-step position error against the noise scale $\sigma $ applied to all state variables; the ranking is preserved throughout. (b) Sensitivity of our model to noise on each physical state variable separately. Speed dominates; yaw rate is nearly irrelevant. Shaded bands are standard errors over the $201$ validation windows.}}{34}{}\protected@file@percent }
 \newlabel{fig:noise}{{7}{34}{}{figure.7}{}}
 \@writefile{toc}{\contentsline {paragraph}{Structure, not information}{34}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Interpretability of the forecasted environment}{34}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Interpretability of the forecasted environment}{35}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Privileged training for real deployment}{35}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Limitations}{35}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Future directions}{36}{}\protected@file@percent }
@@ -196,10 +197,10 @@
 \bibcite{micheli2022transformers}{{2}{}{{}}{{}}}
 \bibcite{hafner2023mastering}{{3}{}{{}}{{}}}
 \bibcite{seo2023masked}{{4}{}{{}}{{}}}
-\bibcite{hasan2015formal}{{5}{}{{}}{{}}}
 \@writefile{toc}{\let\numberline\tmptocnumberline}
 \@writefile{toc}{\contentsline {section}{\numberline {Appendix~A}Weak Supervision Noise Model}{38}{}\protected@file@percent }
 \newlabel{sec:interp_loss_def}{{Appendix~A}{38}{}{section.1}{}}
+\bibcite{hasan2015formal}{{5}{}{{}}{{}}}
 \bibcite{katz2022verification}{{6}{}{{}}{{}}}
 \bibcite{alshiekh2018safe}{{7}{}{{}}{{}}}
 \bibcite{piwm_conf}{{8}{}{{}}{{}}}
@@ -274,7 +275,6 @@
 \bibcite{gou2021knowledge}{{77}{}{{}}{{}}}
 \bibcite{kong2015kinematic}{{78}{}{{}}{{}}}
 \bibcite{viitala2021learning}{{79}{}{{}}{{}}}
-\bibcite{hussein2017imitation}{{80}{}{{}}{{}}}
-\bibcite{brockman2016openai}{{81}{}{{}}{{}}}
+\bibcite{brockman2016openai}{{80}{}{{}}{{}}}
 \providecommand\NAT@force@numbers{}\NAT@force@numbers
 \gdef \@abspage@last{47}

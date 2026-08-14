@@ -354,7 +354,7 @@ We close each thread by positioning PIWM against it.
 Predicting future motion is central to safe planning and
 control~\cite{fridovich2020confidence}.
 Classical predictors propagate a low-dimensional state with hand-specified
-models: constant-velocity and Kalman-filter formulations for vehicle
+models: Kalman-filter formulations over a bicycle model of vehicle
 motion~\cite{ammoun2009real}, and Hamilton--Jacobi reachability for sets of
 reachable states with formal guarantees~\cite{li2021prediction,
 nakamura2023online, muthali2023multi}.
@@ -411,12 +411,14 @@ priori and the latents are tied to it rather than to quantities that can be
 measured from the observation; SPARTAN produces
 semantically structured outputs but incorporates neither known dynamics nor
 action-conditioned prediction~\cite{lei2024spartan}; Deep Variational Bayes
-Filters add latent state-space dynamics to VAEs~\cite{karl2016deep} but, absent
-physical supervision, do not recover interpretable variables; and continuous-time
-models such as Neural ODEs learn smooth but uninterpretable latent
-dynamics~\cite{chen2018neural}.
-Representation learning specialized for pixel-based control improves downstream
-performance~\cite{tomar2021learningrepresentationspixelbasedcontrol} while again
+Filters add latent state-space dynamics to VAEs and report latents that correlate
+with physical quantities~\cite{karl2016deep}, but the correspondence emerges from
+the transition structure rather than being enforced, so which dimension carries
+which quantity is not fixed in advance; and continuous-time models such as Neural
+ODEs learn smooth but uninterpretable latent dynamics~\cite{chen2018neural}.
+Representation learning specialized for pixel-based control has been studied
+extensively for its effect on downstream
+performance~\cite{tomar2021learningrepresentationspixelbasedcontrol}, while again
 leaving the latent opaque.
 Compared with these approaches, PIWM explicitly aligns latent dimensions with
 named physical quantities of both the vehicle and the surrounding road, and
@@ -428,9 +430,10 @@ supervision.
 World models learn latent dynamics for imagination-based planning and control.
 The Dreamer and PlaNet line learns recurrent latent state-space models from
 pixels~\cite{hafner2019learning, hafner2020mastering, hafner2023mastering};
-transformer- and masked-prediction world models improve sample efficiency and
-long-horizon fidelity~\cite{micheli2022transformers, seo2023masked,
-wu2023daydreamer}; and a range of variants explore alternative latent
+transformer- and masked-prediction world models improve sample
+efficiency~\cite{micheli2022transformers, seo2023masked}, and the same family has
+been trained directly on physical robots~\cite{wu2023daydreamer}; and a range of
+variants explore alternative latent
 factorizations~\cite{ha2018world, zhang2021world, zhao2024decomposed}.
 These models excel empirically but learn latent spaces with no clear physical
 meaning, which limits inspection and safety monitoring.
@@ -438,10 +441,10 @@ meaning, which limits inspection and safety monitoring.
 For driving, recent world models predict rich structured futures such as 3D
 occupancy grids or rendered scenes~\cite{zheng2024occworld, min2023uniworld,
 yan2024renderworld, zuo2024gaussianworld}, improving forecasting realism but still
-without aligning the internal state to physical variables, and at substantial
-annotation and compute cost.
-Neuro-symbolic world models improve generalization but require predefined symbolic
-inputs unavailable from raw sensors~\cite{balloch2023neuro, liang2024visualpredicator}.
+without aligning the internal state to physical variables.
+Neuro-symbolic world models improve generalization, but their symbolic vocabulary
+is either supplied in advance or induced separately from the physical
+quantities a controller acts on~\cite{balloch2023neuro, liang2024visualpredicator}.
 The closest prior work, Vid2Param, recovers physical parameters from
 video~\cite{asenov2019vid2param} but requires full supervision and provides no
 explicit world model for long-horizon rollout.
@@ -459,8 +462,9 @@ parameters~\cite{BRUNTON2016710, de2018end, yao2024marrying}, while
 physics-informed neural networks embed differential constraints in the
 loss~\cite{cai2021physics, ZHONG2023115664}.
 Within world modeling, physical priors have been added as bounds on states and
-actions~\cite{tumu2023physics, sridhar2023guaranteed}, physics-aware
-losses~\cite{djeumou2023learn}, kinematics-inspired layers~\cite{cui2020deep}, and
+actions~\cite{tumu2023physics, sridhar2023guaranteed}, as known physics entering
+the model's drift term as an inductive bias~\cite{djeumou2023learn},
+kinematics-inspired layers~\cite{cui2020deep}, and
 Taylor-monomial-structured latent dynamics (Phy-Taylor)~\cite{mao_phy-taylor_2025}.
 
 Most of these methods assume access to the underlying low-dimensional state and
@@ -503,8 +507,8 @@ but typically requires explicit maps or HD annotations; and physics-based
 predictors apply kinematic or dynamic bicycle models to low-dimensional state
 vectors~\cite{kong2015kinematic} rather than to learned image representations.
 Learning-based control has also been demonstrated on RC-scale physical cars,
-including imitation and reinforcement learning on platforms akin to the
-DonkeyCar~\cite{viitala2021learning, hussein2017imitation}, but without an
+including reinforcement learning on the DonkeyCar
+platform~\cite{viitala2021learning}, but without an
 interpretable predictive world model.
 Compared with all of the above, our work is, to our knowledge, the first to
 integrate a factorized vehicle--road representation with a physics-informed world
@@ -1384,10 +1388,11 @@ These results establish a clean baseline for physically interpretable prediction
 under simple dynamics.
 
 \paragraph{Tier~2: Partially observable simulated driving (CarRacing)}
-\textbf{CarRacing}~\cite{brockman2016openai} is a top-down simulated racing
-environment in which the vehicle navigates a procedurally generated track.
-The observation is a bird's-eye-view RGB image (native $96 \times 96$, resized to
-$64 \times 64$ for the encoder).
+\textbf{CarRacing}, from the OpenAI Gym suite~\cite{brockman2016openai}, is a
+top-down simulated racing environment in which the vehicle navigates a
+procedurally generated track.
+Its observation is a bird's-eye-view RGB image, $96 \times 96$ as the environment
+returns it, which we resize to $64 \times 64$ for the encoder.
 The vehicle's kinematic state is available from the simulator, but the road
 geometry (the shape of the upcoming track and the vehicle's relationship to the
 lane) is not part of the state and must be inferred from the image.
@@ -1471,10 +1476,13 @@ small, latency-bound baselines and would therefore have flattered our model.
 \subsection{Baselines}\label{sec:baselines}
 
 We compare against the same families used in the conference paper.
-\textbf{DVBF}~\cite{karl2016deep}, \textbf{GOKU-net}~\cite{linial_generative_2021}
-and \textbf{Vid2Param}~\cite{asenov2019vid2param} are physics-aware latent
-sequence models, and \textbf{SINDYc}~\cite{BRUNTON2016710} is a classical
-dynamics-discovery baseline operating on the interpretable latent.
+\textbf{DVBF}~\cite{karl2016deep} is a latent state-space model with a
+locally-linear transition and no physical prior; \textbf{GOKU-net}
+~\cite{linial_generative_2021} and \textbf{Vid2Param}~\cite{asenov2019vid2param}
+are physics-aware, the first constraining its latent to a known ODE and the second
+inferring the parameters of a known analytic model; and
+\textbf{SINDYc}~\cite{BRUNTON2016710} is a classical dynamics-discovery baseline
+operating on the interpretable latent.
 Every baseline is initialized from the ground-truth vehicle state \emph{and} the
 ground-truth lane waypoints at the first timestep of the window, so each starts
 from an explicit description of the road that our model has to recover from

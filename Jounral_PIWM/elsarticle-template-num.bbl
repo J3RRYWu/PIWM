@@ -425,10 +425,6 @@ A.~Viitala, R.~Boney, Y.~Zhao, A.~Ilin, J.~Kannala, Learning to drive (l2d) as
   International Conference on Advanced Robotics (ICAR), IEEE, 2021, pp.
   275--281.
 
-\bibitem{hussein2017imitation}
-A.~Hussein, M.~M. Gaber, E.~Elyan, C.~Jayne, Imitation learning: A survey of
-  learning methods, ACM Computing Surveys (CSUR) 50~(2) (2017) 1--35.
-
 \bibitem{brockman2016openai}
 G.~Brockman, V.~Cheung, L.~Pettersson, J.~Schneider, J.~Schulman, J.~Tang,
   W.~Zaremba, Openai gym, arXiv preprint arXiv:1606.01540 (2016).
