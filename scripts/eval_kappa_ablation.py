@@ -181,14 +181,16 @@ def main():
         log("nothing to evaluate"); return
 
     def cell(row, col):
+        """Mean and sample standard deviation over the fold-level means -- the
+        statistic the field reports for cross-validated results."""
         v = [per_fold[f][row][:, col].mean() for f in got if row in per_fold[f]]
         if not v:
             return None
         v = np.array(v)
-        return v.mean(), (v.max() - v.min()) / 2 if len(v) > 1 else 0.0
+        return v.mean(), v.std(ddof=1) if len(v) > 1 else 0.0
 
     log("\n" + "=" * 78)
-    log(f"KAPPA SOURCE ABLATION  E_xy (m), mean +/- half-range over {len(got)} folds")
+    log(f"KAPPA SOURCE ABLATION  E_xy (m), mean +/- std over {len(got)} folds")
     log("=" * 78)
     log(f"{'curvature source':<34} {'RMSE_k':>9} {'@25':>13} {'@50':>13} {'@100':>13}")
     log("-" * 78)
@@ -205,9 +207,14 @@ def main():
         "offsets;\nthe privileged rows have none because they do not estimate curvature.")
     log("\nPAIRED within fold, @100, relative to the scratch camera encoder:")
     for r in ROWS:
-        if r == "scratch" or r not in per_fold[got[0]]:
+        if r == "scratch":
             continue
-        d = [(per_fold[f][r][:, 2] - per_fold[f]["scratch"][:, 2]).mean() for f in got]
+        # a row may be missing from SOME folds when the matrix is partly trained,
+        # which this script explicitly supports; pair only where both are present
+        fs = [f for f in got if r in per_fold[f] and "scratch" in per_fold[f]]
+        if not fs:
+            continue
+        d = [(per_fold[f][r][:, 2] - per_fold[f]["scratch"][:, 2]).mean() for f in fs]
         log(f"  {LABEL[r]:<34} {np.mean(d):+.3f}m   per fold "
             f"[{', '.join(f'{x:+.3f}' for x in d)}]")
     log("\nCAVEATS. The v6 rows warm-start from an encoder trained on the legacy split, "

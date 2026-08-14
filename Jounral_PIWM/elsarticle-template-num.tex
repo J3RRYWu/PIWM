@@ -1,4 +1,4 @@
-%%
+﻿%%
 %% Journal extension of the PIWM conference paper.
 %% "Physically Interpretable World Models via Weakly Supervised
 %%  Representation Learning" (conference) -> journal version.
@@ -698,57 +698,66 @@ To resolve the partial observability problem, we augment the interpretable state
 with road-context information and express the vehicle component in a translation-
 and rotation-invariant reference frame.
 
-\paragraph{Vehicle-relative state}
+\paragraph{Vehicle state}
 Global coordinates $(x, y)$ introduce unnecessary dependence on the starting
 position of each trajectory, complicating generalization across scenes.
-Instead, we express vehicle motion relative to the initial timestep of each
-prediction window.
-For a window beginning at time $t_0$, the vehicle-relative state is:
+In the road-aligned frame the vehicle's own motion is described by
 \begin{equation}
     \zv_t =
     \begin{bmatrix}
-        \cos(\psi_{t_0})\,(x_t - x_{t_0}) + \sin(\psi_{t_0})\,(y_t - y_{t_0})\\
-        -\sin(\psi_{t_0})\,(x_t - x_{t_0}) + \cos(\psi_{t_0})\,(y_t - y_{t_0})\\
-        \psi_t - \psi_{t_0}
-    \end{bmatrix}
-    =
-    \begin{bmatrix}
-        x_{\mathrm{rel}} \\ y_{\mathrm{rel}} \\ \psi_{\mathrm{rel}}
-    \end{bmatrix}.
+        v_t \\ \omega_t
+    \end{bmatrix},
     \label{eq:vehicle_rel}
 \end{equation}
-This transformation rotates the global displacement into the local frame of the
-vehicle at $t_0$, so that $x_{\mathrm{rel}}$ is the longitudinal displacement,
-$y_{\mathrm{rel}}$ the lateral displacement, and $\psi_{\mathrm{rel}}$ the
-cumulative heading change.
+its longitudinal speed and yaw rate, both independent of where the trajectory
+started.
 
 \paragraph{Road-context state}
-The road-context component $\zr_t$ captures the vehicle's relationship to the road
-geometry:
+The road-context component $\zr_t$ captures the vehicle's configuration relative to
+the road geometry:
 \begin{equation}
     \zr_t =
     \begin{bmatrix}
-        e_{\mathrm{CTE}} \\ e_{\psi} \\ \kappa
+        s_t \\ e_{\mathrm{CTE}} \\ e_{\psi}
     \end{bmatrix},
     \label{eq:road_ctx}
 \end{equation}
-where $e_{\mathrm{CTE}}$ is the cross-track error (signed lateral distance from
-the lane center), $e_{\psi}$ is the heading error (difference between the
-vehicle's heading and the road tangent at its current position), and $\kappa$ is
-the local road curvature.
-Together, $\zr_t$ encodes the information needed to determine how the vehicle will
-interact with the road geometry over the coming steps.
+where $s_t$ is the arc length travelled along the reference centerline,
+$e_{\mathrm{CTE}}$ is the cross-track error (signed lateral distance from the lane
+center) and $e_{\psi}$ is the heading error (difference between the vehicle's
+heading and the road tangent at its current position).
+Locating the vehicle by $s_t$ along the road rather than in the world is what
+allows the road description below to be indexed by it.
 
 \paragraph{Factorized state}
-The complete \emph{factorized interpretable state} is:
+The complete \emph{factorized interpretable state} is
 \begin{equation}
-    \zstar_t = \left[ \zv_t,\; \zr_t \right] \in \mathbb{R}^6.
+    \zstar_t = \left[ \zv_t,\; \zr_t \right]
+             = \left( v_t,\, \omega_t,\, s_t,\, e_{\mathrm{CTE},t},\, e_{\psi,t} \right)
+             \in \mathbb{R}^5 .
     \label{eq:factorized_state}
 \end{equation}
-The pair $(\zv_t, \zr_t)$ satisfies the Markov property under the true augmented
-dynamics~\eqref{eq:augmented_dyn}: knowing the current factorized state and the
-action is sufficient to determine the next state, up to the unknown parameters
-$\theta^*$.
+
+The local curvature $\kappa$ is deliberately \emph{absent} from
+\eqref{eq:factorized_state}: it is not propagated. The model instead carries a
+curvature profile $\hat\kappa(\cdot)$ over arc length, perceived once from the
+image window at the start of the rollout, and reads the curvature at the vehicle
+from it,
+\begin{equation}
+    \kappa_t = \hat\kappa\!\left(s_t - s_{t_0}\right).
+    \label{eq:kappa_readout}
+\end{equation}
+This distinction is what the rest of the article rests on. A model carrying
+curvature as a state variable must predict how it evolves, and that prediction
+compounds over a long rollout; re-indexing a profile observed once cannot compound,
+because only the vehicle's position along the road advances.
+
+The Markov property therefore holds for the pair
+$\left(\zstar_t,\, \hat\kappa(\cdot)\right)$ with $\hat\kappa$ fixed across the
+rollout: given the current factorized state, the perceived profile and the action,
+the next factorized state is determined up to the unknown parameters $\theta^*$.
+It does not hold for $\zstar_t$ alone, since~\eqref{eq:kappa_readout} requires the
+profile.
 
 \subsection{Extended Learning Problem}
 
@@ -759,12 +768,12 @@ formulation as follows.
 \label{def:po_problem}
 Given a dataset
 $\mathcal{S} = \{(y_{1:M},\, a_{1:M},\, \Xi^{v}_{1:M},\, \Xi^{r}_{1:M})\}_{1:N}$
-where $\Xi^{v}_t$ and $\Xi^{r}_t$ are supervisory samples for the
-vehicle-relative and road-context components respectively, and a controller $h$,
-learn a factorized encoder such that $\zv_t = \mathcal{E}^{v}(y_{1:t})$
-approximates the vehicle-relative state and $\zr_t = \mathcal{E}^{r}(y_{1:t})$
-approximates the road-context state, while the pair $(\zv_t, \zr_t)$ supports
-accurate future prediction under the task dynamics.
+where $\Xi^{v}_t$ and $\Xi^{r}_t$ are supervisory samples for the vehicle and
+road-context components respectively, and a controller $h$, learn a factorized
+physical encoder $\mathcal{E}_p$ whose two outputs
+$(\zv_t, \zr_t) = \mathcal{E}_p(y_{1:t})$ approximate the vehicle state and the
+road-context state, and which supports accurate future prediction under the task
+dynamics.
 \end{problem}
 
 Two aspects distinguish this from the conference formulation, and they map
@@ -813,20 +822,25 @@ A high-level overview is shown in Figure~\ref{fig:arch}.
     \node[vis] (img) at (0,0)    {$y_{t-k+1:t}$\\[1pt]\scriptsize onboard images};
     \node[vis] (ev)  at (3.0,0)  {vision encoder\\$\mathcal{E}_v$};
     \node[phy] (ep)  at (6.4,0)  {physical encoder $\mathcal{E}_p$\\[1pt]
-                                  \scriptsize window of $k$ frames};
+                                  \scriptsize window of $T_{\mathrm{ctx}}$ frames};
     \node[st]  (zs)  at (10.1,0) {$\zstar_t=[\zv_t,\;\zr_t]$\\[2pt]
-        \scriptsize $\zv=(x_{\mathrm{rel}},y_{\mathrm{rel}},\psi_{\mathrm{rel}})$\\
-        \scriptsize $\zr=(e_{\mathrm{CTE}},e_\psi,\kappa)$};
+        \scriptsize $\zv=(v,\omega)$\\
+        \scriptsize $\zr=(s,e_{\mathrm{CTE}},e_\psi)$};
     \node[blk,fill=black!4] (sup) at (6.4,1.9)
         {privileged road context $\Xi^r$\\[1pt]\scriptsize training time only};
+    %% the curvature preview: perceived ONCE at t_0, never propagated
+    \node[blk,fill=red!7] (prof) at (10.1,1.9)
+        {$\hat\kappa(\cdot)$ curvature preview\\[1pt]
+         \scriptsize perceived once at $t_0$};
 
     \draw[ar]  (img) -- (ev);
     \draw[ar]  (ev)  -- node[above,lbl]{$z_\tau$} (ep);
     \draw[ar]  (ep)  -- (zs);
     \draw[dar] (sup) -- (ep);
+    \draw[ar]  (ep.north east) -- (prof.west);
 
     %% ---- split dynamics: two PARALLEL transitions, one per component ----
-    \node[dyn] (dv) at (5.5,-2.75) {vehicle transition $\phi_\theta$\\[1pt]
+    \node[dyn] (dv) at (5.5,-2.75) {vehicle transition $\phi^{v}_\theta$\\[1pt]
                                     \scriptsize structured kinematics};
     \node[dyn] (dr) at (5.5,-4.75) {road transition $f_r$\\[1pt]
                                     \scriptsize geometric advection};
@@ -848,6 +862,11 @@ A high-level overview is shown in Figure~\ref{fig:arch}.
 
     %% coupling: the road is advected by the vehicle's own predicted motion
     \draw[ar] (dv) -- node[right,lbl]{$\hat{\zv}_{t+1}$} (dr);
+    %% the preview is READ at the arc length covered, not propagated -- the
+    %% mechanism the article's long-horizon claim rests on
+    \draw[dar] (prof.east) -- (13.1,1.9) -- (13.1,-4.75) -- (dr.east);
+    \node[lbl,rotate=-90,anchor=south] at (13.25,-1.4)
+        {read at $s_t-s_{t_0}$, never propagated};
 
     %% both predicted components recombine into the next interpretable state
     \draw[ar] (dv.east) -| (zn.north);
@@ -859,19 +878,16 @@ A high-level overview is shown in Figure~\ref{fig:arch}.
     \end{tikzpicture}}
     \caption{Overview of the PIWM architecture for partially observable driving.
     A vision encoder maps each observation to a visual latent; a physical encoder
-    aggregates a temporal window of those latents into the factorized
-    interpretable state $\zstar = [\zv, \zr]$, where $\zv$ is the
-    vehicle-relative state and $\zr$ the road context. A split-dynamics model
-    then rolls the state forward: the two components are advanced by
-    \emph{separate} transitions, $\zv$ by a structured kinematic model and $\zr$
-    by a geometry-driven one, and the predicted components recombine into
-    $\hat{\zstar}_{t+1}$. Their only coupling is the arrow labeled
-    $\hat{\zv}_{t+1}$---the road is advected by the vehicle's own predicted
-    motion, which is also why the action $a_t$ enters the vehicle branch alone.
-    The encoder (Section~\ref{sec:encoding}) infers the external
-    road environment from images, supervised at training time by a privileged
-    signal that is withheld at test time; the predictor
-    (Section~\ref{sec:prediction}) forecasts how that environment evolves.}
+    aggregates a window of those latents into the factorized interpretable state
+    $\zstar = [\zv, \zr]$ and, separately, into a curvature preview
+    $\hat\kappa(\cdot)$ over the road ahead. Road-context supervision is privileged
+    and available at training time only. A split-dynamics model then rolls the
+    state forward: $\zv$ by a structured kinematic model, $\zr$ by a geometric one.
+    Two couplings carry the article's argument. The road advances only through
+    $\hat{\zv}_{t+1}$, advected by the vehicle's own predicted motion, which is why
+    the action enters the vehicle branch alone. And the preview is \emph{read} at
+    the arc length covered rather than propagated (dashed, right), so no error in
+    the road can compound over the rollout.}
     \label{fig:arch}
 \end{figure}
 
@@ -883,16 +899,18 @@ We follow the conference paper in considering two architectural approaches.
 
 \paragraph{Intrinsic encoding}
 The encoder $\mathcal{E}: Y \rightarrow Z^*$ maps an observation directly to the
-interpretable latent, partitioned as $\zstar = [z_p^*, z_v^*]$, where $z_p^*$ is
-the physically interpretable component and $z_v^*$ captures the residual visual
-information needed for reconstruction.
+interpretable latent, partitioned as $\zstar = [z_p^*, z_{\mathrm{app}}^*]$, where
+$z_p^*$ is the physically interpretable component and $z_{\mathrm{app}}^*$ captures
+the residual appearance information needed for reconstruction. The conference
+version writes the latter $z_v^*$; we rename it here because this article uses the
+superscript $v$ for the \emph{vehicle} component of the factorized state.
 For continuous latent spaces, the objective follows a $\beta$-VAE formulation with
 interpretability alignment applied to $z_p^*$:
 \begin{equation}
 \mathcal{L}_{\mathrm{intrinsic\text{-}cont}} =
     \mathcal{L}_{\mathrm{recon}}(y, \hat{y})
     + \lambda_{\mathrm{interp}}\,\mathcal{L}_{\mathrm{interp}}(z_p^*, \Xi)
-    + \beta\, D_{\mathrm{KL}}\!\left(q(z_v^*|y)\,\|\,\mathcal{N}(0,I)\right).
+    + \beta\, D_{\mathrm{KL}}\!\left(q(z_{\mathrm{app}}^*|y)\,\|\,\mathcal{N}(0,I)\right).
 \end{equation}
 For discrete latent spaces, the codebook is partitioned so that each entry
 $\mathbf{e}_k = [\mathbf{e}_k^p, \mathbf{e}_k^v]$ has a fixed physical component
@@ -909,7 +927,8 @@ $z = \mathcal{E}_v(y)$.
 For continuous variants this is a $\beta$-VAE; for discrete variants a VQ-VAE
 with a 512-entry codebook.
 In the second stage, the vision encoder is frozen and a physical encoder
-$\mathcal{E}_p$ is trained to map $z$ to the interpretable state
+$\mathcal{E}_p$, paired with a physical decoder $\mathcal{D}_p$ that maps the
+interpretable state back to the intermediate latent, is trained to produce
 $\zstar = \mathcal{E}_p(z)$, optimizing:
 \begin{equation}
     \mathcal{L}_{\mathrm{physical}} =
@@ -1123,14 +1142,16 @@ the dynamics.
 We use a \emph{split-dynamics} model that advances the vehicle and the road
 context with separate, physically appropriate transitions:
 \begin{align}
-    \hat{\zv}_{t+1} &= \phi_\theta(\zv_t,\; a_t),
+    \hat{\zv}_{t+1} &= \phi^{v}_\theta(\zv_t,\; a_t),
         \label{eq:split_vehicle}\\
     \hat{\zr}_{t+1} &= f_r(\zr_t,\; \zv_t,\; \hat{\zv}_{t+1};\; \theta_r).
         \label{eq:split_road}
 \end{align}
-The vehicle transition $\phi_\theta$ is a structured kinematic model with a small
-learned actuation map (below); the road transition $f_r$ is a geometry-driven
-model (below).
+The vehicle transition $\phi^{v}_\theta$ is a structured kinematic model with a
+small learned actuation map (below); the road transition $f_r$ is a geometry-driven
+model (below). The superscript distinguishes it from the conference version's
+$\phi$, which advances the whole state from two previous steps; here only the
+vehicle branch is advanced, and from one.
 Note which arguments $f_r$ does and does not take.
 It consumes the vehicle's \emph{motion over the step}---the state before and after
 the vehicle update---and not the action: the road context is advected by how far
@@ -1305,7 +1326,7 @@ reconstruction.
 Stage~2 trains the physical encoder $\mathcal{E}_p$ to produce the factorized
 interpretable state, optimizing~\eqref{eq:interp_loss_drive} jointly with a latent
 reconstruction term.
-Stage~3 trains the split-dynamics models ($\phi_\theta$ for the vehicle and $f_r$
+Stage~3 trains the split-dynamics models ($\phi^{v}_\theta$ for the vehicle and $f_r$
 for the road context), with an optional end-to-end fine-tuning pass that updates
 the encoder and dynamics together to align the encoded state with what the
 dynamics can predict.
@@ -1330,7 +1351,7 @@ Algorithm~\ref{alg:piwm_drive} summarizes the procedure.
 \EndFor
 \For{each batch}
     \State Obtain $(\zv_t, \zr_t)$ from the encoders
-    \State $\hat{\zv}_{t+1} \gets \phi_\theta(\zv_t, a_t)$
+    \State $\hat{\zv}_{t+1} \gets \phi^{v}_\theta(\zv_t, a_t)$
            \Comment{bicycle model}
     \State $\hat{\zr}_{t+1} \gets f_r(\zr_t, \zv_t, \hat{\zv}_{t+1};\,\theta_r)$
            \Comment{road prediction (Sec.~\ref{sec:prediction})}
@@ -1339,7 +1360,7 @@ Algorithm~\ref{alg:piwm_drive} summarizes the procedure.
            $\|\hat{\zv}_{t+1} - \hat{\mu}_{\Xi^v_{t+1}}\|^2
            + \|\hat{\zr}_{t+1} - \hat{\mu}_{\Xi^r_{t+1}}\|^2$
 \EndFor
-\State (Optional) End-to-end fine-tune $\mathcal{E}_p, \phi_\theta, f_r$ jointly
+\State (Optional) End-to-end fine-tune $\mathcal{E}_p, \phi^{v}_\theta, f_r$ jointly
 \State \Return trained model parameters
 \end{algorithmic}
 \end{algorithm}
@@ -1404,10 +1425,8 @@ width $\delta \in \{0\%, 5\%, 10\%\}$ to the ground-truth state, as described in
 \paragraph{CarRacing (Tier~2)}
 Driving data are generated with a pretrained controller on procedurally generated
 tracks; each episode records the onboard image, action, and simulator state.
-Ground-truth labels for the vehicle-relative state $(x_{\mathrm{rel}},
-y_{\mathrm{rel}}, \psi_{\mathrm{rel}})$ and the road-context state
-$(e_{\mathrm{CTE}}, e_\psi, \kappa)$ are available directly from the simulator and
-its track geometry.
+Ground-truth labels for the vehicle pose and for the road context are available
+directly from the simulator and its track geometry.
 We use exact ground-truth labels for training (corresponding to $\delta = 0$) and
 evaluate whether the factorized-state formulation improves long-horizon prediction
 relative to baselines that use only vehicle-state labels.
@@ -1435,7 +1454,7 @@ version's autoencoding variants, so we implemented those as well and measured th
 here rather than inheriting their ranking (Table~\ref{tab:kappa_source}); on this
 task the choice does not move the rollout error.
 The vision encoder maps each $64 \times 64$ observation to a compact latent, and
-the physical encoder aggregates a context window of $k = 15$ frames
+the physical encoder aggregates a context window of $T_{\mathrm{ctx}} = 15$ frames
 ($\approx$\SI{0.7}{s}) to infer the road context from image sequences
 (Section~\ref{sec:encoding}).
 Our rollouts are trained on $16$-step horizons and evaluated at up to $100$ steps,
@@ -1491,11 +1510,12 @@ validation windows,
     E_{xy}(k) = \frac{1}{N}\sum_{i=1}^{N}
     \bigl\lVert \hat{p}_{i,k} - p_{i,k} \bigr\rVert_2 ,
     \qquad
-    p_{i,k} = (x_{\mathrm{rel}}, y_{\mathrm{rel}})_{i,k},
     \label{eq:metric_exy}
 \end{equation}
-where positions are expressed in the vehicle-relative frame
-of~\eqref{eq:vehicle_rel} anchored at the start of the window.
+where $p_{i,k}$ is the ground-plane position of the vehicle at rollout step $k$ of
+window $i$, in meters, and $\hat{p}_{i,k}$ the model's prediction of it. All models
+are compared in the same planar frame, whatever internal parameterization each
+uses.
 We report $E_{xy}$ at $k \in \{25, 50, 100\}$ and plot the full curve
 $k \mapsto E_{xy}(k)$; all rollouts are initialized from the ground-truth state at
 $k=0$ so that the comparison isolates the dynamics rather than the encoder.
@@ -1642,7 +1662,7 @@ over a 100-step ($\approx$\SI{4.5}{s}) autoregressive rollout under five-fold
 cross-validation over the $71$ recorded episodes: each fold holds out one fifth of
 them ($301$--$647$ evaluation windows, $2483$ in total), every model is trained on
 that fold's training episodes only, and we average within a fold before reporting
-mean and half-range over the five fold-level means. Comparisons \emph{within} a
+the mean and standard deviation over the five fold-level means. Comparisons \emph{within} a
 fold are paired---every model rolls out from the same initial states over the same
 windows---and the paired statistics below are computed that way.
 Two regimes are visible, and the crossover between them is the central result.
@@ -1654,8 +1674,8 @@ them: each baseline is handed the ground-truth lane waypoints at $t_0$, so over
 short horizons it is interpolating from a description of the road that our model
 had to recover from pixels.
 Beyond the crossover the ordering inverts and does not invert back: on the
-fold-mean curves our model is permanently ahead of DVBF from step $64$, of
-GOKU-net from step $75$ and of Vid2Param from step $82$.
+fold-mean curves our model is ahead of DVBF from step $64$ onward, of GOKU-net from
+step $75$ and of Vid2Param from step $82$.
 By step $100$ it reaches \SI{0.463}{m} against \SI{0.703}{m} for the
 strongest baseline. Within each fold, where the comparison is paired, our model is
 ahead at step $100$ in \emph{all five} folds against every baseline: by
@@ -1675,7 +1695,7 @@ durable of the two claims, because it does not rest on any single trained model.
 \begin{table}[t]
 \centering
 \caption{Position error $E_{xy}$ in meters on the physical DonkeyCar, at three
-rollout horizons, as mean $\pm$ half-range over five-fold cross-validation (lower is
+rollout horizons, as mean $\pm$ standard deviation over five-fold cross-validation (lower is
 better). All models are driven by the same actions and are initialized from the
 ground-truth state; the baselines additionally receive the ground-truth lane
 waypoints at $t_0$. Of the baselines only Vid2Param also sees the images---DVBF
@@ -1691,13 +1711,13 @@ instead of indexing a surveyed centerline.}
 \toprule
 Model & $E_{xy}(25)$ & $E_{xy}(50)$ & $E_{xy}(100)$ \\
 \midrule
-Vid2Param~\cite{asenov2019vid2param}   & $\mathbf{0.036 \pm 0.010}$ & $\mathbf{0.107 \pm 0.009}$ & $0.703 \pm 0.192$ \\
-GOKU-net~\cite{linial_generative_2021}  & $0.046 \pm 0.015$ & $0.131 \pm 0.015$ & $0.725 \pm 0.122$ \\
-DVBF~\cite{karl2016deep}               & $0.061 \pm 0.011$ & $0.173 \pm 0.038$ & $0.837 \pm 0.160$ \\
+Vid2Param~\cite{asenov2019vid2param}   & $\mathbf{0.036 \pm 0.008}$ & $\mathbf{0.107 \pm 0.008}$ & $0.703 \pm 0.142$ \\
+GOKU-net~\cite{linial_generative_2021}  & $0.046 \pm 0.012$ & $0.131 \pm 0.013$ & $0.725 \pm 0.107$ \\
+DVBF~\cite{karl2016deep}               & $0.061 \pm 0.011$ & $0.173 \pm 0.031$ & $0.837 \pm 0.131$ \\
 SINDYc~\cite{BRUNTON2016710}           & \multicolumn{3}{c}{diverges in all $2483$ windows of all five folds} \\
 \midrule
-\textbf{PIWM-Frenet (ours, perceived $\kappa$)} & $0.141 \pm 0.011$ & $0.245 \pm 0.025$ & $\mathbf{0.463 \pm 0.046}$ \\
-\emph{PIWM-Frenet (map-free)} & \emph{$0.146 \pm 0.013$} & \emph{$0.258 \pm 0.031$} & \emph{$0.516 \pm 0.068$} \\
+\textbf{PIWM-Frenet (ours, perceived $\kappa$)} & $0.141 \pm 0.009$ & $0.245 \pm 0.021$ & $\mathbf{0.463 \pm 0.045}$ \\
+\emph{PIWM-Frenet (map-free)} & \emph{$0.146 \pm 0.012$} & \emph{$0.258 \pm 0.023$} & \emph{$0.516 \pm 0.056$} \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1741,15 +1761,13 @@ output with progressively better sources of $\kappa$
 Feeding the ground-truth curvature profile---perfect perception of exactly the
 quantity the encoder predicts---yields \SI{0.466}{m}; the encoder actually used
 yields \SI{0.463}{m}, a paired difference of \SI{0.003}{m}.
-Perceiving the road from the camera costs nothing measurable.
 Reading $\kappa$ from the known track map instead---privileged information no
 image-and-action model could have---is \emph{worse}, at \SI{0.505}{m}; we return
 to why below.
 The advantage over the baselines is thus attributable to the \emph{structure} of
 the representation, not to privileged information or to perception quality.
 
-The table also settles the encoder-architecture question, in the least flattering
-way possible: it does not matter.
+The table also settles the encoder-architecture question: it does not matter.
 The ten camera rows span the conference version's design space---directly
 supervised regressors from scratch and from the pretrained backbone, the two-stage
 extrinsic autoencoder, the single-encoder intrinsic variant, the discrete
@@ -1785,8 +1803,7 @@ diminishing returns here, and the remaining error is dominated by the vehicle br
 \begin{table}[t]
 \centering
 \caption{Where the curvature comes from. All rows use the identical dynamics and
-differ only in how $\kappa$ is obtained; five-fold cross-validation, mean $\pm$
-half-range. $\mathrm{RMSE}_\kappa$ is the encoder's own curvature error in
+differ only in how $\kappa$ is obtained; five-fold cross-validation, mean $\pm$ standard deviation. $\mathrm{RMSE}_\kappa$ is the encoder's own curvature error in
 \si{m^{-1}} and $E_{xy}(100)$ the resulting 100-step position error in meters. The
 first two rows are privileged and not deployable; the remaining ten read the front
 camera alone and span the conference version's encoder design space together with
@@ -1832,9 +1849,8 @@ $\delta = 0$ to \SI{0.319}{m} at $\delta = 10\%$---a $31\%$ reduction, while
 Vid2Param worsens by $33\%$ over the same range. The trend holds in all five folds,
 and our model's intervals at $\delta = 0$ and $\delta = 10\%$ do not overlap.
 
-It would be convenient to read this as evidence that the particular biased uniform
-noise of the conference formulation benefits a structured model. It does not.
-Replacing that noise with a zero-mean Gaussian of the same per-dimension magnitude,
+This is not a property of the conference formulation's particular noise.
+Replacing it with a zero-mean Gaussian of the same per-dimension magnitude,
 holding everything else fixed, gives \SI{0.313}{m} against \SI{0.319}{m}---a paired
 difference of \SI{-0.005}{m} whose sign is not consistent across folds. Label noise
 at this magnitude regularizes the structured model, and any zero-mean noise of that
@@ -1847,8 +1863,7 @@ sharply earlier as $\delta$ grows---several select the fifth epoch at $\delta =
 \centering
 \caption{Weak-supervision noise on the physical DonkeyCar. Position error
 $E_{xy}(100)$ in meters when the labels used for training are corrupted by biased
-uniform noise of relative width $\delta$ (\ref{sec:interp_loss_def}), as mean $\pm$
-half-range over five folds. The structured model improves as the labels degrade;
+uniform noise of relative width $\delta$ (\ref{sec:interp_loss_def}), as mean $\pm$ standard deviation over five folds. The structured model improves as the labels degrade;
 every baseline gets worse. The last row replaces that noise with a zero-mean
 Gaussian of matched per-dimension magnitude, which reproduces the gain and shows it
 to be ordinary regularization rather than a property of the noise model.}
@@ -1858,15 +1873,15 @@ to be ordinary regularization rather than a property of the noise model.}
 \toprule
 Model & $\delta = 0\%$ & $\delta = 5\%$ & $\delta = 10\%$ \\
 \midrule
-\textbf{PIWM-Frenet (ours)}     & $0.463 \pm 0.046$ & $0.452 \pm 0.047$ & $\mathbf{0.319 \pm 0.049}$ \\
-\emph{PIWM-Frenet (map-free)}   & $0.516 \pm 0.068$ & $0.506 \pm 0.066$ & $0.390 \pm 0.040$ \\
+\textbf{PIWM-Frenet (ours)}     & $0.463 \pm 0.045$ & $0.452 \pm 0.035$ & $\mathbf{0.319 \pm 0.044}$ \\
+\emph{PIWM-Frenet (map-free)}   & $0.516 \pm 0.056$ & $0.506 \pm 0.049$ & $0.390 \pm 0.036$ \\
 \midrule
-Vid2Param                       & $0.703 \pm 0.192$ & $0.919 \pm 0.252$ & $0.938 \pm 0.280$ \\
-GOKU-net                        & $0.725 \pm 0.122$ & $0.896 \pm 0.199$ & $0.864 \pm 0.185$ \\
-DVBF                            & $0.837 \pm 0.160$ & $1.067 \pm 0.240$ & $1.075 \pm 0.233$ \\
+Vid2Param                       & $0.703 \pm 0.142$ & $0.918 \pm 0.189$ & $0.938 \pm 0.211$ \\
+GOKU-net                        & $0.725 \pm 0.107$ & $0.896 \pm 0.152$ & $0.864 \pm 0.142$ \\
+DVBF                            & $0.837 \pm 0.131$ & $1.067 \pm 0.188$ & $1.075 \pm 0.177$ \\
 \midrule
 \multicolumn{4}{l}{\emph{matched-magnitude Gaussian control, ours at $\delta = 10\%$:}
-$0.313 \pm 0.043$} \\
+$0.313 \pm 0.041$} \\
 \bottomrule
 \end{tabular}
 \end{table}

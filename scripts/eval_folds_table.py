@@ -1,4 +1,4 @@
-"""5-fold CV tables: main comparison and the delta-noise sweep, with error bars.
+﻿"""5-fold CV tables: main comparison and the delta-noise sweep, with error bars.
 
 WHAT IS DIFFERENT FROM `eval_seeds_table.py`
 That script varies the TRAINING seed on ONE fixed split, so every model walks the
@@ -56,7 +56,7 @@ DELTAS = [0.0, 0.05, 0.10]
 BASELINES = [("DVBF", DynamicsDVBFLane), ("GOKU", DynamicsGOKULane),
              ("V2P", DynamicsVid2ParamLane),
              # GokuNet with the observation pathway the conference version gives it,
-             # at Vid2Param's exact parameter count -- see HANDOFF §0.3.
+             # at Vid2Param's exact parameter count -- see HANDOFF Â§0.3.
              ("goku_obs", lambda: DynamicsGOKULane(
                  theta_dim=DynamicsVid2ParamLane.THETA_DIM))]
 # these infer a theta from the shared image encoder rather than running on state alone
@@ -179,7 +179,11 @@ def eval_one_fold(base, fr_files, fold, nfolds, deltas, log, eps_override=None,
                     if m is None:
                         continue
                     z = torch.tensor(s31[0]).unsqueeze(0); xy = [s31[0, :2]]
-                    theta = m.infer_theta(obs)[0] if v in OBS_COND else None
+                    # posterior MEAN, not a sample: infer_theta returns
+                    # mu + sigma*eps, so using [0] makes every reported cell a
+                    # different draw on every rerun. The reference implementation
+                    # also encodes with mu at evaluation time.
+                    theta = m.infer_theta(obs)[1] if v in OBS_COND else None
                     for k in range(K):
                         if theta is not None:
                             z = m.step(z, acts_b[k], theta)
@@ -349,16 +353,19 @@ def main():
     log(f"\nfolds with results: {got}")
 
     def cell(row, col):
-        """mean +/- half-range of the per-fold means, over folds that have `row`."""
+        """Mean and sample standard deviation of the per-fold means. The std over
+        folds is what cross-validated robotics results are normally reported with;
+        an earlier version of this script used the half-range, which is not a
+        statistic the field recognises."""
         v = [per_fold[f][row][2][:, col].mean() for f in got if row in per_fold[f]]
         if not v:
             return None, 0
         v = np.array(v)
-        return (v.mean(), (v.max() - v.min()) / 2 if len(v) > 1 else 0.0), len(v)
+        return (v.mean(), v.std(ddof=1) if len(v) > 1 else 0.0), len(v)
 
     # ---- main table (delta = 0) ---------------------------------------
     log("\n" + "=" * 74)
-    log(f"MAIN TABLE  E_xy (m), mean +/- half-range over {len(got)} folds")
+    log(f"MAIN TABLE  E_xy (m), mean +/- std over {len(got)} folds")
     log("=" * 74)
     log(f"{'model':<18} {'@25':>16} {'@50':>16} {'@100':>16} {'k':>3}")
     log("-" * 74)
@@ -374,7 +381,7 @@ def main():
 
     # ---- delta sweep --------------------------------------------------
     log("\n" + "=" * 74)
-    log("DELTA WEAK-SUPERVISION NOISE  E_xy@100 (m), mean +/- half-range over folds")
+    log("DELTA WEAK-SUPERVISION NOISE  E_xy@100 (m), mean +/- std over folds")
     log("(the single-split table is non-monotonic -- 5% worse than 10% -- and the")
     log(" paper attributes that to single-run variance; these error bars test it)")
     log("=" * 74)

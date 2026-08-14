@@ -1,4 +1,4 @@
-"""fig_main, redrawn from the 5-fold run instead of one checkpoint per model.
+﻿"""fig_main, redrawn from the 5-fold run instead of one checkpoint per model.
 
 WHY A SECOND FIGURE RATHER THAN AN EDIT TO paper_figures.py
 `src/paper_figures.py` recomputes its curves from a single checkpoint per model on
@@ -6,13 +6,15 @@ the legacy hold-out. That is exactly what the 2026-08 audit found to be untrustw
 both the ours row and the baseline rows in the paper turned out to be lucky draws.
 This one plots what the 5-fold run measured -- so its subject is no longer "which
 curve is lower" but "how much does each curve move when the split changes", which
-is where our actual advantage is (+/-0.046 m against Vid2Param's +/-0.194 and DVBF's
-+/-0.850). Hence the band is the fold-to-fold MIN-MAX, not a standard error: SE over
-windows would shrink with window count and hide the very thing being shown.
+is where our actual advantage is (std over folds 0.045 m against Vid2Param's 0.142
+and DVBF's 0.131). The BAND is the fold-to-fold min-max, chosen over a standard
+error because SE over windows shrinks with window count and would hide exactly what
+is being shown; the legend reports the std over folds, matching the tables.
 
-Curves come from the cache `reports/matrix/folds_table_curves.npz` written by
-scripts/eval_folds_table.py -- no rollouts are recomputed here, so this figure and
-the CV tables cannot drift apart.
+Curves come from the cache written by scripts/eval_folds_table.py -- no rollouts are
+recomputed here, so this figure and the CV tables cannot drift apart. Pass
+`--curves reports/matrix/folds_table_symmetric_curves.npz` for the symmetric-selection
+version, which is what the article reports.
 
 SINDYc is deliberately absent: its cached curve was measured on the legacy split,
 and dropping a legacy-split curve into a CV figure is the provenance mistake this
@@ -90,7 +92,7 @@ def main():
         C = np.stack(got)                      # (n_folds, K+1)
         steps = np.arange(C.shape[1])
         mu, lo, hi = C.mean(0), C.min(0), C.max(0)
-        half = (C[:, -1].max() - C[:, -1].min()) / 2
+        half = C[:, -1].std(ddof=1)
         ax.plot(steps, mu, color=col, lw=lw, ls=ls,
                 label=f"{lbl} ({mu[-1]:.2f} $\\pm$ {half:.2f} m)")
         ax.fill_between(steps, lo, hi, color=col, alpha=0.13, lw=0)

@@ -92,7 +92,9 @@ def score(model, S, A, obs, obs_conditioned):
     """Mean E_xy@100 in real metres over the whole fold, one batched rollout."""
     z = torch.tensor(S[:, 0])
     acts = torch.tensor(A)
-    theta = model.infer_theta(obs)[0] if obs_conditioned else None
+    # posterior mean: a sampled theta would make the epoch chosen here depend on
+    # the draw rather than on the checkpoint
+    theta = model.infer_theta(obs)[1] if obs_conditioned else None
     for k in range(K):
         if theta is not None:
             z = model.step(z, acts[:, k], theta)

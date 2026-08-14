@@ -37,6 +37,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent          # piwm/
 STOP_FILE = ROOT / "reports" / "matrix" / "STOP"
 LOG_DIR = ROOT / "reports" / "matrix" / "logs"
+#: one marker per job that the driver saw exit cleanly; see `_complete`
+DONE_DIR = ROOT / "reports" / "matrix" / "done"
 
 DELTAS = [0.0, 0.05, 0.10]
 VARIANTS = ["dvbf", "goku", "v2p"]
@@ -317,8 +319,21 @@ def main():
                                      epochs=a.enc_epochs, vae_epochs=a.vae_epochs)
     else:
         jobs = jobs_seeds(tuple(a.seeds), epochs_bl=a.epochs_bl)
-    todo = [j for j in jobs if a.force or not (ROOT / j["out"]).exists()]
+    # A job counts as done only if the driver recorded it finishing. Trainers write
+    # best.tar from the first improving epoch, so the artifact alone cannot tell a
+    # finished run from one killed at epoch 2 -- and resuming on the artifact would
+    # quietly admit an undertrained model into the tables.
+    def _complete(j):
+        return (DONE_DIR / f"{j['name']}.done").exists() and (ROOT / j["out"]).exists()
+
+    todo = [j for j in jobs if a.force or not _complete(j)]
     done_already = len(jobs) - len(todo)
+    orphan = [j for j in jobs if (ROOT / j["out"]).exists() and not _complete(j)
+              and not a.force]
+    if orphan:
+        print(f"! {len(orphan)} job(s) have a checkpoint but no completion marker "
+              f"and will be rerun: {', '.join(j['name'] for j in orphan[:6])}"
+              + (" ..." if len(orphan) > 6 else ""))
 
     print(f"preset={a.preset}  {len(jobs)} jobs, {done_already} already done, "
           f"{len(todo)} to run")
@@ -349,9 +364,13 @@ def main():
 
     t0 = time.time()
     running, queue, results = [], list(todo), []
-    # a job may declare `needs`; those names must have finished OK before it starts.
-    # Anything already on disk counts as satisfied, so a resumed run does not stall.
-    done_ok = {j["name"] for j in jobs if (ROOT / j["out"]).exists()}
+    # A job may declare `needs`; those names must have finished OK before it starts.
+    # An artifact already on disk satisfies a dependency so a resumed run does not
+    # stall -- but NOT under --force, where that artifact is about to be rewritten:
+    # counting it would let a dependent start while its input is being overwritten
+    # epoch by epoch, and read a torn or stale stage-1 checkpoint.
+    done_ok = set() if a.force else {j["name"] for j in jobs
+                                     if (ROOT / j["out"]).exists()}
     failed = set()
 
     def _ready(job):
@@ -392,6 +411,10 @@ def main():
             # leave an early-epoch checkpoint behind, so calling it success is wrong
             # too. Report it as its own state and let a human look.
             dirty = have and p.returncode != 0
+            if have:
+                DONE_DIR.mkdir(parents=True, exist_ok=True)
+                (DONE_DIR / f"{job['name']}.done").write_text(
+                    f"rc={p.returncode} secs={time.time()-ts:.0f}\n", encoding="utf-8")
             (done_ok if have else failed).add(job["name"])
             results.append(dict(name=job["name"], rc=p.returncode, ok=ok,
                                 dirty=dirty, secs=round(time.time() - ts, 1)))

@@ -1,4 +1,4 @@
-"""fig_delta, redrawn from the 5-fold curves instead of the retired single split.
+﻿"""fig_delta, redrawn from the 5-fold curves instead of the retired single split.
 
 The previous fig_delta_supervision.pdf was produced from the dyn_k16 checkpoint
 family whose numbers did not reproduce, and its caption cited the old baseline
@@ -44,7 +44,7 @@ def main():
         C = np.stack([z[f"f{f}_{row}"] for f in folds])
         steps = np.arange(C.shape[1])
         col = tuple(base * shade + (1 - shade) * 0.82)   # lighter = noisier
-        half = (C[:, -1].max() - C[:, -1].min()) / 2
+        half = C[:, -1].std(ddof=1)
         ax.plot(steps, C.mean(0), color=col, lw=2.0,
                 label=f"{lbl} ({C.mean(0)[-1]:.2f} $\\pm$ {half:.2f} m)")
         ax.fill_between(steps, C.min(0), C.max(0), color=col, alpha=0.14, lw=0)

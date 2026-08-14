@@ -1,4 +1,4 @@
-"""Main table with error bars: every model retrained on 3 seeds, one evaluator.
+﻿"""Main table with error bars: every model retrained on 3 seeds, one evaluator.
 
 WHY THIS EXISTS
 `src/eval_frenet_vs_baselines.py` reports ONE checkpoint per model, and the
@@ -190,7 +190,8 @@ def main(stride=STRIDE, seeds=SEEDS):
                 stack0 = np.stack([imgs[t0 - FS + 1 + j] for j in range(FS)], 0)[None]
                 obs = enc(torch.tensor(stack0, dtype=torch.float32)).unsqueeze(1)
                 for i in seeds:
-                    theta, _, _ = bl[("V2P", i)].infer_theta(obs)
+                    # posterior mean, so the reported cells are deterministic
+                    _, theta, _ = bl[("V2P", i)].infer_theta(obs)
                     z = torch.tensor(s31[0]).unsqueeze(0); xy = [s31[0, :2]]
                     for k in range(K):
                         z = bl[("V2P", i)].step(z, acts_b[k], theta)
@@ -251,7 +252,7 @@ def main(stride=STRIDE, seeds=SEEDS):
         return np.array([[e[:, k].mean() for k in (25, 50, 100)] for e in v])
 
     out()
-    out("mean +/- half-range over 3 seeds (E_xy, m)")
+    out("mean +/- std over 3 seeds (E_xy, m)")
     out(f"{'model':<16} {'@25':>16} {'@50':>16} {'@100':>16}")
     out("-" * 68)
     summary = {}
@@ -299,7 +300,7 @@ def main(stride=STRIDE, seeds=SEEDS):
 
     _os.makedirs(_os.path.dirname(REPORT), exist_ok=True)
     with open(REPORT, "w", encoding="utf-8") as fh:
-        fh.write("# 主表 3 seeds (mean +/- range)\n\n```\n" + "\n".join(lines) + "\n```\n")
+        fh.write("# ä¸»è¡¨ 3 seeds (mean +/- range)\n\n```\n" + "\n".join(lines) + "\n```\n")
     with open(REPORT.replace(".md", ".json"), "w", encoding="utf-8") as fh:
         json.dump(summary, fh, indent=1)
     print(f"\nsaved -> {REPORT}\nsaved -> {CURVES}\n({time.time()-t_start:.0f}s)")
