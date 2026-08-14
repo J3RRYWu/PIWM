@@ -1687,7 +1687,7 @@ step $75$ and of Vid2Param from step $82$.
 By step $100$ it reaches \SI{0.463}{m} against \SI{0.703}{m} for the
 strongest baseline. Within each fold, where the comparison is paired, our model is
 ahead at step $100$ in \emph{all five} folds against every baseline: by
-\SI{0.241}{m} on average against Vid2Param, \SI{0.262}{m} against GOKU-net and
+\SI{0.240}{m} on average against Vid2Param, \SI{0.262}{m} against GOKU-net and
 \SI{0.374}{m} against DVBF.
 SINDYc diverges in every one of the $2483$ evaluation windows of all five folds, so
 we report it as divergent rather than quoting a value; past the point of divergence
@@ -1826,17 +1826,17 @@ curvature estimate gives the worst rollout.}
 \toprule
 Source of $\kappa$ & Input & $\mathrm{RMSE}_\kappa$ & $E_{xy}(100)$ \\
 \midrule
-Known track map            & map $+$ pose  & ---   & $0.505 \pm 0.044$ \\
-Ground-truth profile       & true $\kappa$ & ---   & $0.466 \pm 0.049$ \\
+Known track map            & map $+$ pose  & ---   & $0.505 \pm 0.043$ \\
+Ground-truth profile       & true $\kappa$ & ---   & $0.466 \pm 0.046$ \\
 \midrule
-Extrinsic autoencoder      & camera & 0.193 & $\mathbf{0.454 \pm 0.061}$ \\
-LSTM                       & camera & 0.898 & $0.456 \pm 0.112$ \\
-Intrinsic autoencoder      & camera & 0.136 & $0.460 \pm 0.047$ \\
-CNN, frozen backbone       & camera & 0.247 & $0.461 \pm 0.063$ \\
-CNN, warm-started backbone & camera & 0.148 & $0.462 \pm 0.056$ \\
-\textbf{CNN, from scratch} & \textbf{camera} & \textbf{0.154} & $\mathbf{0.463 \pm 0.046}$ \\
-VQ\,$+$\,Transformer       & camera & 0.219 & $0.463 \pm 0.056$ \\
-Transformer                & camera & \textbf{0.122} & $0.471 \pm 0.052$ \\
+Extrinsic autoencoder      & camera & 0.193 & $\mathbf{0.454 \pm 0.048}$ \\
+LSTM                       & camera & 0.898 & $0.456 \pm 0.089$ \\
+Intrinsic autoencoder      & camera & 0.136 & $0.460 \pm 0.045$ \\
+CNN, frozen backbone       & camera & 0.247 & $0.461 \pm 0.053$ \\
+CNN, warm-started backbone & camera & 0.148 & $0.462 \pm 0.052$ \\
+\textbf{CNN, from scratch} & \textbf{camera} & \textbf{0.154} & $\mathbf{0.463 \pm 0.045}$ \\
+VQ\,$+$\,Transformer       & camera & 0.219 & $0.463 \pm 0.051$ \\
+Transformer                & camera & \textbf{0.122} & $0.471 \pm 0.047$ \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1884,7 +1884,7 @@ Model & $\delta = 0\%$ & $\delta = 5\%$ & $\delta = 10\%$ \\
 \textbf{PIWM-Frenet (ours)}     & $0.463 \pm 0.045$ & $0.452 \pm 0.035$ & $\mathbf{0.319 \pm 0.044}$ \\
 \emph{PIWM-Frenet (map-free)}   & $0.516 \pm 0.056$ & $0.506 \pm 0.049$ & $0.390 \pm 0.036$ \\
 \midrule
-Vid2Param                       & $0.703 \pm 0.142$ & $0.918 \pm 0.189$ & $0.938 \pm 0.211$ \\
+Vid2Param                       & $0.703 \pm 0.142$ & $0.919 \pm 0.189$ & $0.938 \pm 0.211$ \\
 GOKU-net                        & $0.725 \pm 0.107$ & $0.896 \pm 0.152$ & $0.864 \pm 0.142$ \\
 DVBF                            & $0.837 \pm 0.131$ & $1.067 \pm 0.188$ & $1.075 \pm 0.177$ \\
 \midrule
@@ -1908,55 +1908,44 @@ $0.313 \pm 0.041$} \\
 \end{figure}
 
 \paragraph{Robustness to a corrupted initial state}
-%% ============================================================================
-%% TODO (STALE NUMBERS): this initial-state-noise study and Figure fig:noise were
-%% produced by src/paper_figures.py from the retired single-split checkpoints
-%% (dyn_k16 + the _longK baselines). The numbers below (0.749/0.889/1.186/1.393,
-%% the 2.8x factor, and the 0.4 m/s speed-noise figure) do NOT trace to the
-%% cross-validated results the rest of this section now uses. Re-run the noise
-%% study on the per-fold checkpoints before submission, or cut the paragraph.
-%% ============================================================================
 The study above perturbs the \emph{supervision}; a complementary question is what
 happens when the state the rollout starts from is itself wrong, as it would be
 under an imperfect state estimator at deployment.
 We therefore repeat the evaluation with Gaussian noise of standard deviation
-$\sigma$ (in units of each state variable's own standard deviation) added to the
-initial state, $10$ draws per window
-(Figure~\ref{fig:noise}\,(a)).
+$\sigma$, in units of each state variable's own standard deviation, added to the
+initial state, with ten draws per window (Table~\ref{tab:noise}).
 This is a \emph{test-time} perturbation of the state and should not be confused
 with the $\delta$ \emph{training-label} noise of Table~\ref{tab:delta}; the two
 probe different failure modes.
-The ranking is unchanged at every level: at $\sigma = 1.5$ our model is at
-\SI{0.749}{m} against \SI{0.889}{m} (Vid2Param), \SI{1.186}{m} (GOKU-net) and
-\SI{1.393}{m} (DVBF).
-We note that our relative degradation over this range ($2.8\times$) is in fact
-slightly larger than the baselines' ($2.3$--$2.5\times$), which is what one
-expects when a method starts from the smallest error: the absolute gap narrows
-with noise, but it does not close.
+The ranking is preserved at every level: at $\sigma = 1.5$ our model is at
+\SI{0.823}{m} against \SI{1.199}{m} for the strongest baseline, and the absolute
+gap widens rather than closes.
+Relative degradation tells a different story, and we report it because it does not
+favor us: over this range our error grows by $1.78\times$ against Vid2Param's
+$1.72\times$. Vid2Param is marginally the less sensitive of the two in relative
+terms; it is simply working from a larger error throughout.
 
-Because every state variable is a physical quantity, we can also ask \emph{which}
-one the rollout is sensitive to, rather than only how sensitive it is overall
-(Figure~\ref{fig:noise}\,(b)).
-Perturbing the speed $v$ is by far the most damaging---\SI{0.4}{m/s} of noise
-roughly doubles the 100-step error---while the yaw rate $\omega$ is almost
-inconsequential over an order of magnitude larger range, and the road-context
-variables $e_{\mathrm{CTE}}$ and $e_\psi$ sit in between.
-This is a diagnostic an opaque latent state cannot provide, and it is
-actionable: it says that longitudinal state estimation, not heading estimation,
-is where sensing effort should go on this platform.
-
-\begin{figure}[t]
-    \centering
-    \includegraphics[width=\linewidth]{fig_noise.pdf}
-    \caption{Robustness to a corrupted \emph{initial state} (test-time
-    perturbation; distinct from the training-label noise of
-    Table~\ref{tab:delta}). (a) 100-step position error against the noise scale
-    $\sigma$ applied to all state variables; the ranking is preserved throughout.
-    (b) Sensitivity of our model to noise on each physical state variable
-    separately. Speed dominates; yaw rate is nearly irrelevant. Shaded bands are
-    standard errors over the $201$ validation windows.}
-    \label{fig:noise}
-\end{figure}
+\begin{table}[t]
+\centering
+\caption{Robustness to a corrupted \emph{initial state}. $E_{xy}(100)$ in meters
+under Gaussian perturbation of scale $\sigma$ applied to the state the rollout
+starts from, mean $\pm$ standard deviation over five folds, ten draws per window.
+This is a test-time perturbation and is distinct from the training-label noise of
+Table~\ref{tab:delta}. Baselines use the same symmetrically selected epochs as
+Table~\ref{tab:donkey_main}, so the $\sigma = 0$ column reproduces it.}
+\label{tab:noise}
+\small
+\begin{tabular}{lrrrrr}
+\toprule
+Model & $\sigma = 0$ & $0.25$ & $0.5$ & $1.0$ & $1.5$ \\
+\midrule
+\textbf{PIWM-Frenet (ours)} & $\mathbf{0.462}$ & $\mathbf{0.485}$ & $\mathbf{0.540}$ & $\mathbf{0.685}$ & $\mathbf{0.823}$ \\
+Vid2Param                   & $0.699$ & $0.726$ & $0.788$ & $0.977$ & $1.199$ \\
+GOKU-net                    & $0.724$ & $0.768$ & $0.856$ & $1.097$ & $1.503$ \\
+DVBF                        & $0.840$ & $0.876$ & $0.974$ & $1.267$ & $1.681$ \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 %% =================================================================
 %% COMMENTED OUT --- DO NOT DELETE.
@@ -2041,12 +2030,11 @@ This is directly useful for safety monitoring: a forecasted road that departs fr
 plausible geometry is a detectable failure signal, available before the predicted
 trajectory itself looks wrong.
 The same property makes the model's failure modes addressable rather than merely
-observable: because the state is physical, the sensitivity study of
-Figure~\ref{fig:noise}\,(b) attributes the rollout's fragility to a specific
-quantity---longitudinal speed---and is silent about another---yaw rate---which
-turns a robustness result into a concrete instruction about where sensing effort
-belongs. A latent-state model can report that it is sensitive to initialization;
-it cannot say to \emph{what}.
+observable. Because every state variable is a physical quantity, the perturbation
+study of Table~\ref{tab:noise} can be repeated one variable at a time to ask which
+one the rollout is actually sensitive to, turning a robustness number into an
+instruction about where sensing effort belongs. A latent-state model can report
+that it is sensitive to initialization; it cannot say to \emph{what}.
 
 \paragraph{Privileged training for real deployment}
 The real DonkeyCar uses privileged road-context supervision at training and

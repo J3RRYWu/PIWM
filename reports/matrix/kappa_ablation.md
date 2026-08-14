@@ -1,29 +1,29 @@
 # kappa-source ablation, 5-fold
 
 ```
-fold 0: 647 windows, 12 rows (212s)
-fold 1: 301 windows, 12 rows (310s)
-fold 2: 474 windows, 12 rows (454s)
-fold 3: 554 windows, 12 rows (609s)
-fold 4: 507 windows, 12 rows (751s)
+fold 0: 647 windows, 12 rows (192s)
+fold 1: 301 windows, 12 rows (283s)
+fold 2: 474 windows, 12 rows (442s)
+fold 3: 554 windows, 12 rows (622s)
+fold 4: 507 windows, 12 rows (793s)
 
 ==============================================================================
-KAPPA SOURCE ABLATION  E_xy (m), mean +/- half-range over 5 folds
+KAPPA SOURCE ABLATION  E_xy (m), mean +/- std over 5 folds
 ==============================================================================
 curvature source                      RMSE_k           @25           @50          @100
 ------------------------------------------------------------------------------
-map lookup (privileged)                   -- 0.144+/-0.015 0.266+/-0.025 0.505+/-0.044
-true preview (perfect perception)         -- 0.141+/-0.010 0.245+/-0.028 0.466+/-0.049
-camera, scratch                       0.1535 0.141+/-0.011 0.245+/-0.025 0.463+/-0.046
-camera, v6 warm-start                 0.1475 0.141+/-0.010 0.246+/-0.024 0.462+/-0.056
-camera, v6 frozen                     0.2469 0.141+/-0.011 0.243+/-0.027 0.461+/-0.063
-camera, VQ+Transformer                0.2191 0.142+/-0.010 0.246+/-0.024 0.463+/-0.056
-camera, extrinsic (conf.)             0.1934 0.140+/-0.010 0.240+/-0.023 0.454+/-0.061
-camera, intrinsic (lam 1e3)           0.1391 0.140+/-0.010 0.244+/-0.029 0.464+/-0.055
-camera, intrinsic (lam 1e4)           0.1358 0.141+/-0.011 0.242+/-0.026 0.460+/-0.047
-camera, intrinsic (lam 1e5)           0.1346 0.140+/-0.010 0.243+/-0.027 0.463+/-0.050
-camera, LSTM                          0.8979 0.175+/-0.016 0.270+/-0.008 0.456+/-0.112
-camera, Transformer                   0.1223 0.141+/-0.011 0.248+/-0.027 0.471+/-0.052
+map lookup (privileged)                   -- 0.144+/-0.011 0.266+/-0.022 0.505+/-0.043
+true preview (perfect perception)         -- 0.141+/-0.009 0.245+/-0.022 0.466+/-0.046
+camera, scratch                       0.1535 0.141+/-0.009 0.245+/-0.021 0.463+/-0.045
+camera, v6 warm-start                 0.1475 0.141+/-0.009 0.246+/-0.019 0.462+/-0.052
+camera, v6 frozen                     0.2469 0.141+/-0.010 0.243+/-0.021 0.461+/-0.053
+camera, VQ+Transformer                0.2191 0.142+/-0.009 0.246+/-0.019 0.463+/-0.051
+camera, extrinsic (conf.)             0.1934 0.140+/-0.008 0.240+/-0.017 0.454+/-0.048
+camera, intrinsic (lam 1e3)           0.1391 0.140+/-0.009 0.244+/-0.022 0.464+/-0.048
+camera, intrinsic (lam 1e4)           0.1358 0.141+/-0.010 0.242+/-0.020 0.460+/-0.045
+camera, intrinsic (lam 1e5)           0.1346 0.140+/-0.009 0.243+/-0.021 0.463+/-0.047
+camera, LSTM                          0.8979 0.175+/-0.014 0.270+/-0.006 0.456+/-0.089
+camera, Transformer                   0.1223 0.141+/-0.010 0.248+/-0.023 0.471+/-0.047
 
 RMSE_k is the encoder's curvature error in 1/m, averaged over the preview offsets;
 the privileged rows have none because they do not estimate curvature.

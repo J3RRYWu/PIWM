@@ -49,7 +49,18 @@ def main():
     ap.add_argument("--nfolds", type=int, default=5)
     ap.add_argument("--stride", type=int, default=8, help="coarser than the tables; "
                     "this study needs many draws per window, not maximum precision")
+    ap.add_argument("--selected", nargs="?", const=_os.path.join(
+                        "reports", "matrix", "selected_checkpoints.json"),
+                    default=_os.path.join("reports", "matrix",
+                                          "selected_checkpoints.json"),
+                    help="baselines' metric-selected epochs, matching the main table")
     a = ap.parse_args()
+
+    selected = None
+    if a.selected and _os.path.exists(a.selected):
+        import json
+        with open(a.selected, encoding="utf-8") as fh:
+            selected = json.load(fh)
 
     t0 = time.time()
     lines = []
@@ -75,7 +86,13 @@ def main():
         kenc = est._load_road(kap_ck)
         bl = {}
         for v, cls in BASELINES:
-            p = f"checkpoints/{v.lower()}_lane_donkey_f{f}/best.tar"
+            run = f"{v.lower()}_lane_donkey_f{f}"
+            p = f"checkpoints/{run}/best.tar"
+            # use the same symmetrically selected epochs the main table reports;
+            # otherwise the sigma=0 column here would not match Table 1 and the two
+            # studies would silently be about different checkpoints
+            if selected and run in selected:
+                p = selected[run]["metric_tar"]
             if _os.path.exists(p):
                 m = cls(); m.load_state_dict(load_checkpoint(p)["model"]); m.eval()
                 bl[v] = m
