@@ -27,6 +27,9 @@ from tqdm import tqdm
 
 from models.road_perception import RoadContextEncoder
 from models.road_perception_vqformer import RoadContextVQFormer
+from models.road_perception_ae import (ExtrinsicVisionVAE, ExtrinsicRoadEncoder,
+                                       IntrinsicRoadEncoder)
+from baselines.road_seq_baselines import LSTMRoadEncoder, TransformerRoadEncoder
 from frenet_track import local_road_points
 from folds import fold_split, describe as describe_split
 from lane_utils import LANE_FRAME_STACK as FS
@@ -128,8 +131,53 @@ def evaluate_shape(model, loader, offsets):
     return np.sqrt(se / n)
 
 
+def run_stage1_vae(save, epochs, seed=0, fold=-1, nfolds=5, latent_dim=128,
+                   kl_weight=1.0, lr=1e-4):
+    """Extrinsic stage 1: a general-purpose vision VAE, reconstruction and KL only.
+
+    It never receives the curvature target. That is deliberate and it is the whole
+    content of the intrinsic/extrinsic distinction -- an encoder that has already
+    seen the physical labels is not a general-purpose vision encoder, which is why
+    `checkpoints/piwm_lane_v6_donkey/ae.tar` cannot stand in for this stage.
+    """
+    set_train_seed(seed)
+    ds = KappaFrameDataset(with_shape=False)
+    tr, va, val_eps = split(ds, fold=fold, nfolds=nfolds)
+    print(f"  split -> {describe_split(len(ds.files), fold, nfolds)}")
+    trl = DataLoader(tr, batch_size=64, shuffle=True, drop_last=True)
+    val = DataLoader(va, batch_size=128, shuffle=False)
+
+    model = ExtrinsicVisionVAE(latent_dim=latent_dim, frame_stack=FS).to(DEVICE)
+    opt = torch.optim.Adam(model.parameters(), lr=lr)
+    print(f"arch=extrinsic_vae  latent_dim={latent_dim}  kl_weight={kl_weight}  "
+          f"params={sum(p.numel() for p in model.parameters()):,}  (NO physical target)")
+
+    best = float("inf")
+    for ep in range(epochs):
+        model.train(); tot = nb = 0
+        for batch in tqdm(trl, desc=f"vae {ep+1}/{epochs}"):
+            x = batch[0].to(DEVICE)
+            loss, _ = model.loss(x, kl_weight=kl_weight)
+            opt.zero_grad(); loss.backward(); opt.step()
+            tot += loss.item(); nb += 1
+        model.eval(); vtot = vnb = 0
+        with torch.no_grad():
+            for batch in val:
+                loss, _ = model.loss(batch[0].to(DEVICE), kl_weight=kl_weight)
+                vtot += loss.item(); vnb += 1
+        vloss = vtot / max(vnb, 1)
+        print(f"  ep{ep+1} train={tot/max(nb,1):.1f}  val={vloss:.1f}")
+        if vloss < best:
+            best = vloss
+            os.makedirs(_os.path.dirname(save), exist_ok=True)
+            torch.save({"model": model.state_dict(), "latent_dim": latent_dim,
+                        "val_loss": vloss, "arch": "extrinsic_vae"}, save)
+    print(f"\nBEST stage-1 val loss = {best:.1f}  -> {save}")
+
+
 def run(mode, save, epochs, backbone_ckpt, arch="cnn", target="kappa", seed=0,
-        fold=-1, nfolds=5):
+        fold=-1, nfolds=5, vae_ckpt="", head="mlp", lambda_interp=1000.0, beta=1.0,
+        unfreeze_stage1=False):
     set_train_seed(seed)
     ds = KappaFrameDataset(with_shape=(target == "shape"))
     offsets = np.load(_os.path.join(DATA, "_meta", "stats.npz"))["kappa_offsets"]
@@ -139,7 +187,35 @@ def run(mode, save, epochs, backbone_ckpt, arch="cnn", target="kappa", seed=0,
     trl = DataLoader(tr, batch_size=128, shuffle=True, drop_last=True, num_workers=0)
     val = DataLoader(va, batch_size=256, shuffle=False, num_workers=0)
 
-    if arch == "vqformer":
+    if arch == "extrinsic":
+        # stage 2. Stage 1 must already exist -- train it with --arch extrinsic_vae,
+        # which never sees a physical target, and that separation is what makes this
+        # extrinsic rather than just two networks in a row.
+        if not _os.path.exists(vae_ckpt):
+            raise SystemExit(
+                f"extrinsic stage 2 needs a stage-1 VAE at {vae_ckpt}.\n"
+                f"Train it first:  --arch extrinsic_vae --save {vae_ckpt}")
+        vck = load_checkpoint(vae_ckpt)
+        vae = ExtrinsicVisionVAE(latent_dim=vck.get("latent_dim", 128), frame_stack=FS)
+        vae.load_state_dict(vck["model"])
+        # Stage 1 is frozen by default: the conference recipe freezes it, and
+        # unfreezing turns this back into a jointly trained encoder, i.e. no longer
+        # the variant being tested. --mode is ignored here on purpose (it defaults to
+        # finetune for the CNN backbone, which would silently deviate).
+        model = ExtrinsicRoadEncoder(vae, n_offsets=ds.n_off, frame_stack=FS,
+                                     head=head, freeze=not unfreeze_stage1).to(DEVICE)
+        print(f"arch=extrinsic  stage1={vae_ckpt}  head={head}  "
+              f"stage1={'UNFROZEN (deviates from the recipe)' if unfreeze_stage1 else 'frozen'}")
+    elif arch == "intrinsic":
+        model = IntrinsicRoadEncoder(n_offsets=ds.n_off, frame_stack=FS).to(DEVICE)
+        print("arch=intrinsic  (single encoder; latent split into physical + visual)")
+    elif arch == "lstm":
+        model = LSTMRoadEncoder(n_offsets=ds.n_off, frame_stack=FS).to(DEVICE)
+        print("arch=lstm  (non-physical sequence benchmark)")
+    elif arch == "transformer":
+        model = TransformerRoadEncoder(n_offsets=ds.n_off, frame_stack=FS).to(DEVICE)
+        print("arch=transformer  (non-physical sequence benchmark)")
+    elif arch == "vqformer":
         # per-frame CNN -> VQ(512) -> Transformer over the window. Always trained
         # from scratch: there is no pretrained VQ/Transformer backbone in this repo,
         # so --mode / --backbone do not apply and are ignored on purpose.
@@ -157,8 +233,9 @@ def run(mode, save, epochs, backbone_ckpt, arch="cnn", target="kappa", seed=0,
             # warm-start the backbone from the trained v6 encoder
             model.load_backbone(load_checkpoint(backbone_ckpt)["encoder"])
     n_train = sum(p.numel() for p in model.parameters() if p.requires_grad)
-    print(f"arch={arch} mode={mode}  trainable params={n_train}  "
-          f"(head only={sum(p.numel() for p in model.kappa_head.parameters())})")
+    _head = getattr(model, "kappa_head", None) or getattr(model, "head", None)
+    _hn = sum(p.numel() for p in _head.parameters()) if _head is not None else 0
+    print(f"arch={arch} mode={mode}  trainable params={n_train}  (head only={_hn})")
 
     # same optimizer / schedule / budget for both archs so the comparison is about
     # architecture rather than tuning
@@ -170,6 +247,7 @@ def run(mode, save, epochs, backbone_ckpt, arch="cnn", target="kappa", seed=0,
     for ep in range(epochs):
         model.train(); tot = nb = 0
         perp_sum = 0.0
+        aux_sum = {}
         for batch in tqdm(trl, desc=f"{target}-{arch}-{mode} {ep+1}/{epochs}"):
             x, y = batch[0].to(DEVICE), batch[1].to(DEVICE)
             if target == "shape":
@@ -177,6 +255,11 @@ def run(mode, save, epochs, backbone_ckpt, arch="cnn", target="kappa", seed=0,
                 kap, shp = model.forward_both(x)
                 # variance-normalised so curvature (1/m) and geometry (m) weigh alike
                 loss = lossfn(kap, y) / ds.kap_var + lossfn(shp, sp) / ds.shp_var
+            elif arch == "intrinsic":
+                # reconstruction + interpretability + KL, per the conference objective;
+                # the interpretability term is what ties z_p to the curvature profile
+                loss, parts = model.loss(x, y, lambda_interp=lambda_interp, beta=beta)
+                aux_sum = {k: aux_sum.get(k, 0.0) + v for k, v in parts.items()}
             else:
                 pred = model(x)
                 loss = lossfn(pred, y)
@@ -196,6 +279,8 @@ def run(mode, save, epochs, backbone_ckpt, arch="cnn", target="kappa", seed=0,
         sch.step(score)
         extra = f"  codebook_perplexity={perp_sum/max(nb,1):.1f}/{model.vq.n_codes}" \
                 if arch == "vqformer" else ""
+        if aux_sum:
+            extra += "  " + "  ".join(f"{k}={v/max(nb,1):.4f}" for k, v in aux_sum.items())
         if target == "shape":
             extra += (f"\n        shape_RMSE m: along={np.round(srmse[:,0],3).tolist()}"
                       f" lat={np.round(srmse[:,1],3).tolist()}")
@@ -218,9 +303,27 @@ def run(mode, save, epochs, backbone_ckpt, arch="cnn", target="kappa", seed=0,
 if __name__ == "__main__":
     p = argparse.ArgumentParser()
     p.add_argument("--mode", choices=["frozen", "finetune"], default="finetune")
-    p.add_argument("--arch", choices=["cnn", "vqformer"], default="cnn",
-                   help="cnn = shipped channel-stacked backbone; "
-                        "vqformer = per-frame CNN + VQ-512 + Transformer")
+    p.add_argument("--arch", default="cnn",
+                   choices=["cnn", "vqformer", "extrinsic_vae", "extrinsic",
+                            "intrinsic", "lstm", "transformer"],
+                   help="cnn = shipped channel-stacked backbone (directly supervised); "
+                        "vqformer = per-frame CNN + VQ-512 + Transformer; "
+                        "extrinsic_vae = conference stage 1, reconstruction+KL only; "
+                        "extrinsic = conference stage 2 on a frozen stage-1 latent; "
+                        "intrinsic = conference single-encoder variant; "
+                        "lstm / transformer = non-physical sequence benchmarks")
+    p.add_argument("--vae-ckpt", dest="vae_ckpt", default="",
+                   help="stage-1 checkpoint, required by --arch extrinsic")
+    p.add_argument("--head", choices=["mlp", "transformer"], default="mlp",
+                   help="extrinsic stage-2 head. mlp follows the reference code; "
+                        "transformer follows the paper's text. They disagree.")
+    p.add_argument("--lambda-interp", dest="lambda_interp", type=float, default=1000.0,
+                   help="intrinsic: weight on the interpretability term")
+    p.add_argument("--beta", type=float, default=1.0,
+                   help="intrinsic: KL weight on the visual latent")
+    p.add_argument("--latent-dim", dest="latent_dim", type=int, default=128)
+    p.add_argument("--unfreeze-stage1", dest="unfreeze_stage1", action="store_true",
+                   help="extrinsic: train stage 1 jointly. Deviates from the recipe.")
     p.add_argument("--target", choices=["kappa", "shape"], default="kappa",
                    help="kappa = curvature profile only (original); "
                         "shape = curvature AND the local centreline geometry, so a "
@@ -235,5 +338,11 @@ if __name__ == "__main__":
                         "fold. MUST match the fold the dynamics is trained on.")
     p.add_argument("--nfolds", type=int, default=5)
     a = p.parse_args()
-    run(a.mode, a.save, a.epochs, a.backbone, arch=a.arch, target=a.target, seed=a.seed,
-        fold=a.fold, nfolds=a.nfolds)
+    if a.arch == "extrinsic_vae":
+        run_stage1_vae(a.save, a.epochs, seed=a.seed, fold=a.fold, nfolds=a.nfolds,
+                       latent_dim=a.latent_dim)
+    else:
+        run(a.mode, a.save, a.epochs, a.backbone, arch=a.arch, target=a.target,
+            seed=a.seed, fold=a.fold, nfolds=a.nfolds, vae_ckpt=a.vae_ckpt,
+            head=a.head, lambda_interp=a.lambda_interp, beta=a.beta,
+            unfreeze_stage1=a.unfreeze_stage1)

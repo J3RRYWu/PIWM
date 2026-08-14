@@ -47,10 +47,14 @@ def _py(venv=".venv"):
 
     `venv=".venv-sindy"` selects the CPU-torch + pysindy environment; pysindy
     segfaults in the same process as the CUDA build, so SINDYc must run there.
+
+    Falls back to the interpreter running this script, so the driver works on a
+    rented box where the environment is the ambient one and there is no .venv.
     """
-    win = ROOT / venv / "Scripts" / "python.exe"
-    nix = ROOT / venv / "bin" / "python"
-    return str(win if win.exists() else nix)
+    for p in (ROOT / venv / "Scripts" / "python.exe", ROOT / venv / "bin" / "python"):
+        if p.exists():
+            return str(p)
+    return sys.executable
 
 
 def _dtag(d):
@@ -114,6 +118,54 @@ def jobs_goku_obs(nfolds=5, epochs_bl=60, snap=5):
               "--batch_v2p", "64", "--epochs", str(epochs_bl),
               "--snapshot-every", str(snap), "--fold", str(f), "--nfolds", str(nfolds)])
         for f in range(nfolds)]
+
+
+def jobs_encoder_variants(nfolds=5, lambdas=(1e4,), epochs=25, vae_epochs=30):
+    """The conference version's encoder design space, plus the two sequence benchmarks.
+
+    Five families over each fold:
+      extrinsic_vae -> extrinsic   the two-stage conference recipe. Stage 1 sees NO
+                                   physical target; stage 2 reads a frozen latent.
+                                   These are the only jobs here with a dependency.
+      intrinsic                    single encoder, latent split physical/visual
+      lstm, transformer            the non-physical sequence benchmarks the journal
+                                   draft dropped and the conference version had
+
+    `lambdas` sweeps the intrinsic interpretability weight, because the reference
+    value (1000) was chosen for a 2-D state and this target is a 10-D curvature
+    profile whose reconstruction term is four orders of magnitude larger; one
+    smoke-test epoch had recon 41590 against interp 0.82, so the balance has to be
+    found rather than assumed.
+    """
+    js = []
+    for f in range(nfolds):
+        ff = ["--fold", str(f), "--nfolds", str(nfolds)]
+        vae = f"checkpoints/cv/enc_vae_f{f}.tar"
+        js.append(dict(
+            name=f"vae_f{f}", out=vae,
+            argv=["src/train/train_kappa_perception.py", "--arch", "extrinsic_vae",
+                  "--epochs", str(vae_epochs), "--save", vae] + ff))
+        js.append(dict(
+            name=f"extrinsic_f{f}", out=f"checkpoints/cv/enc_extrinsic_f{f}.tar",
+            needs=[f"vae_f{f}"],          # stage 2 cannot start before stage 1 exists
+            argv=["src/train/train_kappa_perception.py", "--arch", "extrinsic",
+                  "--vae-ckpt", vae, "--epochs", str(epochs),
+                  "--save", f"checkpoints/cv/enc_extrinsic_f{f}.tar"] + ff))
+        for lam in lambdas:
+            tag = f"l{int(lam):g}" if len(lambdas) > 1 else ""
+            out = f"checkpoints/cv/enc_intrinsic{tag}_f{f}.tar"
+            js.append(dict(
+                name=f"intrinsic{tag}_f{f}", out=out,
+                argv=["src/train/train_kappa_perception.py", "--arch", "intrinsic",
+                      "--lambda-interp", str(lam), "--epochs", str(epochs),
+                      "--save", out] + ff))
+        for arch in ("lstm", "transformer"):
+            out = f"checkpoints/cv/enc_{arch}_f{f}.tar"
+            js.append(dict(
+                name=f"{arch}_f{f}", out=out,
+                argv=["src/train/train_kappa_perception.py", "--arch", arch,
+                      "--epochs", str(epochs), "--save", out] + ff))
+    return js
 
 
 def jobs_kappa_ablation(nfolds=5):
@@ -196,18 +248,23 @@ def jobs_seeds(seeds=(0, 1, 2, 3, 4), variants=VARIANTS, epochs_bl=60):
     return js
 
 
-def _spawn(job, threads, logf):
-    """Launch one job de-prioritised and thread-capped."""
+def _spawn(job, threads, logf, nice=True):
+    """Launch one job thread-capped, and de-prioritised unless told otherwise.
+
+    De-prioritising is right on a workstation someone is using and pointless on a
+    box rented to run exactly this, hence the switch.
+    """
     env = dict(os.environ)
     env.update(PYTHONUTF8="1", PYTHONIOENCODING="utf-8",
                OMP_NUM_THREADS=str(threads), MKL_NUM_THREADS=str(threads),
                OPENBLAS_NUM_THREADS=str(threads), NUMEXPR_NUM_THREADS=str(threads),
                TORCH_NUM_THREADS=str(threads))
     kw = {}
-    if os.name == "nt":
-        kw["creationflags"] = 0x00004000          # BELOW_NORMAL_PRIORITY_CLASS
-    else:
-        kw["preexec_fn"] = lambda: os.nice(10)
+    if nice:
+        if os.name == "nt":
+            kw["creationflags"] = 0x00004000      # BELOW_NORMAL_PRIORITY_CLASS
+        else:
+            kw["preexec_fn"] = lambda: os.nice(10)
     return subprocess.Popen([_py(job.get("venv", ".venv")), "-u"] + job["argv"],
                             cwd=str(ROOT), env=env,
                             stdout=logf, stderr=subprocess.STDOUT, **kw)
@@ -217,8 +274,15 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--preset",
                     choices=["5fold", "seeds", "goku_obs", "gauss", "sindyc",
-                             "kappa_ablation"],
+                             "kappa_ablation", "encoder_variants"],
                     default="5fold")
+    ap.add_argument("--no-nice", dest="no_nice", action="store_true",
+                    help="run children at normal priority. Use on a dedicated or "
+                         "rented machine; leave off on a workstation you are using.")
+    ap.add_argument("--lambdas", type=float, nargs="+", default=[1e4],
+                    help="encoder_variants: intrinsic interpretability weights to sweep")
+    ap.add_argument("--enc-epochs", dest="enc_epochs", type=int, default=25)
+    ap.add_argument("--vae-epochs", dest="vae_epochs", type=int, default=30)
     ap.add_argument("--nfolds", type=int, default=5)
     ap.add_argument("--seeds", type=int, nargs="+", default=[0, 1, 2, 3, 4])
     ap.add_argument("--threads", type=int, default=2,
@@ -248,6 +312,9 @@ def main():
         jobs = jobs_sindyc(a.nfolds)
     elif a.preset == "kappa_ablation":
         jobs = jobs_kappa_ablation(a.nfolds)
+    elif a.preset == "encoder_variants":
+        jobs = jobs_encoder_variants(a.nfolds, lambdas=tuple(a.lambdas),
+                                     epochs=a.enc_epochs, vae_epochs=a.vae_epochs)
     else:
         jobs = jobs_seeds(tuple(a.seeds), epochs_bl=a.epochs_bl)
     todo = [j for j in jobs if a.force or not (ROOT / j["out"]).exists()]
@@ -282,12 +349,32 @@ def main():
 
     t0 = time.time()
     running, queue, results = [], list(todo), []
+    # a job may declare `needs`; those names must have finished OK before it starts.
+    # Anything already on disk counts as satisfied, so a resumed run does not stall.
+    done_ok = {j["name"] for j in jobs if (ROOT / j["out"]).exists()}
+    failed = set()
+
+    def _ready(job):
+        return all(n in done_ok for n in job.get("needs", ()))
+
+    def _blocked(job):
+        return any(n in failed for n in job.get("needs", ()))
+
     while queue or running:
-        while (queue and len(running) < workers
-               and not stopping["flag"] and not STOP_FILE.exists()):
-            job = queue.pop(0)
+        while (len(running) < workers and not stopping["flag"]
+               and not STOP_FILE.exists()):
+            nxt = next((j for j in queue if _ready(j)), None)
+            if nxt is None:
+                for j in [j for j in queue if _blocked(j)]:
+                    queue.remove(j)
+                    print(f"[{time.time()-t0:7.0f}s] SKIP   {j['name']} "
+                          f"(depends on a failed job)", flush=True)
+                    results.append(dict(name=j["name"], rc=None, ok=False, secs=0))
+                break
+            queue.remove(nxt)
+            job = nxt
             logf = open(LOG_DIR / f"{job['name']}.log", "w", encoding="utf-8")
-            p = _spawn(job, a.threads, logf)
+            p = _spawn(job, a.threads, logf, nice=not a.no_nice)
             running.append((job, p, logf, time.time()))
             print(f"[{time.time()-t0:7.0f}s] start  {job['name']} "
                   f"({len(running)}/{workers} busy, {len(queue)} queued)", flush=True)
@@ -296,23 +383,38 @@ def main():
             if p.poll() is None:
                 continue
             running.remove(entry); logf.close()
-            ok = (p.returncode == 0) and (ROOT / job["out"]).exists()
+            have = (ROOT / job["out"]).exists()
+            ok = (p.returncode == 0) and have
+            # A non-zero exit WITH the artifact present is neither clean success nor
+            # plain failure. cuDNN's RNN teardown on Windows crashes the interpreter
+            # (0xC0000409) after training has finished and the checkpoint is written,
+            # so calling it a failure is wrong; but a job that died mid-run can also
+            # leave an early-epoch checkpoint behind, so calling it success is wrong
+            # too. Report it as its own state and let a human look.
+            dirty = have and p.returncode != 0
+            (done_ok if have else failed).add(job["name"])
             results.append(dict(name=job["name"], rc=p.returncode, ok=ok,
-                                secs=round(time.time() - ts, 1)))
-            print(f"[{time.time()-t0:7.0f}s] {'done ' if ok else 'FAIL '} {job['name']} "
+                                dirty=dirty, secs=round(time.time() - ts, 1)))
+            tag = "done " if ok else ("DIRTY" if dirty else "FAIL ")
+            print(f"[{time.time()-t0:7.0f}s] {tag} {job['name']} "
                   f"({(time.time()-ts)/60:.1f} min, rc={p.returncode})"
-                  f"{'' if ok else '  -> ' + str(LOG_DIR / (job['name'] + '.log'))}",
+                  f"{'' if ok else '  -> ' + str(LOG_DIR / (job['name'] + '.log'))}"
+                  f"{'  [artifact written; check the log tail]' if dirty else ''}",
                   flush=True)
         if running or queue:
             time.sleep(2)
         if (stopping["flag"] or STOP_FILE.exists()) and not running:
             break
 
-    bad = [r for r in results if not r["ok"]]
+    bad = [r for r in results if not r["ok"] and not r.get("dirty")]
+    dirty = [r for r in results if r.get("dirty")]
     print(f"\nfinished {len(results)}/{len(todo)} in {(time.time()-t0)/60:.1f} min"
-          f"  ({len(bad)} failed)")
+          f"  ({len(bad)} failed, {len(dirty)} dirty)")
     for r in bad:
         print(f"  FAILED {r['name']}  rc={r['rc']}  log: {LOG_DIR / (r['name'] + '.log')}")
+    for r in dirty:
+        print(f"  DIRTY  {r['name']}  rc={r['rc']} but the checkpoint exists -- "
+              f"confirm the log reached the end: {LOG_DIR / (r['name'] + '.log')}")
     if queue:
         print(f"  {len(queue)} still queued -- rerun the same command to resume")
     summ = ROOT / "reports" / "matrix" / f"{a.preset}_summary.json"

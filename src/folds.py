@@ -43,6 +43,10 @@ def fold_split(n_eps, fold=-1, nfolds=5, val_frac=0.10, seed=0):
         raise ValueError(f"fold {fold} out of range for nfolds={nfolds}")
     if nfolds > n_eps:
         raise ValueError(f"nfolds={nfolds} exceeds n_eps={n_eps}")
+    if nfolds < 2:
+        # nfolds=1 holds out everything and leaves nothing to train on; the failure
+        # otherwise surfaces much later as an opaque "num_samples=0" from DataLoader.
+        raise ValueError(f"nfolds={nfolds} leaves an empty training set; use >= 2")
     bounds = np.linspace(0, n_eps, nfolds + 1).round().astype(int)
     lo, hi = int(bounds[fold]), int(bounds[fold + 1])
     val = perm[lo:hi]

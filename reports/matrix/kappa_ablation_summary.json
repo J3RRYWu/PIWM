@@ -1,0 +1,92 @@
+[
+ {
+  "name": "kappa_frozen_f0",
+  "rc": 0,
+  "ok": true,
+  "secs": 48.0
+ },
+ {
+  "name": "kappa_finetune_f0",
+  "rc": 0,
+  "ok": true,
+  "secs": 52.0
+ },
+ {
+  "name": "kappa_finetune_f1",
+  "rc": 0,
+  "ok": true,
+  "secs": 52.0
+ },
+ {
+  "name": "kappa_frozen_f1",
+  "rc": 0,
+  "ok": true,
+  "secs": 42.0
+ },
+ {
+  "name": "kappa_finetune_f2",
+  "rc": 0,
+  "ok": true,
+  "secs": 48.0
+ },
+ {
+  "name": "kappa_frozen_f2",
+  "rc": 0,
+  "ok": true,
+  "secs": 42.0
+ },
+ {
+  "name": "kappa_finetune_f3",
+  "rc": 0,
+  "ok": true,
+  "secs": 48.0
+ },
+ {
+  "name": "kappa_frozen_f3",
+  "rc": 0,
+  "ok": true,
+  "secs": 44.0
+ },
+ {
+  "name": "kappa_vqformer_f0",
+  "rc": 0,
+  "ok": true,
+  "secs": 552.2
+ },
+ {
+  "name": "kappa_finetune_f4",
+  "rc": 0,
+  "ok": true,
+  "secs": 48.0
+ },
+ {
+  "name": "kappa_frozen_f4",
+  "rc": 0,
+  "ok": true,
+  "secs": 44.0
+ },
+ {
+  "name": "kappa_vqformer_f1",
+  "rc": 0,
+  "ok": true,
+  "secs": 602.2
+ },
+ {
+  "name": "kappa_vqformer_f2",
+  "rc": 0,
+  "ok": true,
+  "secs": 586.2
+ },
+ {
+  "name": "kappa_vqformer_f3",
+  "rc": 0,
+  "ok": true,
+  "secs": 536.2
+ },
+ {
+  "name": "kappa_vqformer_f4",
+  "rc": 0,
+  "ok": true,
+  "secs": 280.1
+ }
+]

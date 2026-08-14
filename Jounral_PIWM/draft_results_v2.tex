@@ -48,6 +48,11 @@ from the same initial states over the same windows in the same order --- and all
 paired statistics below are computed that way. Comparisons across folds are not
 paired and we do not treat them as such.
 
+Cross-validation restores the protocol of the conference version, which evaluated
+its variants under five-fold cross-validation; the single-split evaluation used in
+an earlier draft of this article was a step back from it, and the paired
+within-fold tests below go beyond what either reported.
+
 \paragraph{Checkpoint selection}
 Our dynamics keeps the epoch with the lowest $E_{xy}(100)$, the quantity we
 report. Selecting the baselines by their composite validation loss instead, as
@@ -56,8 +61,10 @@ baseline by the reported metric improves DVBF from \SI{1.287}{m} to
 \SI{0.837}{m} and GOKU-net from \SI{0.815}{m} to \SI{0.725}{m}. We therefore
 apply the same rule to every model, choosing each baseline's epoch from
 saved snapshots by $E_{xy}(100)$. This makes selection symmetric; it does not
-make it unbiased, since both sides then select on the evaluation windows. We
-state the resulting numbers as such throughout.
+make it unbiased, since both sides then select on the evaluation windows. It also
+differs from the conference version, which stopped every model early on validation
+loss; that rule is the more conservative of the two and we note the change
+explicitly rather than let the two protocols be read as one.
 
 % ---------------------------------------------------------------- main table
 \begin{table}[t]
@@ -190,6 +197,10 @@ one that must be predicted forward and can drift.
 % LIMITATIONS -- replacement
 % =====================================================================
 
+% NOTE ON MERGE: the existing Limitations list has a fifth item stating that each
+% configuration is trained once on a single split and that a cross-validated
+% repetition is needed. DELETE it -- that repetition is what this section now
+% reports. Leaving it in would contradict the tables directly.
 \paragraph{Limitations}
 Four limitations bound what these results support.
 

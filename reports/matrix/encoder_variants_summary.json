@@ -1,0 +1,247 @@
+[
+ {
+  "name": "intrinsicl1000_f0",
+  "rc": 0,
+  "ok": true,
+  "dirty": false,
+  "secs": 210.0
+ },
+ {
+  "name": "intrinsicl10000_f0",
+  "rc": 0,
+  "ok": true,
+  "dirty": false,
+  "secs": 210.0
+ },
+ {
+  "name": "vae_f0",
+  "rc": 0,
+  "ok": true,
+  "dirty": false,
+  "secs": 254.1
+ },
+ {
+  "name": "extrinsic_f0",
+  "rc": 0,
+  "ok": true,
+  "dirty": false,
+  "secs": 102.0
+ },
+ {
+  "name": "intrinsicl100000_f0",
+  "rc": 0,
+  "ok": true,
+  "dirty": false,
+  "secs": 180.1
+ },
+ {
+  "name": "lstm_f0",
+  "rc": 3221226505,
+  "ok": false,
+  "dirty": true,
+  "secs": 220.1
+ },
+ {
+  "name": "transformer_f0",
+  "rc": 0,
+  "ok": true,
+  "dirty": false,
+  "secs": 198.1
+ },
+ {
+  "name": "intrinsicl1000_f1",
+  "rc": 0,
+  "ok": true,
+  "dirty": false,
+  "secs": 220.1
+ },
+ {
+  "name": "vae_f1",
+  "rc": 0,
+  "ok": true,
+  "dirty": false,
+  "secs": 266.1
+ },
+ {
+  "name": "intrinsicl10000_f1",
+  "rc": 0,
+  "ok": true,
+  "dirty": false,
+  "secs": 204.1
+ },
+ {
+  "name": "extrinsic_f1",
+  "rc": 0,
+  "ok": true,
+  "dirty": false,
+  "secs": 108.0
+ },
+ {
+  "name": "intrinsicl100000_f1",
+  "rc": 0,
+  "ok": true,
+  "dirty": false,
+  "secs": 194.1
+ },
+ {
+  "name": "transformer_f1",
+  "rc": 0,
+  "ok": true,
+  "dirty": false,
+  "secs": 202.0
+ },
+ {
+  "name": "lstm_f1",
+  "rc": 3221226505,
+  "ok": false,
+  "dirty": true,
+  "secs": 256.1
+ },
+ {
+  "name": "vae_f2",
+  "rc": 0,
+  "ok": true,
+  "dirty": false,
+  "secs": 242.1
+ },
+ {
+  "name": "intrinsicl1000_f2",
+  "rc": 0,
+  "ok": true,
+  "dirty": false,
+  "secs": 194.1
+ },
+ {
+  "name": "extrinsic_f2",
+  "rc": 0,
+  "ok": true,
+  "dirty": false,
+  "secs": 104.0
+ },
+ {
+  "name": "intrinsicl10000_f2",
+  "rc": 0,
+  "ok": true,
+  "dirty": false,
+  "secs": 192.1
+ },
+ {
+  "name": "intrinsicl100000_f2",
+  "rc": 0,
+  "ok": true,
+  "dirty": false,
+  "secs": 190.1
+ },
+ {
+  "name": "transformer_f2",
+  "rc": 0,
+  "ok": true,
+  "dirty": false,
+  "secs": 196.0
+ },
+ {
+  "name": "lstm_f2",
+  "rc": 3221226505,
+  "ok": false,
+  "dirty": true,
+  "secs": 246.1
+ },
+ {
+  "name": "vae_f3",
+  "rc": 0,
+  "ok": true,
+  "dirty": false,
+  "secs": 250.1
+ },
+ {
+  "name": "intrinsicl1000_f3",
+  "rc": 0,
+  "ok": true,
+  "dirty": false,
+  "secs": 202.1
+ },
+ {
+  "name": "intrinsicl10000_f3",
+  "rc": 0,
+  "ok": true,
+  "dirty": false,
+  "secs": 198.1
+ },
+ {
+  "name": "extrinsic_f3",
+  "rc": 0,
+  "ok": true,
+  "dirty": false,
+  "secs": 98.0
+ },
+ {
+  "name": "intrinsicl100000_f3",
+  "rc": 0,
+  "ok": true,
+  "dirty": false,
+  "secs": 182.1
+ },
+ {
+  "name": "lstm_f3",
+  "rc": 3221226505,
+  "ok": false,
+  "dirty": true,
+  "secs": 238.1
+ },
+ {
+  "name": "transformer_f3",
+  "rc": 0,
+  "ok": true,
+  "dirty": false,
+  "secs": 188.0
+ },
+ {
+  "name": "vae_f4",
+  "rc": 0,
+  "ok": true,
+  "dirty": false,
+  "secs": 250.1
+ },
+ {
+  "name": "intrinsicl1000_f4",
+  "rc": 0,
+  "ok": true,
+  "dirty": false,
+  "secs": 204.1
+ },
+ {
+  "name": "intrinsicl10000_f4",
+  "rc": 0,
+  "ok": true,
+  "dirty": false,
+  "secs": 202.1
+ },
+ {
+  "name": "extrinsic_f4",
+  "rc": 0,
+  "ok": true,
+  "dirty": false,
+  "secs": 98.0
+ },
+ {
+  "name": "intrinsicl100000_f4",
+  "rc": 0,
+  "ok": true,
+  "dirty": false,
+  "secs": 188.1
+ },
+ {
+  "name": "lstm_f4",
+  "rc": 3221226505,
+  "ok": false,
+  "dirty": true,
+  "secs": 216.1
+ },
+ {
+  "name": "transformer_f4",
+  "rc": 0,
+  "ok": true,
+  "dirty": false,
+  "secs": 174.0
+ }
+]
