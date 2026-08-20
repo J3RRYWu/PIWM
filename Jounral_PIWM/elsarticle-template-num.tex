@@ -25,6 +25,10 @@
 \usepackage{url}
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta,positioning,fit,calc,backgrounds}
+%% Shared palette for the TikZ schematics; frenetink matches the "ours" curve
+%% colour of the result figures (see src/paper_style.py, COL["Frenet"]).
+\definecolor{frenetink}{HTML}{3B33A0}
+\definecolor{previewor}{HTML}{E8820C}
 %% Without these the document falls back to bitmap (Type 3) EC fonts, which look
 %% ragged on screen, bloat the PDF, and are rejected by some production systems.
 %% Latin Modern is metric-compatible with Computer Modern, so nothing reflows.
@@ -648,43 +652,45 @@ the horizon (Section~\ref{sec:prediction}).
     \centering
     \begin{tikzpicture}[
         x=1cm, y=1cm,
-        road/.style={line width=8mm, color=black!10, line cap=round},
+        road/.style={line width=7.5mm, color=black!10, line cap=round},
         centre/.style={dash pattern=on 2pt off 2pt, color=black!45,
                        line width=0.4pt},
-        pred/.style={line width=1.1pt, color=blue!60!black,
+        pred/.style={line width=1.1pt, color=frenetink,
                      -{Stealth[length=1.8mm]}},
         fov/.style={fill=orange!45, draw=none, opacity=0.45},
+        car/.style={fill=red!75!black, draw=black!55, line width=0.3pt},
         lbl/.style={font=\footnotesize},
         slbl/.style={font=\scriptsize, color=black!65},
+        lead/.style={color=black!45, line width=0.35pt},
     ]
     %% ---- (a) straight segment ahead -------------------------------
-    \draw[road]   (0,0) -- (0,3.9);
-    \draw[centre] (0,0) -- (0,3.9);
-    \fill[fov]    (0,0.55) -- (-0.62,1.75) -- (0.62,1.75) -- cycle;
-    \draw[pred]   (0,0.55) -- (0,3.5);
-    \fill[red!75!black,draw=black!55,line width=0.3pt]
-                  (0,0.80) -- (-0.17,0.42) -- (0.17,0.42) -- cycle;
-    \node[slbl,anchor=west] at (0.42,1.35) {camera preview};
-    \node[lbl] at (0,-0.55) {(a) straight segment ahead};
+    \draw[road]   (0,0) -- (0,3.35);
+    \draw[centre] (0,0) -- (0,3.35);
+    \fill[fov]    (0,0.55) -- (-0.60,1.72) -- (0.60,1.72) -- cycle;
+    \draw[pred]   (0,0.55) -- (0,3.00);
+    \path[car]    (0,0.80) -- (-0.17,0.42) -- (0.17,0.42) -- cycle;
+    \node[lbl] at (0.1,-0.55) {(a) straight segment ahead};
 
     %% ---- (b) curved segment ahead ---------------------------------
-    \draw[road]   (5,0) .. controls (5,1.7) and (5.5,2.5) .. (6.9,3.2);
-    \draw[centre] (5,0) .. controls (5,1.7) and (5.5,2.5) .. (6.9,3.2);
-    \fill[fov]    (5,0.55) -- (4.38,1.75) -- (5.62,1.75) -- cycle;
-    \draw[pred]   (5,0.55) .. controls (5,1.8) and (5.5,2.4) .. (6.6,3.0);
-    \fill[red!75!black,draw=black!55,line width=0.3pt]
-                  (5,0.80) -- (4.83,0.42) -- (5.17,0.42) -- cycle;
-    \node[lbl] at (5.6,-0.55) {(b) curved segment ahead};
+    \draw[road]   (4.7,0) .. controls (4.7,1.55) and (5.15,2.25) .. (6.45,2.90);
+    \draw[centre] (4.7,0) .. controls (4.7,1.55) and (5.15,2.25) .. (6.45,2.90);
+    \fill[fov]    (4.7,0.55) -- (4.10,1.72) -- (5.30,1.72) -- cycle;
+    \draw[pred]   (4.7,0.55) .. controls (4.7,1.65) and (5.1,2.15) .. (6.15,2.70);
+    \path[car]    (4.7,0.80) -- (4.53,0.42) -- (4.87,0.42) -- cycle;
+    \node[lbl] at (5.15,-0.55) {(b) curved segment ahead};
 
     %% ---- shared annotations ---------------------------------------
-    \node[lbl,anchor=south] at (2.9,4.15)
-        {identical $x_t=(x,y,\psi,v)$ \; and \; identical action $a_t$};
+    \node[lbl,anchor=south] at (2.65,3.62)
+        {identical $x_t=(x,y,\psi,v)$, \; identical action $a_t$};
     \draw[->,>={Stealth[length=1.6mm]},color=black!55,line width=0.4pt]
-        (2.1,4.1) .. controls (1.2,3.9) .. (0.15,3.6);
+        (1.35,3.58) .. controls (0.7,3.45) .. (0.16,3.15);
     \draw[->,>={Stealth[length=1.6mm]},color=black!55,line width=0.4pt]
-        (3.7,4.1) .. controls (4.8,3.9) .. (5.15,3.6);
-    \node[slbl,anchor=north,text width=3.2cm,align=center] at (2.9,3.1)
-        {predicted futures\\ \emph{diverge}};
+        (3.95,3.58) .. controls (4.55,3.45) .. (4.86,3.12);
+    \node[slbl,anchor=north,align=center] at (2.65,2.85)
+        {predicted futures\\[-2pt] \emph{diverge}};
+    \node[slbl,align=center] (fovlbl) at (2.65,1.05) {camera\\[-2pt]preview};
+    \draw[lead] (fovlbl.west) -- (0.55,1.30);
+    \draw[lead] (fovlbl.east) -- (4.18,1.30);
     \end{tikzpicture}
     \caption{Partial observability in driving. Two vehicles with identical
     kinematic states $(x, y, \psi, v)$, issued identical actions, follow
@@ -808,90 +814,126 @@ A high-level overview is shown in Figure~\ref{fig:arch}.
 
 \begin{figure}[t]
     \centering
-    \resizebox{\linewidth}{!}{%
     \begin{tikzpicture}[
         x=1cm, y=1cm,
-        blk/.style={draw=black!65, rounded corners=1.5pt, line width=0.5pt,
-                    align=center, font=\footnotesize, inner sep=3.5pt,
-                    minimum height=9mm},
-        vis/.style={blk, fill=blue!8},
-        phy/.style={blk, fill=green!10},
-        dyn/.style={blk, fill=purple!8},
-        st/.style={blk, fill=orange!12},
-        ar/.style={-{Stealth[length=2mm]}, line width=0.55pt, color=black!70},
-        dar/.style={ar, dash pattern=on 2.5pt off 1.5pt, color=black!55},
-        lbl/.style={font=\scriptsize, color=black!70},
+        blk/.style={draw=black!60, rounded corners=1.6pt, line width=0.5pt,
+                    align=center, font=\scriptsize, inner sep=3pt},
+        enc/.style={blk, fill=blue!10},
+        st/.style={blk, fill=orange!18},
+        dyn/.style={blk, fill=violet!12},
+        aux/.style={blk, fill=black!5},
+        panel/.style={draw=black!30, rounded corners=3.5pt, line width=0.5pt,
+                      inner sep=5pt, fill=black!2},
+        chip/.style={circle, fill=black!70, text=white, inner sep=0.5pt,
+                     font=\bfseries\fontsize{6}{6}\selectfont,
+                     minimum size=8.5pt},
+        hdr/.style={font=\sffamily\bfseries\fontsize{7}{8}\selectfont,
+                    color=black!75, anchor=west, inner sep=1pt},
+        ar/.style={-{Stealth[length=1.8mm]}, line width=0.55pt, color=black!70},
+        dar/.style={ar, dash pattern=on 2.4pt off 1.6pt, color=black!55},
+        elbl/.style={font=\scriptsize, color=black!70, inner sep=1.5pt},
     ]
-    %% ---- encoding chain -------------------------------------------
-    \node[vis] (img) at (0,0)    {$y_{t-k+1:t}$\\[1pt]\scriptsize onboard images};
-    \node[vis] (ev)  at (3.0,0)  {vision encoder\\$\mathcal{E}_v$};
-    \node[phy] (ep)  at (6.4,0)  {physical encoder $\mathcal{E}_p$\\[1pt]
-                                  \scriptsize window of $T_{\mathrm{ctx}}$ frames};
-    \node[st]  (zs)  at (10.1,0) {$\zstar_t=[\zv_t,\;\zr_t]$\\[2pt]
-        \scriptsize $\zv=(v,\omega)$\\
-        \scriptsize $\zr=(s,e_{\mathrm{CTE}},e_\psi)$};
-    \node[blk,fill=black!4] (sup) at (6.4,1.9)
-        {privileged road context $\Xi^r$\\[1pt]\scriptsize training time only};
-    %% the curvature preview: perceived ONCE at t_0, never propagated
-    \node[blk,fill=red!7] (prof) at (10.1,1.9)
-        {$\hat\kappa(\cdot)$ curvature preview\\[1pt]
-         \scriptsize perceived once at $t_0$};
+    %% ================= input: the camera window ======================
+    \fill[black!14,rounded corners=1pt] (0.15,0.76) rectangle (1.05,1.46);
+    \fill[black!8, rounded corners=1pt] (0.03,0.64) rectangle (0.93,1.34);
+    \fill[white]                        (-0.09,0.52) rectangle (0.81,1.22);
+    \draw[black!55,line width=0.4pt,rounded corners=1pt]
+                                        (-0.09,0.52) rectangle (0.81,1.22);
+    \draw[black!35,line width=0.4pt] (-0.09,1.00) -- (0.81,1.00);
+    \draw[black!50,line width=0.5pt] (0.19,0.52) -- (0.33,1.00);
+    \draw[black!50,line width=0.5pt] (0.57,0.52) -- (0.43,1.00);
+    \coordinate (imgE) at (1.05,0.95);
+    \node[elbl,anchor=north,align=center] at (0.48,0.40)
+        {camera\\[-2pt]$y_{t-k+1:t}$};
 
-    \draw[ar]  (img) -- (ev);
-    \draw[ar]  (ev)  -- node[above,lbl]{$z_\tau$} (ep);
-    \draw[ar]  (ep)  -- (zs);
-    \draw[dar] (sup) -- (ep);
-    \draw[ar]  (ep.north east) -- (prof.west);
+    %% ================= stage 1: perceive, once at t0 =================
+    \node[enc] (ev) at (2.27,0.95) {vision\\[-1pt]encoder $\mathcal{E}_v$};
+    \node[enc] (ep) at (4.37,0.95) {physical\\[-1pt]encoder $\mathcal{E}_p$};
+    %% directly above E_p, so its arrow drops straight down
+    \node[aux, dash pattern=on 2.2pt off 1.6pt] (sup) at (4.37,2.45)
+        {privileged $\Xi^r$};
 
-    %% ---- split dynamics: two PARALLEL transitions, one per component ----
-    \node[dyn] (dv) at (5.5,-2.75) {vehicle transition $\phi^{v}_\theta$\\[1pt]
-                                    \scriptsize structured kinematics};
-    \node[dyn] (dr) at (5.5,-4.75) {road transition $f_r$\\[1pt]
-                                    \scriptsize geometric advection};
+    %% ================= stage 2: factorized state =====================
+    \node[st] (zs) at (7.28,0.95)
+        {$\zstar_t=[\zv_t,\zr_t]$\\[-1pt]
+         $\zv=(v,\omega)$\\[-1pt]
+         $\zr=(s,e_{\mathrm{CTE}},e_\psi)$};
+    \node[blk, fill=red!8] (prof) at (7.28,-0.65)
+        {curvature preview\\[-1pt]$\hat\kappa(\cdot)$, once at $t_0$};
+
+    %% ================= stage 3: split dynamics, every step ===========
+    \node[dyn] (dv) at (10.60,2.10)
+        {vehicle transition $\phi^{v}_\theta$\\[-1pt]structured kinematics};
+    \node[dyn] (dr) at (10.60,-0.65)
+        {road transition $f_r$\\[-1pt]geometric advection};
+    \node[aux] (act) at (7.80,2.32) {action $a_t$};
+
+    %% ================= output ========================================
+    \node[st] (zn) at (12.85,0.55) {$\hat{\zstar}_{t+1}$};
+
+    %% ================= stage panels (behind the nodes) ===============
+    %% phantom nodes reserve an in-panel title row above the boxes
+    \node[inner sep=0pt] (ph1) at (2.47,1.78) {};
+    \node[inner sep=0pt] (ph2) at (7.28,1.76) {};
+    \node[inner sep=0pt] (ph3) at (10.60,2.80) {};
     \begin{scope}[on background layer]
-        \node[draw=black!35, dash pattern=on 2pt off 1.5pt, rounded corners=3pt,
-              inner sep=7pt, fit=(dv)(dr)] (grp) {};
+        \node[panel, fill=blue!4]   (p1) [fit=(ev)(ep)(ph1)]   {};
+        \node[panel, fill=orange!6] (p2) [fit=(zs)(prof)(ph2)] {};
+        \node[panel, fill=violet!4] (p3) [fit=(dv)(dr)(ph3)]   {};
     \end{scope}
-    \node[lbl,anchor=north] at ($(grp.south)+(0,-0.12)$) {split dynamics};
-    \node[st]  (zn) at (9.6,-3.75) {$\hat{\zstar}_{t+1}$\\[2pt]
-        \scriptsize $=[\hat{\zv}_{t+1},\,\hat{\zr}_{t+1}]$};
-    \node[blk,fill=black!4] (act) at (5.5,-1.48) {$a_t$};
+    \node[chip] (c1) at ([xshift=2.6mm,yshift=-2.4mm]p1.north west) {1};
+    \node[hdr]  at ([xshift=1.1mm]c1.east) {perceive (once)};
+    \node[chip] (c2) at ([xshift=2.6mm,yshift=-2.4mm]p2.north west) {2};
+    \node[hdr]  at ([xshift=1.1mm]c2.east) {factorized state};
+    \node[chip] (c3) at ([xshift=2.6mm,yshift=-2.4mm]p3.north west) {3};
+    \node[hdr]  at ([xshift=1.1mm]c3.east) {predict (every step)};
 
-    %% z* splits into its two components, one per transition
-    \coordinate (sp) at (2.0,-3.75);
-    \draw[ar] (zs.south) -- (10.1,-0.95) -- (2.0,-0.95) -- (sp);
-    \draw[ar] (sp) |- node[above,lbl,pos=0.72]{$\zv_t$} (dv.west);
-    \draw[ar] (sp) |- node[below,lbl,pos=0.72]{$\zr_t$} (dr.west);
-    \draw[ar] (act) -- (dv);
+    %% ================= flow ==========================================
+    \draw[ar]  (imgE) -- (ev.west);
+    \draw[ar]  (ev) -- node[below,elbl]{$z_\tau$} (ep);
+    \draw[dar] (sup.south) -- node[right,elbl,pos=0.40]{$\mathcal{L}_{\mathrm{interp}}$}
+               (ep.north);
+    %% E_p emits the state and, separately, the curvature preview
+    \draw[ar]  (ep.east) -- (zs.west);
+    \draw[ar]  (ep.south) |- (prof.west);
 
-    %% coupling: the road is advected by the vehicle's own predicted motion
-    \draw[ar] (dv) -- node[right,lbl]{$\hat{\zv}_{t+1}$} (dr);
-    %% the preview is READ at the arc length covered, not propagated -- the
-    %% mechanism the article's long-horizon claim rests on
-    \draw[dar] (prof.east) -- (13.1,1.9) -- (13.1,-4.75) -- (dr.east);
-    \node[lbl,rotate=-90,anchor=south] at (13.25,-1.4)
-        {read at $s_t-s_{t_0}$, never propagated};
+    %% state components enter their own transitions
+    \draw[ar]  ([yshift=2.8mm]zs.east) -| node[above,elbl,pos=0.42]{$\zv_t$}
+               ([xshift=-6mm]dv.south);
+    \draw[ar]  ([yshift=-2.8mm]zs.east) -- node[below,elbl,pos=0.55]{$\zr_t$}
+               ++(0.38,0) |- ([yshift=3mm]dr.west);
+    %% the preview is READ at the arc length covered, never propagated
+    \draw[dar] (prof.south) -- ++(0,-0.52)
+               -| node[above,elbl,pos=0.26]{read at $s_t-s_{t_0}$}
+               (dr.south);
+    %% the action drives the vehicle branch alone
+    \draw[ar]  (act.east) -- ([yshift=2.2mm]dv.west);
+    %% coupling: the road is advected by the predicted vehicle motion
+    \draw[ar]  (dv) -- node[right,elbl]{$\hat{\zv}_{t+1}$} (dr);
 
-    %% both predicted components recombine into the next interpretable state
-    \draw[ar] (dv.east) -| (zn.north);
-    \draw[ar] (dr.east) -| (zn.south);
+    %% both predicted components recombine into the next state
+    \draw[ar]  (dv.east) -| ([xshift=-3.5mm]zn.north);
+    \draw[ar]  (dr.east) -| ([xshift=-3.5mm]zn.south);
 
-    %% next step: the predicted state becomes the current state
-    \draw[dar] (zn.east) -- (12.2,-3.75) -- (12.2,0) -- (zs.east);
-    \node[lbl,rotate=-90,anchor=south] at (12.35,-1.95) {autoregressive rollout};
-    \end{tikzpicture}}
+    %% autoregressive rollout: the prediction replaces the state
+    \draw[dar] ([xshift=3.5mm]zn.north) -- ++(0,2.45)
+               -- node[above,elbl,pos=0.45]{autoregressive rollout}
+               (5.69,3.30) -- (5.69,1.37) -- ([yshift=4.2mm]zs.west);
+    \end{tikzpicture}
     \caption{Overview of the PIWM architecture for partially observable driving.
-    A vision encoder maps each observation to a visual latent; a physical encoder
-    aggregates a window of those latents into the factorized interpretable state
-    $\zstar = [\zv, \zr]$ and, separately, into a curvature preview
-    $\hat\kappa(\cdot)$ over the road ahead. Road-context supervision is privileged
-    and available at training time only. A split-dynamics model then rolls the
-    state forward: $\zv$ by a structured kinematic model, $\zr$ by a geometric one.
+    \emph{Stage 1, once per rollout:} a vision encoder maps the camera window to
+    visual latents, which the physical encoder aggregates into the factorized
+    interpretable state $\zstar = [\zv, \zr]$ and, separately, into a curvature
+    preview $\hat\kappa(\cdot)$ over the road ahead; road-context supervision is
+    privileged and available at training time only (dashed).
+    \emph{Stage 3, every step:} a split-dynamics model rolls the state forward,
+    $\zv$ by a structured kinematic model and $\zr$ by a geometric one, and the
+    prediction re-enters as the next state (dashed, top).
     Two couplings carry the article's argument. The road advances only through
-    $\hat{\zv}_{t+1}$, advected by the vehicle's own predicted motion, which is why
-    the action enters the vehicle branch alone. And the preview is \emph{read} at
-    the arc length covered rather than propagated (dashed, right), so no error in
-    the road can compound over the rollout.}
+    $\hat{\zv}_{t+1}$, advected by the vehicle's own predicted motion, which is
+    why the action enters the vehicle branch alone. And the preview is
+    \emph{read} at the arc length covered rather than propagated (dashed, into
+    $f_r$), so no error in the road can compound over the rollout.}
     \label{fig:arch}
 \end{figure}
 
@@ -1102,12 +1144,12 @@ diagnostic in Section~\ref{sec:results}.
         \draw[color=black!55,line width=0.4pt] (0,0) -- (0,1.9);
         \node[slbl,anchor=north] at (1.75,-0.12) {preview offset $\Delta$ (m)};
         \node[slbl,anchor=south west] at (-0.05,1.92) {$\hat{\kappa}$ (1/m)};
-        \draw[line width=0.9pt,color=blue!60!black]
+        \draw[line width=0.9pt,color=frenetink]
               (0.1,0.25) .. controls (1.1,0.3) and (1.9,1.1) .. (3.35,1.6);
         \foreach \x/\y in {0.10/0.25, 0.46/0.26, 0.82/0.30, 1.18/0.38,
                            1.54/0.52, 1.90/0.72, 2.26/0.95, 2.62/1.18,
                            2.98/1.40, 3.34/1.60}
-            \fill[blue!60!black] (\x,\y) circle (0.055);
+            \fill[frenetink] (\x,\y) circle (0.055);
     \end{scope}
     \draw[ar] (5.05,1.5) .. controls (6.4,2.1) .. (7.6,1.5);
     \node[slbl,anchor=south] at (6.4,2.05) {$\mathcal{E}_p$};
@@ -1283,10 +1325,10 @@ lane geometry that can be visualized and checked, not an opaque feature.
         \node[slbl,anchor=south west,align=left] at (0.0,1.62)
             {curvature profile perceived once at $t_0$, never re-predicted};
         %% index markers
-        \fill[blue!65!black] (0.55,0.185) circle (0.085);
+        \fill[frenetink] (0.55,0.185) circle (0.085);
         \fill[teal!70!black] (2.35,0.60)  circle (0.085);
         \fill[green!45!black](4.30,1.16)  circle (0.085);
-        \node[slbl,anchor=south east,color=blue!65!black]  at (0.50,0.24) {$s_t$};
+        \node[slbl,anchor=south east,color=frenetink]  at (0.50,0.24) {$s_t$};
         \node[slbl,anchor=south east,color=teal!70!black]  at (2.30,0.65) {$s_{t+m}$};
         \node[slbl,anchor=south east,color=green!45!black] at (4.25,1.21) {$s_{t+2m}$};
     \end{scope}
@@ -1295,11 +1337,11 @@ lane geometry that can be visualized and checked, not an opaque feature.
     \draw[road]   (-0.2,0.45) .. controls (2.2,0.45) and (3.4,0.95) .. (6.0,1.65);
     \draw[centre] (-0.2,0.45) .. controls (2.2,0.45) and (3.4,0.95) .. (6.0,1.65);
 
-    \fill[blue!65!black]  (1.30,0.50) -- (0.80,0.63) -- (0.80,0.37) -- cycle;
+    \fill[frenetink]  (1.30,0.50) -- (0.80,0.63) -- (0.80,0.37) -- cycle;
     \fill[teal!70!black]  (3.20,0.73) -- (2.72,0.90) -- (2.66,0.64) -- cycle;
     \fill[green!45!black] (5.00,1.24) -- (4.50,1.38) -- (4.56,1.12) -- cycle;
 
-    \draw[ar,color=blue!65!black]  (0.95,0.72) -- (0.95,2.55);
+    \draw[ar,color=frenetink]  (0.95,0.72) -- (0.95,2.55);
     \draw[ar,color=teal!70!black]  (2.85,0.98) -- (2.85,2.55);
     \draw[ar,color=green!45!black] (4.65,1.47) -- (4.65,2.55);
 
@@ -1714,7 +1756,8 @@ held-out episodes change. The map-free row recovers position without consulting 
 track map at all, reading the road geometry from the perception's shape output
 instead of indexing a surveyed centerline.}
 \label{tab:donkey_main}
-\small
+\footnotesize
+\setlength{\tabcolsep}{3.4pt}
 \begin{tabular}{lrrr}
 \toprule
 Model & $E_{xy}(25)$ & $E_{xy}(50)$ & $E_{xy}(100)$ \\

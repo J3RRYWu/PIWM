@@ -35,14 +35,19 @@ import matplotlib.pyplot as plt
 
 from paper_style import apply as apply_style, FIG_W, COL, LBL
 
-CURVES = _os.path.join("reports", "matrix", "folds_table_curves.npz")
+# The article's tables use the SYMMETRIC checkpoint selection (HANDOFF §0.12),
+# so that cache is the default here; the val-loss-selected cache stays reachable
+# via --curves for diagnostics only.
+CURVES = _os.path.join("reports", "matrix", "folds_table_symmetric_curves.npz")
 OUT = _os.path.join("figures", "fig_main_cv")
 
 # row key in the npz -> (colour, label, linewidth, linestyle)
+# goku_obs is deliberately absent: its checkpoints are bit-identical to V2P's
+# (HANDOFF §0.11), so plotting it as a separate baseline would contradict the
+# article, whose Table 1 carries no such row.
 SERIES = [
     ("DVBF",     COL["DVBF"],     LBL["DVBF"],                 1.6, "--"),
-    ("GOKU",     COL["GOKU"],     LBL["GOKU"],                 1.6, "--"),
-    ("goku_obs", "#1B7F79",       "GOKU (obs.\\ pathway)",     1.6, "-."),
+    ("GOKU",     COL["GOKU"],     "GOKU-net",                  1.6, "--"),
     ("V2P",      COL["V2P"],      LBL["V2P"],                  1.6, "--"),
     ("ours-a",   COL["Frenet"],   LBL["Frenet"],               2.4, "-"),
     ("ours-c",   COL["FrenetOr"], "PIWM-Frenet (map-free)",    1.4, ":"),
