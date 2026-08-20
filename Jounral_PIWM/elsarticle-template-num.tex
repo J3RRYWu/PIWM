@@ -909,7 +909,7 @@ A high-level overview is shown in Figure~\ref{fig:arch}.
     %% the action drives the vehicle branch alone
     \draw[ar]  (act.east) -- ([yshift=2.2mm]dv.west);
     %% coupling: the road is advected by the predicted vehicle motion
-    \draw[ar]  (dv) -- node[right,elbl]{$\hat{\zv}_{t+1}$} (dr);
+    \draw[ar]  (dv) -- node[right,elbl]{$\hat{\zv}$} (dr);
 
     %% both predicted components recombine into the next state
     \draw[ar]  (dv.east) -| ([xshift=-3.5mm]zn.north);
@@ -930,10 +930,13 @@ A high-level overview is shown in Figure~\ref{fig:arch}.
     $\zv$ by a structured kinematic model and $\zr$ by a geometric one, and the
     prediction re-enters as the next state (dashed, top).
     Two couplings carry the article's argument. The road advances only through
-    $\hat{\zv}_{t+1}$, advected by the vehicle's own predicted motion, which is
-    why the action enters the vehicle branch alone. And the preview is
-    \emph{read} at the arc length covered rather than propagated (dashed, into
-    $f_r$), so no error in the road can compound over the rollout.}
+    the vehicle's own predicted motion $\hat{\zv}$: the analytic road update
+    takes no action input, so an action reaches the road only through the
+    motion it produces (the small bounded residual of
+    \eqref{eq:frenet_d}--\eqref{eq:frenet_psi} is the one exception). And the
+    preview is \emph{read} at the arc length covered rather than propagated
+    (dashed, into $f_r$), so no error in the road can compound over the
+    rollout.}
     \label{fig:arch}
 \end{figure}
 
@@ -1190,7 +1193,7 @@ context with separate, physically appropriate transitions:
 \begin{align}
     \hat{\zv}_{t+1} &= \phi^{v}_\theta(\zv_t,\; a_t),
         \label{eq:split_vehicle}\\
-    \hat{\zr}_{t+1} &= f_r(\zr_t,\; \zv_t,\; \hat{\zv}_{t+1};\; \theta_r).
+    \hat{\zr}_{t+1} &= f_r(\zr_t,\; \zv_t;\; \theta_r).
         \label{eq:split_road}
 \end{align}
 The vehicle transition $\phi^{v}_\theta$ is a structured kinematic model with a
@@ -1199,13 +1202,15 @@ model (below). The superscript distinguishes it from the conference version's
 $\phi$, which advances the whole state from two previous steps; here only the
 vehicle branch is advanced, and from one.
 Note which arguments $f_r$ does and does not take.
-It consumes the vehicle's \emph{motion over the step}---the state before and after
-the vehicle update---and not the action: the road context is advected by how far
-and how the vehicle actually moved, so an action influences the road only through
-its effect on that motion.
+It consumes the vehicle's \emph{motion}---which over a rollout is the model's
+own prediction from the preceding step---and not the action: the road context
+is advected by how far and how the vehicle moved, so an action influences the
+road only through the motion it produces.
+(The one exception is the small bounded residual in
+\eqref{eq:frenet_d}--\eqref{eq:frenet_psi}, which is conditioned on the
+action.)
 This is what makes the second equation a transport rule rather than a second
-learned dynamics model, and it is the reason $\hat{\zv}_{t+1}$ appears on the
-right-hand side even though the two transitions are otherwise independent.
+learned dynamics model.
 Splitting the dynamics decouples the fast-varying vehicle motion from the
 slow-varying road geometry and lets each receive its correct inductive bias.
 
@@ -1399,7 +1404,7 @@ Algorithm~\ref{alg:piwm_drive} summarizes the procedure.
     \State Obtain $(\zv_t, \zr_t)$ from the encoders
     \State $\hat{\zv}_{t+1} \gets \phi^{v}_\theta(\zv_t, a_t)$
            \Comment{bicycle model}
-    \State $\hat{\zr}_{t+1} \gets f_r(\zr_t, \zv_t, \hat{\zv}_{t+1};\,\theta_r)$
+    \State $\hat{\zr}_{t+1} \gets f_r(\zr_t, \zv_t;\,\theta_r)$
            \Comment{road prediction (Sec.~\ref{sec:prediction})}
     \State Update $\theta$ (bicycle) and $\theta_r$ (road) on the multi-step
            rollout loss
