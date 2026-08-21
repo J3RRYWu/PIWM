@@ -847,10 +847,11 @@ A high-level overview is shown in Figure~\ref{fig:arch}.
         {camera\\[-2pt]$y_{t-k+1:t}$};
 
     %% ================= stage 1: perceive, once at t0 =================
-    \node[enc] (ev) at (2.27,0.95) {vision\\[-1pt]encoder $\mathcal{E}_v$};
-    \node[enc] (ep) at (4.37,0.95) {physical\\[-1pt]encoder $\mathcal{E}_p$};
-    %% directly above E_p, so its arrow drops straight down
-    \node[aux, dash pattern=on 2.2pt off 1.6pt] (sup) at (4.37,2.45)
+    %% one perception box, deliberately high-level: the encoder design space is
+    %% Table 2's business, and the shipped model is a single network anyway
+    \node[enc] (ep) at (3.35,0.95) {perception $\mathcal{E}_p$\\[-1pt]camera $\to$ world state};
+    %% directly above the perception box, so its arrow drops straight down
+    \node[aux, dash pattern=on 2.2pt off 1.6pt] (sup) at (4.15,2.45)
         {privileged $\Xi^r$};
 
     %% ================= stage 2: factorized state =====================
@@ -873,26 +874,25 @@ A high-level overview is shown in Figure~\ref{fig:arch}.
 
     %% ================= stage panels (behind the nodes) ===============
     %% phantom nodes reserve an in-panel title row above the boxes
-    \node[inner sep=0pt] (ph1) at (2.47,1.78) {};
+    \node[inner sep=0pt] (ph1) at (3.35,1.78) {};
     \node[inner sep=0pt] (ph2) at (7.28,1.76) {};
     \node[inner sep=0pt] (ph3) at (10.60,2.80) {};
     \begin{scope}[on background layer]
-        \node[panel, fill=blue!4]   (p1) [fit=(ev)(ep)(ph1)]   {};
+        \node[panel, fill=blue!4]   (p1) [fit=(ep)(ph1)]       {};
         \node[panel, fill=orange!6] (p2) [fit=(zs)(prof)(ph2)] {};
         \node[panel, fill=violet!4] (p3) [fit=(dv)(dr)(ph3)]   {};
     \end{scope}
     \node[chip] (c1) at ([xshift=2.6mm,yshift=-2.4mm]p1.north west) {1};
     \node[hdr]  at ([xshift=1.1mm]c1.east) {perceive (once)};
     \node[chip] (c2) at ([xshift=2.6mm,yshift=-2.4mm]p2.north west) {2};
-    \node[hdr]  at ([xshift=1.1mm]c2.east) {factorized state};
+    \node[hdr]  at ([xshift=1.1mm]c2.east) {world state};
     \node[chip] (c3) at ([xshift=2.6mm,yshift=-2.4mm]p3.north west) {3};
-    \node[hdr]  at ([xshift=1.1mm]c3.east) {predict (every step)};
+    \node[hdr]  at ([xshift=1.1mm]c3.east) {imagine (every step)};
 
     %% ================= flow ==========================================
-    \draw[ar]  (imgE) -- (ev.west);
-    \draw[ar]  (ev) -- node[below,elbl]{$z_\tau$} (ep);
+    \draw[ar]  (imgE) -- (ep.west);
     \draw[dar] (sup.south) -- node[right,elbl,pos=0.40]{$\mathcal{L}_{\mathrm{interp}}$}
-               (ep.north);
+               ([xshift=8mm]ep.north);
     %% E_p emits the state and, separately, the curvature preview
     \draw[ar]  (ep.east) -- (zs.west);
     \draw[ar]  (ep.south) |- (prof.west);
@@ -917,18 +917,21 @@ A high-level overview is shown in Figure~\ref{fig:arch}.
 
     %% autoregressive rollout: the prediction replaces the state
     \draw[dar] ([xshift=3.5mm]zn.north) -- ++(0,2.45)
-               -- node[above,elbl,pos=0.45]{autoregressive rollout}
+               -- node[above,elbl,pos=0.45]{autoregressive rollout ---
+                  no new observations after $t_0$}
                (5.69,3.30) -- (5.69,1.37) -- ([yshift=4.2mm]zs.west);
     \end{tikzpicture}
-    \caption{Overview of the PIWM architecture for partially observable driving.
-    \emph{Stage 1, once per rollout:} a vision encoder maps the camera window to
-    visual latents, which the physical encoder aggregates into the factorized
-    interpretable state $\zstar = [\zv, \zr]$ and, separately, into a curvature
-    preview $\hat\kappa(\cdot)$ over the road ahead; road-context supervision is
+    \caption{Overview of the PIWM world model for partially observable driving.
+    \emph{Perceive, once per rollout:} at $t_0$ the model builds its internal
+    world state from the camera window alone---the factorized interpretable
+    state $\zstar = [\zv, \zr]$ covering both the vehicle and its relation to
+    the road, and a curvature preview $\hat\kappa(\cdot)$, the model's
+    description of the environment ahead; road-context supervision is
     privileged and available at training time only (dashed).
-    \emph{Stage 3, every step:} a split-dynamics model rolls the state forward,
-    $\zv$ by a structured kinematic model and $\zr$ by a geometric one, and the
-    prediction re-enters as the next state (dashed, top).
+    \emph{Imagine, every step:} a split-dynamics model rolls the world state
+    forward with no further observations, $\zv$ by a structured kinematic
+    model and $\zr$ by a geometric one, and the prediction re-enters as the
+    next state (dashed, top).
     Two couplings carry the article's argument. The road advances only through
     the vehicle's own predicted motion $\hat{\zv}$: the analytic road update
     takes no action input, so an action reaches the road only through the
