@@ -1,0 +1,79 @@
+{
+  "status": "PASS",
+  "checks": {
+    "outer0/seed0/geometry_euler": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 5.7220458984375e-06
+    },
+    "outer0/seed0/geometry_midpoint": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 6.556510925292969e-07
+    },
+    "outer0/seed0/body_midpoint": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 1.1920928955078125e-06
+    },
+    "outer0/seed1/geometry_euler": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 4.172325134277344e-07
+    },
+    "outer0/seed1/geometry_midpoint": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 2.1457672119140625e-06
+    },
+    "outer0/seed1/body_midpoint": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 3.8743019104003906e-07
+    },
+    "outer0/seed2/geometry_euler": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 1.0728836059570312e-06
+    },
+    "outer0/seed2/geometry_midpoint": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 1.0728836059570312e-06
+    },
+    "outer0/seed2/body_midpoint": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 2.9802322387695312e-06
+    },
+    "outer1/seed0/geometry_euler": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 1.2516975402832031e-06
+    },
+    "outer1/seed0/geometry_midpoint": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 1.9073486328125e-06
+    },
+    "outer1/seed0/body_midpoint": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 5.960464477539062e-07
+    },
+    "outer1/seed1/geometry_euler": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 5.364418029785156e-07
+    },
+    "outer1/seed1/geometry_midpoint": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 4.172325134277344e-07
+    },
+    "outer1/seed1/body_midpoint": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 4.76837158203125e-07
+    },
+    "outer1/seed2/geometry_euler": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 4.863739013671875e-05
+    },
+    "outer1/seed2/geometry_midpoint": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 3.5762786865234375e-07
+    },
+    "outer1/seed2/body_midpoint": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 1.430511474609375e-06
+    }
+  },
+  "scope": "24 evenly spaced windows per checkpoint; not a full independent rerun",
+  "script_sha256": "3962b14e49a3d55442e207ace0e36469c066035c007e60c6d6b8e8dc28ee2e2c"
+}

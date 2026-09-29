@@ -1,0 +1,190 @@
+{
+  "scope": "Descriptive paired comparison, first averaging training seeds then each original test segment. Segments/windows are correlated; no p-values or independent-session confidence intervals.",
+  "primary": "arc_full",
+  "segments": [
+    {
+      "file": "traj1_64x64_seg14_04698_04838.npz",
+      "windows": 7,
+      "E100": {
+        "arc_full": 0.13709528744220734,
+        "arc_shape": 0.40788528323173523,
+        "arc_independent_encoder": 0.10053896903991699,
+        "cartesian_road": 0.8000238537788391,
+        "kinematic": 0.7006804347038269
+      }
+    },
+    {
+      "file": "traj1_64x64_seg15_04845_05090.npz",
+      "windows": 33,
+      "E100": {
+        "arc_full": 0.22163942456245422,
+        "arc_shape": 0.235186368227005,
+        "arc_independent_encoder": 0.2265748828649521,
+        "cartesian_road": 0.7434783577919006,
+        "kinematic": 0.7484598755836487
+      }
+    },
+    {
+      "file": "traj1_64x64_seg16_05112_05566.npz",
+      "windows": 85,
+      "E100": {
+        "arc_full": 0.25555896759033203,
+        "arc_shape": 0.24265404045581818,
+        "arc_independent_encoder": 0.33247703313827515,
+        "cartesian_road": 0.7128360867500305,
+        "kinematic": 0.8500893712043762
+      }
+    },
+    {
+      "file": "traj1_64x64_seg17_05585_05785.npz",
+      "windows": 22,
+      "E100": {
+        "arc_full": 0.3754684627056122,
+        "arc_shape": 0.3173810839653015,
+        "arc_independent_encoder": 0.4389996826648712,
+        "cartesian_road": 0.7022829651832581,
+        "kinematic": 1.1043260097503662
+      }
+    },
+    {
+      "file": "traj2_64x64_seg42_10644_10851.npz",
+      "windows": 24,
+      "E100": {
+        "arc_full": 0.502816379070282,
+        "arc_shape": 0.745067298412323,
+        "arc_independent_encoder": 0.5825433731079102,
+        "cartesian_road": 1.9788440465927124,
+        "kinematic": 0.8130108714103699
+      }
+    },
+    {
+      "file": "traj2_64x64_seg43_10862_11104.npz",
+      "windows": 32,
+      "E100": {
+        "arc_full": 0.31507396697998047,
+        "arc_shape": 0.4942260980606079,
+        "arc_independent_encoder": 0.45727312564849854,
+        "cartesian_road": 1.4260724782943726,
+        "kinematic": 0.6791329383850098
+      }
+    },
+    {
+      "file": "traj2_64x64_seg44_11123_11376.npz",
+      "windows": 35,
+      "E100": {
+        "arc_full": 0.3716137707233429,
+        "arc_shape": 0.5048933029174805,
+        "arc_independent_encoder": 0.49274274706840515,
+        "cartesian_road": 1.5009665489196777,
+        "kinematic": 0.6989195346832275
+      }
+    },
+    {
+      "file": "traj2_64x64_seg45_11392_11641.npz",
+      "windows": 34,
+      "E100": {
+        "arc_full": 0.5057660937309265,
+        "arc_shape": 0.509354293346405,
+        "arc_independent_encoder": 0.6077967882156372,
+        "cartesian_road": 1.2966558933258057,
+        "kinematic": 0.6029146313667297
+      }
+    },
+    {
+      "file": "traj2_64x64_seg46_11663_12091.npz",
+      "windows": 79,
+      "E100": {
+        "arc_full": 0.4606226682662964,
+        "arc_shape": 0.5227934122085571,
+        "arc_independent_encoder": 0.5604450702667236,
+        "cartesian_road": 1.3929437398910522,
+        "kinematic": 0.6489627957344055
+      }
+    },
+    {
+      "file": "traj2_64x64_seg47_12106_12257.npz",
+      "windows": 10,
+      "E100": {
+        "arc_full": 0.5228475332260132,
+        "arc_shape": 0.4674467444419861,
+        "arc_independent_encoder": 0.45204299688339233,
+        "cartesian_road": 0.9386232495307922,
+        "kinematic": 0.9349392056465149
+      }
+    },
+    {
+      "file": "traj2_64x64_seg48_12265_12805.npz",
+      "windows": 107,
+      "E100": {
+        "arc_full": 0.48994603753089905,
+        "arc_shape": 0.5802674889564514,
+        "arc_independent_encoder": 0.5388906002044678,
+        "cartesian_road": 1.0034903287887573,
+        "kinematic": 0.986594021320343
+      }
+    },
+    {
+      "file": "traj2_64x64_seg49_12843_12987.npz",
+      "windows": 8,
+      "E100": {
+        "arc_full": 0.23205088078975677,
+        "arc_shape": 0.2599387764930725,
+        "arc_independent_encoder": 0.19832617044448853,
+        "cartesian_road": 0.9274107217788696,
+        "kinematic": 1.505666732788086
+      }
+    },
+    {
+      "file": "traj2_64x64_seg50_13007_13207.npz",
+      "windows": 22,
+      "E100": {
+        "arc_full": 0.34773674607276917,
+        "arc_shape": 0.4271961450576782,
+        "arc_independent_encoder": 0.3275528848171234,
+        "cartesian_road": 0.6863504648208618,
+        "kinematic": 1.442820429801941
+      }
+    },
+    {
+      "file": "traj2_64x64_seg51_13222_13449.npz",
+      "windows": 29,
+      "E100": {
+        "arc_full": 0.5756248235702515,
+        "arc_shape": 0.43751147389411926,
+        "arc_independent_encoder": 0.6484972238540649,
+        "cartesian_road": 0.8178615570068359,
+        "kinematic": 1.751405119895935
+      }
+    }
+  ],
+  "comparisons": {
+    "arc_shape": {
+      "segments_improved": 10,
+      "segments_total": 14,
+      "equal_segment_mean_difference": -0.059852911957672665,
+      "worst_segment_difference": 0.1381133496761322,
+      "pooled_relative_reduction": 0.11829566955566406
+    },
+    "arc_independent_encoder": {
+      "segments_improved": 10,
+      "segments_total": 14,
+      "equal_segment_mean_difference": -0.046488607568400245,
+      "worst_segment_difference": 0.07080453634262085,
+      "pooled_relative_reduction": 0.14524704217910767
+    },
+    "cartesian_road": {
+      "segments_improved": 14,
+      "segments_total": 14,
+      "equal_segment_mean_difference": -0.6867128035851887,
+      "worst_segment_difference": -0.24223673343658447,
+      "pooled_relative_reduction": 0.6294117569923401
+    },
+    "kinematic": {
+      "segments_improved": 14,
+      "segments_total": 14,
+      "equal_segment_mean_difference": -0.5824329235724041,
+      "worst_segment_difference": -0.09714853763580322,
+      "pooled_relative_reduction": 0.5543434023857117
+    }
+  }
+}

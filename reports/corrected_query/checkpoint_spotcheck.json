@@ -1,0 +1,439 @@
+{
+  "status": "PASS",
+  "scope": "24 evenly spaced windows per all 72 checkpoints, plus map-buffer perturbation; independent recomputation by same agent, not external replication.",
+  "results": {
+    "temporal/seed0/kinematic": {
+      "windows": 24,
+      "max_absolute_difference_m": 0.0,
+      "parameters": 7,
+      "map_buffer_independence": "not applicable"
+    },
+    "temporal/seed0/cartesian_road": {
+      "windows": 24,
+      "max_absolute_difference_m": 0.0,
+      "parameters": 13733,
+      "map_buffer_independence": "not applicable"
+    },
+    "temporal/seed0/cartesian_guarded": {
+      "windows": 24,
+      "max_absolute_difference_m": 3.5762786865234375e-07,
+      "parameters": 13733,
+      "map_buffer_independence": "not applicable"
+    },
+    "temporal/seed0/guarded_full": {
+      "windows": 24,
+      "max_absolute_difference_m": 1.9073486328125e-06,
+      "parameters": 14276,
+      "map_buffer_independence": true
+    },
+    "temporal/seed0/guarded_fixed_query": {
+      "windows": 24,
+      "max_absolute_difference_m": 4.76837158203125e-07,
+      "parameters": 14276,
+      "map_buffer_independence": true
+    },
+    "temporal/seed0/guarded_static_context": {
+      "windows": 24,
+      "max_absolute_difference_m": 6.258487701416016e-07,
+      "parameters": 14276,
+      "map_buffer_independence": true
+    },
+    "temporal/seed0/geometry_midpoint": {
+      "windows": 24,
+      "max_absolute_difference_m": 5.513429641723633e-06,
+      "parameters": 14276,
+      "map_buffer_independence": true
+    },
+    "temporal/seed0/arc_full": {
+      "windows": 24,
+      "max_absolute_difference_m": 5.513429641723633e-07,
+      "parameters": 14276,
+      "map_buffer_independence": true
+    },
+    "temporal/seed1/kinematic": {
+      "windows": 24,
+      "max_absolute_difference_m": 0.0,
+      "parameters": 7,
+      "map_buffer_independence": "not applicable"
+    },
+    "temporal/seed1/cartesian_road": {
+      "windows": 24,
+      "max_absolute_difference_m": 0.0,
+      "parameters": 13733,
+      "map_buffer_independence": "not applicable"
+    },
+    "temporal/seed1/cartesian_guarded": {
+      "windows": 24,
+      "max_absolute_difference_m": 2.384185791015625e-07,
+      "parameters": 13733,
+      "map_buffer_independence": "not applicable"
+    },
+    "temporal/seed1/guarded_full": {
+      "windows": 24,
+      "max_absolute_difference_m": 5.364418029785156e-07,
+      "parameters": 14276,
+      "map_buffer_independence": true
+    },
+    "temporal/seed1/guarded_fixed_query": {
+      "windows": 24,
+      "max_absolute_difference_m": 9.5367431640625e-07,
+      "parameters": 14276,
+      "map_buffer_independence": true
+    },
+    "temporal/seed1/guarded_static_context": {
+      "windows": 24,
+      "max_absolute_difference_m": 1.3113021850585938e-06,
+      "parameters": 14276,
+      "map_buffer_independence": true
+    },
+    "temporal/seed1/geometry_midpoint": {
+      "windows": 24,
+      "max_absolute_difference_m": 1.0728836059570312e-06,
+      "parameters": 14276,
+      "map_buffer_independence": true
+    },
+    "temporal/seed1/arc_full": {
+      "windows": 24,
+      "max_absolute_difference_m": 4.76837158203125e-07,
+      "parameters": 14276,
+      "map_buffer_independence": true
+    },
+    "temporal/seed2/kinematic": {
+      "windows": 24,
+      "max_absolute_difference_m": 0.0,
+      "parameters": 7,
+      "map_buffer_independence": "not applicable"
+    },
+    "temporal/seed2/cartesian_road": {
+      "windows": 24,
+      "max_absolute_difference_m": 0.0,
+      "parameters": 13733,
+      "map_buffer_independence": "not applicable"
+    },
+    "temporal/seed2/cartesian_guarded": {
+      "windows": 24,
+      "max_absolute_difference_m": 2.384185791015625e-07,
+      "parameters": 13733,
+      "map_buffer_independence": "not applicable"
+    },
+    "temporal/seed2/guarded_full": {
+      "windows": 24,
+      "max_absolute_difference_m": 1.087784767150879e-06,
+      "parameters": 14276,
+      "map_buffer_independence": true
+    },
+    "temporal/seed2/guarded_fixed_query": {
+      "windows": 24,
+      "max_absolute_difference_m": 7.152557373046875e-07,
+      "parameters": 14276,
+      "map_buffer_independence": true
+    },
+    "temporal/seed2/guarded_static_context": {
+      "windows": 24,
+      "max_absolute_difference_m": 1.0132789611816406e-06,
+      "parameters": 14276,
+      "map_buffer_independence": true
+    },
+    "temporal/seed2/geometry_midpoint": {
+      "windows": 24,
+      "max_absolute_difference_m": 5.140900611877441e-07,
+      "parameters": 14276,
+      "map_buffer_independence": true
+    },
+    "temporal/seed2/arc_full": {
+      "windows": 24,
+      "max_absolute_difference_m": 7.152557373046875e-07,
+      "parameters": 14276,
+      "map_buffer_independence": true
+    },
+    "outer0/seed0/kinematic": {
+      "windows": 24,
+      "max_absolute_difference_m": 0.0,
+      "parameters": 7,
+      "map_buffer_independence": "not applicable"
+    },
+    "outer0/seed0/cartesian_road": {
+      "windows": 24,
+      "max_absolute_difference_m": 0.0,
+      "parameters": 13733,
+      "map_buffer_independence": "not applicable"
+    },
+    "outer0/seed0/cartesian_guarded": {
+      "windows": 24,
+      "max_absolute_difference_m": 4.76837158203125e-07,
+      "parameters": 13733,
+      "map_buffer_independence": "not applicable"
+    },
+    "outer0/seed0/guarded_full": {
+      "windows": 24,
+      "max_absolute_difference_m": 4.470348358154297e-06,
+      "parameters": 14276,
+      "map_buffer_independence": true
+    },
+    "outer0/seed0/guarded_fixed_query": {
+      "windows": 24,
+      "max_absolute_difference_m": 9.5367431640625e-07,
+      "parameters": 14276,
+      "map_buffer_independence": true
+    },
+    "outer0/seed0/guarded_static_context": {
+      "windows": 24,
+      "max_absolute_difference_m": 1.0132789611816406e-06,
+      "parameters": 14276,
+      "map_buffer_independence": true
+    },
+    "outer0/seed0/geometry_midpoint": {
+      "windows": 24,
+      "max_absolute_difference_m": 3.0994415283203125e-06,
+      "parameters": 14276,
+      "map_buffer_independence": true
+    },
+    "outer0/seed0/arc_full": {
+      "windows": 24,
+      "max_absolute_difference_m": 5.960464477539062e-07,
+      "parameters": 14276,
+      "map_buffer_independence": true
+    },
+    "outer0/seed1/kinematic": {
+      "windows": 24,
+      "max_absolute_difference_m": 0.0,
+      "parameters": 7,
+      "map_buffer_independence": "not applicable"
+    },
+    "outer0/seed1/cartesian_road": {
+      "windows": 24,
+      "max_absolute_difference_m": 0.0,
+      "parameters": 13733,
+      "map_buffer_independence": "not applicable"
+    },
+    "outer0/seed1/cartesian_guarded": {
+      "windows": 24,
+      "max_absolute_difference_m": 4.76837158203125e-07,
+      "parameters": 13733,
+      "map_buffer_independence": "not applicable"
+    },
+    "outer0/seed1/guarded_full": {
+      "windows": 24,
+      "max_absolute_difference_m": 5.364418029785156e-07,
+      "parameters": 14276,
+      "map_buffer_independence": true
+    },
+    "outer0/seed1/guarded_fixed_query": {
+      "windows": 24,
+      "max_absolute_difference_m": 3.5762786865234375e-07,
+      "parameters": 14276,
+      "map_buffer_independence": true
+    },
+    "outer0/seed1/guarded_static_context": {
+      "windows": 24,
+      "max_absolute_difference_m": 8.344650268554688e-07,
+      "parameters": 14276,
+      "map_buffer_independence": true
+    },
+    "outer0/seed1/geometry_midpoint": {
+      "windows": 24,
+      "max_absolute_difference_m": 1.0132789611816406e-06,
+      "parameters": 14276,
+      "map_buffer_independence": true
+    },
+    "outer0/seed1/arc_full": {
+      "windows": 24,
+      "max_absolute_difference_m": 5.960464477539062e-07,
+      "parameters": 14276,
+      "map_buffer_independence": true
+    },
+    "outer0/seed2/kinematic": {
+      "windows": 24,
+      "max_absolute_difference_m": 0.0,
+      "parameters": 7,
+      "map_buffer_independence": "not applicable"
+    },
+    "outer0/seed2/cartesian_road": {
+      "windows": 24,
+      "max_absolute_difference_m": 0.0,
+      "parameters": 13733,
+      "map_buffer_independence": "not applicable"
+    },
+    "outer0/seed2/cartesian_guarded": {
+      "windows": 24,
+      "max_absolute_difference_m": 5.960464477539062e-07,
+      "parameters": 13733,
+      "map_buffer_independence": "not applicable"
+    },
+    "outer0/seed2/guarded_full": {
+      "windows": 24,
+      "max_absolute_difference_m": 1.0728836059570312e-06,
+      "parameters": 14276,
+      "map_buffer_independence": true
+    },
+    "outer0/seed2/guarded_fixed_query": {
+      "windows": 24,
+      "max_absolute_difference_m": 4.172325134277344e-07,
+      "parameters": 14276,
+      "map_buffer_independence": true
+    },
+    "outer0/seed2/guarded_static_context": {
+      "windows": 24,
+      "max_absolute_difference_m": 7.152557373046875e-07,
+      "parameters": 14276,
+      "map_buffer_independence": true
+    },
+    "outer0/seed2/geometry_midpoint": {
+      "windows": 24,
+      "max_absolute_difference_m": 7.033348083496094e-06,
+      "parameters": 14276,
+      "map_buffer_independence": true
+    },
+    "outer0/seed2/arc_full": {
+      "windows": 24,
+      "max_absolute_difference_m": 4.76837158203125e-07,
+      "parameters": 14276,
+      "map_buffer_independence": true
+    },
+    "outer1/seed0/kinematic": {
+      "windows": 24,
+      "max_absolute_difference_m": 0.0,
+      "parameters": 7,
+      "map_buffer_independence": "not applicable"
+    },
+    "outer1/seed0/cartesian_road": {
+      "windows": 24,
+      "max_absolute_difference_m": 0.0,
+      "parameters": 13733,
+      "map_buffer_independence": "not applicable"
+    },
+    "outer1/seed0/cartesian_guarded": {
+      "windows": 24,
+      "max_absolute_difference_m": 4.76837158203125e-07,
+      "parameters": 13733,
+      "map_buffer_independence": "not applicable"
+    },
+    "outer1/seed0/guarded_full": {
+      "windows": 24,
+      "max_absolute_difference_m": 7.152557373046875e-07,
+      "parameters": 14276,
+      "map_buffer_independence": true
+    },
+    "outer1/seed0/guarded_fixed_query": {
+      "windows": 24,
+      "max_absolute_difference_m": 4.76837158203125e-07,
+      "parameters": 14276,
+      "map_buffer_independence": true
+    },
+    "outer1/seed0/guarded_static_context": {
+      "windows": 24,
+      "max_absolute_difference_m": 2.86102294921875e-06,
+      "parameters": 14276,
+      "map_buffer_independence": true
+    },
+    "outer1/seed0/geometry_midpoint": {
+      "windows": 24,
+      "max_absolute_difference_m": 7.748603820800781e-07,
+      "parameters": 14276,
+      "map_buffer_independence": true
+    },
+    "outer1/seed0/arc_full": {
+      "windows": 24,
+      "max_absolute_difference_m": 1.0251998901367188e-05,
+      "parameters": 14276,
+      "map_buffer_independence": true
+    },
+    "outer1/seed1/kinematic": {
+      "windows": 24,
+      "max_absolute_difference_m": 0.0,
+      "parameters": 7,
+      "map_buffer_independence": "not applicable"
+    },
+    "outer1/seed1/cartesian_road": {
+      "windows": 24,
+      "max_absolute_difference_m": 0.0,
+      "parameters": 13733,
+      "map_buffer_independence": "not applicable"
+    },
+    "outer1/seed1/cartesian_guarded": {
+      "windows": 24,
+      "max_absolute_difference_m": 4.76837158203125e-07,
+      "parameters": 13733,
+      "map_buffer_independence": "not applicable"
+    },
+    "outer1/seed1/guarded_full": {
+      "windows": 24,
+      "max_absolute_difference_m": 7.152557373046875e-07,
+      "parameters": 14276,
+      "map_buffer_independence": true
+    },
+    "outer1/seed1/guarded_fixed_query": {
+      "windows": 24,
+      "max_absolute_difference_m": 3.5762786865234375e-07,
+      "parameters": 14276,
+      "map_buffer_independence": true
+    },
+    "outer1/seed1/guarded_static_context": {
+      "windows": 24,
+      "max_absolute_difference_m": 4.76837158203125e-06,
+      "parameters": 14276,
+      "map_buffer_independence": true
+    },
+    "outer1/seed1/geometry_midpoint": {
+      "windows": 24,
+      "max_absolute_difference_m": 1.430511474609375e-06,
+      "parameters": 14276,
+      "map_buffer_independence": true
+    },
+    "outer1/seed1/arc_full": {
+      "windows": 24,
+      "max_absolute_difference_m": 6.258487701416016e-07,
+      "parameters": 14276,
+      "map_buffer_independence": true
+    },
+    "outer1/seed2/kinematic": {
+      "windows": 24,
+      "max_absolute_difference_m": 0.0,
+      "parameters": 7,
+      "map_buffer_independence": "not applicable"
+    },
+    "outer1/seed2/cartesian_road": {
+      "windows": 24,
+      "max_absolute_difference_m": 0.0,
+      "parameters": 13733,
+      "map_buffer_independence": "not applicable"
+    },
+    "outer1/seed2/cartesian_guarded": {
+      "windows": 24,
+      "max_absolute_difference_m": 4.76837158203125e-07,
+      "parameters": 13733,
+      "map_buffer_independence": "not applicable"
+    },
+    "outer1/seed2/guarded_full": {
+      "windows": 24,
+      "max_absolute_difference_m": 4.172325134277344e-07,
+      "parameters": 14276,
+      "map_buffer_independence": true
+    },
+    "outer1/seed2/guarded_fixed_query": {
+      "windows": 24,
+      "max_absolute_difference_m": 4.76837158203125e-07,
+      "parameters": 14276,
+      "map_buffer_independence": true
+    },
+    "outer1/seed2/guarded_static_context": {
+      "windows": 24,
+      "max_absolute_difference_m": 8.940696716308594e-07,
+      "parameters": 14276,
+      "map_buffer_independence": true
+    },
+    "outer1/seed2/geometry_midpoint": {
+      "windows": 24,
+      "max_absolute_difference_m": 2.980232238769531e-07,
+      "parameters": 14276,
+      "map_buffer_independence": true
+    },
+    "outer1/seed2/arc_full": {
+      "windows": 24,
+      "max_absolute_difference_m": 3.5762786865234375e-07,
+      "parameters": 14276,
+      "map_buffer_independence": true
+    }
+  },
+  "script_sha256": "c4232f9d49866a36ab3af6670f166a863dddd64e6613f61661b95416b4637c20"
+}

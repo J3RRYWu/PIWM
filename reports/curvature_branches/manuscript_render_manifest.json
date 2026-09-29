@@ -1,0 +1,22 @@
+{
+  "pages": 40,
+  "pdf_sha256": "69491cbf6c9edaf08437abe33ed29fd805f7bfa7a6154508fad38614eb24a4f2",
+  "selected_pages": [
+    1,
+    6,
+    9,
+    13,
+    14,
+    15,
+    16,
+    22,
+    25
+  ],
+  "rendered_all_pages": true,
+  "visual_review": "PASS: all-page contact sheets and full-resolution equations/new tables inspected; table paragraph breaks repaired and re-rendered",
+  "inspected_detail_pages": [
+    10,
+    15,
+    16
+  ]
+}

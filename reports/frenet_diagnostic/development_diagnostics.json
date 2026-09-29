@@ -1,0 +1,65 @@
+{
+  "outer0_seed0": {
+    "maximum_validation_replay_difference": 0.0,
+    "legacy_full": {
+      "max_gradient": 1673352445952.0,
+      "last_training_loss": 5844.843513480557,
+      "last_validation_E100": 99.8750228881836,
+      "last_validation_invalid_fraction": 0.8338947368421052
+    },
+    "legacy_shape": {
+      "max_gradient": 87.59344482421875,
+      "last_training_loss": 0.19351378338265085,
+      "last_validation_E100": 0.5804845690727234,
+      "last_validation_invalid_fraction": 0.0
+    },
+    "guarded_full": {
+      "max_gradient": 69.64588165283203,
+      "last_training_loss": 0.13129434278244864,
+      "last_validation_E100": 0.5570854544639587,
+      "last_validation_invalid_fraction": 0.0024473684210526317
+    }
+  },
+  "outer0_seed1": {
+    "maximum_validation_replay_difference": 0.0,
+    "legacy_full": {
+      "max_gradient": 25.54636573791504,
+      "last_training_loss": 0.18335276048137247,
+      "last_validation_E100": 1.3752737045288086,
+      "last_validation_invalid_fraction": 0.006868421052631579
+    },
+    "legacy_shape": {
+      "max_gradient": 17.80628204345703,
+      "last_training_loss": 0.19578410752430414,
+      "last_validation_E100": 1.1882842779159546,
+      "last_validation_invalid_fraction": 0.0
+    },
+    "guarded_full": {
+      "max_gradient": 19.862220764160156,
+      "last_training_loss": 0.18690877848087264,
+      "last_validation_E100": 1.3084075450897217,
+      "last_validation_invalid_fraction": 0.0010789473684210526
+    }
+  },
+  "outer0_seed2": {
+    "maximum_validation_replay_difference": 0.0,
+    "legacy_full": {
+      "max_gradient": 85690469580800.0,
+      "last_training_loss": 1969.7978436785186,
+      "last_validation_E100": 21.68101692199707,
+      "last_validation_invalid_fraction": 0.8237105263157894
+    },
+    "legacy_shape": {
+      "max_gradient": 27.89731216430664,
+      "last_training_loss": 0.191670848219079,
+      "last_validation_E100": 0.5849756598472595,
+      "last_validation_invalid_fraction": 0.0
+    },
+    "guarded_full": {
+      "max_gradient": 41.46543884277344,
+      "last_training_loss": 0.13267789740993594,
+      "last_validation_E100": 0.5426282286643982,
+      "last_validation_invalid_fraction": 0.0020789473684210526
+    }
+  }
+}

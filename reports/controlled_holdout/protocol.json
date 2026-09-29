@@ -1,0 +1,502 @@
+{
+  "version": 1,
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "context": 15,
+  "train_horizon": 32,
+  "test_horizon": 100,
+  "train_stride": 4,
+  "evaluation_stride": 4,
+  "perception_stride": 2,
+  "perception_epochs": 25,
+  "dynamics_epochs": 40,
+  "batch": 128,
+  "perception_batch": 64,
+  "purge_frames": 115,
+  "models": [
+    "kinematic",
+    "cartesian_no_road",
+    "cartesian_road",
+    "frenet"
+  ],
+  "preview_modes": [
+    "normal",
+    "zero",
+    "train_mean",
+    "permuted"
+  ],
+  "primary_metric": "mean endpoint Euclidean error at 100 steps, metres; raw pose truth",
+  "secondary_metrics": [
+    "E25",
+    "E50",
+    "ADE1:100",
+    "per-source and per-seed results"
+  ],
+  "initialization": "ground-truth initial v, causal omega, d, heading error; no future samples",
+  "extrapolation": "curvature hold-last; map-free shape tangent extension (legacy hold-last diagnostic)",
+  "selection": "perception: validation normalized supervised MSE; dynamics: validation E100 only",
+  "statistics": "all normalizers fit train only; fixed surveyed map only creates labels and initial road-relative state",
+  "limitations": [
+    "Retrospective reanalysis: both raw records were previously explored in model development.",
+    "Two raw files on the same track; no claim of independent sessions or unseen-road generalization.",
+    "Ground-truth initial state and recorded future actions: offline action-conditioned prediction.",
+    "New matched controls and matched training objective, not a reproduction of published baseline implementations."
+  ],
+  "splits": {
+    "outer0": {
+      "train": [
+        "traj2_64x64_seg00_00004_00100.npz",
+        "traj2_64x64_seg01_00125_00219.npz",
+        "traj2_64x64_seg02_00226_00437.npz",
+        "traj2_64x64_seg03_00447_00664.npz",
+        "traj2_64x64_seg04_00686_00954.npz",
+        "traj2_64x64_seg05_01016_01155.npz",
+        "traj2_64x64_seg06_01163_01514.npz",
+        "traj2_64x64_seg07_01535_01757.npz",
+        "traj2_64x64_seg08_01778_01961.npz",
+        "traj2_64x64_seg09_02010_02267.npz",
+        "traj2_64x64_seg10_02276_02514.npz",
+        "traj2_64x64_seg11_02521_02656.npz",
+        "traj2_64x64_seg12_02680_02789.npz",
+        "traj2_64x64_seg13_02807_03037.npz",
+        "traj2_64x64_seg14_03046_03175.npz",
+        "traj2_64x64_seg15_03182_03276.npz",
+        "traj2_64x64_seg16_03283_03612.npz",
+        "traj2_64x64_seg17_03621_03737.npz",
+        "traj2_64x64_seg18_03772_04204.npz",
+        "traj2_64x64_seg19_04219_04448.npz",
+        "traj2_64x64_seg20_04456_04670.npz",
+        "traj2_64x64_seg21_04696_04909.npz",
+        "traj2_64x64_seg22_04960_05365.npz",
+        "traj2_64x64_seg23_05391_05617.npz",
+        "traj2_64x64_seg24_05643_05855.npz",
+        "traj2_64x64_seg25_05869_06088.npz",
+        "traj2_64x64_seg26_06107_06314.npz",
+        "traj2_64x64_seg27_06338_06544.npz",
+        "traj2_64x64_seg28_06570_06780.npz",
+        "traj2_64x64_seg29_06801_07009.npz",
+        "traj2_64x64_seg30_07031_07243.npz",
+        "traj2_64x64_seg31_07273_07379.npz",
+        "traj2_64x64_seg32_07386_07478.npz",
+        "traj2_64x64_seg33_07514_07975.npz",
+        "traj2_64x64_seg34_07992_08225.npz",
+        "traj2_64x64_seg35_08235_08406.npz",
+        "traj2_64x64_seg36_08467_08687.npz",
+        "traj2_64x64_seg37_08694_08933.npz",
+        "traj2_64x64_seg38_08940_09157.npz",
+        "traj2_64x64_seg39_09209_09903.npz",
+        "traj2_64x64_seg40_09938_10156.npz"
+      ],
+      "validation": [
+        "traj2_64x64_seg42_10644_10851.npz",
+        "traj2_64x64_seg43_10862_11104.npz",
+        "traj2_64x64_seg44_11123_11376.npz",
+        "traj2_64x64_seg45_11392_11641.npz",
+        "traj2_64x64_seg46_11663_12091.npz",
+        "traj2_64x64_seg47_12106_12257.npz",
+        "traj2_64x64_seg48_12265_12805.npz",
+        "traj2_64x64_seg49_12843_12987.npz",
+        "traj2_64x64_seg50_13007_13207.npz",
+        "traj2_64x64_seg51_13222_13449.npz",
+        "traj2_64x64_seg52_13491_13571.npz"
+      ],
+      "test": [
+        "traj1_64x64_seg00_00004_00157.npz",
+        "traj1_64x64_seg01_00180_00393.npz",
+        "traj1_64x64_seg02_00416_00566.npz",
+        "traj1_64x64_seg03_00601_00934.npz",
+        "traj1_64x64_seg04_00966_01717.npz",
+        "traj1_64x64_seg05_01750_02110.npz",
+        "traj1_64x64_seg06_02134_02575.npz",
+        "traj1_64x64_seg07_02583_02736.npz",
+        "traj1_64x64_seg08_02743_02986.npz",
+        "traj1_64x64_seg09_03025_03409.npz",
+        "traj1_64x64_seg10_03432_03657.npz",
+        "traj1_64x64_seg11_03664_03833.npz",
+        "traj1_64x64_seg12_03853_04245.npz",
+        "traj1_64x64_seg13_04266_04662.npz",
+        "traj1_64x64_seg14_04698_04838.npz",
+        "traj1_64x64_seg15_04845_05090.npz",
+        "traj1_64x64_seg16_05112_05566.npz",
+        "traj1_64x64_seg17_05585_05785.npz"
+      ],
+      "purged": [
+        "traj2_64x64_seg41_10165_10637.npz"
+      ],
+      "test_source": "traj1_64x64",
+      "development_source": "traj2_64x64"
+    },
+    "outer1": {
+      "train": [
+        "traj1_64x64_seg00_00004_00157.npz",
+        "traj1_64x64_seg01_00180_00393.npz",
+        "traj1_64x64_seg02_00416_00566.npz",
+        "traj1_64x64_seg03_00601_00934.npz",
+        "traj1_64x64_seg04_00966_01717.npz",
+        "traj1_64x64_seg05_01750_02110.npz",
+        "traj1_64x64_seg06_02134_02575.npz",
+        "traj1_64x64_seg07_02583_02736.npz",
+        "traj1_64x64_seg08_02743_02986.npz",
+        "traj1_64x64_seg09_03025_03409.npz",
+        "traj1_64x64_seg10_03432_03657.npz",
+        "traj1_64x64_seg11_03664_03833.npz",
+        "traj1_64x64_seg12_03853_04245.npz"
+      ],
+      "validation": [
+        "traj1_64x64_seg14_04698_04838.npz",
+        "traj1_64x64_seg15_04845_05090.npz",
+        "traj1_64x64_seg16_05112_05566.npz",
+        "traj1_64x64_seg17_05585_05785.npz"
+      ],
+      "test": [
+        "traj2_64x64_seg00_00004_00100.npz",
+        "traj2_64x64_seg01_00125_00219.npz",
+        "traj2_64x64_seg02_00226_00437.npz",
+        "traj2_64x64_seg03_00447_00664.npz",
+        "traj2_64x64_seg04_00686_00954.npz",
+        "traj2_64x64_seg05_01016_01155.npz",
+        "traj2_64x64_seg06_01163_01514.npz",
+        "traj2_64x64_seg07_01535_01757.npz",
+        "traj2_64x64_seg08_01778_01961.npz",
+        "traj2_64x64_seg09_02010_02267.npz",
+        "traj2_64x64_seg10_02276_02514.npz",
+        "traj2_64x64_seg11_02521_02656.npz",
+        "traj2_64x64_seg12_02680_02789.npz",
+        "traj2_64x64_seg13_02807_03037.npz",
+        "traj2_64x64_seg14_03046_03175.npz",
+        "traj2_64x64_seg15_03182_03276.npz",
+        "traj2_64x64_seg16_03283_03612.npz",
+        "traj2_64x64_seg17_03621_03737.npz",
+        "traj2_64x64_seg18_03772_04204.npz",
+        "traj2_64x64_seg19_04219_04448.npz",
+        "traj2_64x64_seg20_04456_04670.npz",
+        "traj2_64x64_seg21_04696_04909.npz",
+        "traj2_64x64_seg22_04960_05365.npz",
+        "traj2_64x64_seg23_05391_05617.npz",
+        "traj2_64x64_seg24_05643_05855.npz",
+        "traj2_64x64_seg25_05869_06088.npz",
+        "traj2_64x64_seg26_06107_06314.npz",
+        "traj2_64x64_seg27_06338_06544.npz",
+        "traj2_64x64_seg28_06570_06780.npz",
+        "traj2_64x64_seg29_06801_07009.npz",
+        "traj2_64x64_seg30_07031_07243.npz",
+        "traj2_64x64_seg31_07273_07379.npz",
+        "traj2_64x64_seg32_07386_07478.npz",
+        "traj2_64x64_seg33_07514_07975.npz",
+        "traj2_64x64_seg34_07992_08225.npz",
+        "traj2_64x64_seg35_08235_08406.npz",
+        "traj2_64x64_seg36_08467_08687.npz",
+        "traj2_64x64_seg37_08694_08933.npz",
+        "traj2_64x64_seg38_08940_09157.npz",
+        "traj2_64x64_seg39_09209_09903.npz",
+        "traj2_64x64_seg40_09938_10156.npz",
+        "traj2_64x64_seg41_10165_10637.npz",
+        "traj2_64x64_seg42_10644_10851.npz",
+        "traj2_64x64_seg43_10862_11104.npz",
+        "traj2_64x64_seg44_11123_11376.npz",
+        "traj2_64x64_seg45_11392_11641.npz",
+        "traj2_64x64_seg46_11663_12091.npz",
+        "traj2_64x64_seg47_12106_12257.npz",
+        "traj2_64x64_seg48_12265_12805.npz",
+        "traj2_64x64_seg49_12843_12987.npz",
+        "traj2_64x64_seg50_13007_13207.npz",
+        "traj2_64x64_seg51_13222_13449.npz",
+        "traj2_64x64_seg52_13491_13571.npz"
+      ],
+      "purged": [
+        "traj1_64x64_seg13_04266_04662.npz"
+      ],
+      "test_source": "traj2_64x64",
+      "development_source": "traj1_64x64"
+    }
+  },
+  "files": {
+    "traj1_64x64_seg00_00004_00157.npz": {
+      "bytes": 479657,
+      "sha256": "c569c5ff6e9f15b69062603cfd8a89c20d53b8f09042926d41c49aa4e4474c73"
+    },
+    "traj1_64x64_seg01_00180_00393.npz": {
+      "bytes": 676091,
+      "sha256": "91912134c96a1bdeab1dfe52c3faeb631d6f4f46096bf4eef7108ff2bd23c7d7"
+    },
+    "traj1_64x64_seg02_00416_00566.npz": {
+      "bytes": 472060,
+      "sha256": "c9cb9d439902abf188eee68630d05b9f02f4228fba21e8417b751852a36c999c"
+    },
+    "traj1_64x64_seg03_00601_00934.npz": {
+      "bytes": 1068791,
+      "sha256": "355c66bcbaf87a4da1109aa02b945bc2b13a9fe22f400e20d7f874b1772f00f7"
+    },
+    "traj1_64x64_seg04_00966_01717.npz": {
+      "bytes": 2387715,
+      "sha256": "8643b9398602f19350ac915e7514f7b1dad457e1b34901f2ce2e4eb6a4bddceb"
+    },
+    "traj1_64x64_seg05_01750_02110.npz": {
+      "bytes": 1137678,
+      "sha256": "c28d4bdfb7792f397aabfd61343486c0420d57feefcd16a2f2f750abe51d9098"
+    },
+    "traj1_64x64_seg06_02134_02575.npz": {
+      "bytes": 1375982,
+      "sha256": "beb1f9babe0324c682e8a7dd8e5f9591ff0baf6af1d675e4a23fd60ffd43c8e3"
+    },
+    "traj1_64x64_seg07_02583_02736.npz": {
+      "bytes": 500612,
+      "sha256": "6cf006a09917f1b197d9de16f9b87bbf081d2ddcc6d3d7647d71c41981bd3715"
+    },
+    "traj1_64x64_seg08_02743_02986.npz": {
+      "bytes": 750729,
+      "sha256": "fc253dd2a515eb2304afb53f214583af0285f3773ccd44c9d155c73ca7cc8616"
+    },
+    "traj1_64x64_seg09_03025_03409.npz": {
+      "bytes": 1208865,
+      "sha256": "2d2cca61e22cb4027981ac24aaac01d274ad8e005ca5fb78a499ca802cb3f6d0"
+    },
+    "traj1_64x64_seg10_03432_03657.npz": {
+      "bytes": 708953,
+      "sha256": "653674d3fb88fb5c62073207f043b34fdef4b3dc51ee9e263d655651c1fff005"
+    },
+    "traj1_64x64_seg11_03664_03833.npz": {
+      "bytes": 533712,
+      "sha256": "28c52c6c51039dffaa4f23801079b0487750d3ffda5ab57f20bbb1b0e0b6400e"
+    },
+    "traj1_64x64_seg12_03853_04245.npz": {
+      "bytes": 1231940,
+      "sha256": "f2db148eb52a3f71b4ef1cde68327bfb07cc8c36f03ac2457dd1bc72c93fa52f"
+    },
+    "traj1_64x64_seg13_04266_04662.npz": {
+      "bytes": 1244579,
+      "sha256": "64d4938f7f7adaaac17bbfcb8e1a0c34a3c661155ea1481e1aec92bcf17a6aff"
+    },
+    "traj1_64x64_seg14_04698_04838.npz": {
+      "bytes": 458515,
+      "sha256": "4aae606ef82ad4400bba17cc4d0d333265d3cda3e58d6d82503caf81c62503b3"
+    },
+    "traj1_64x64_seg15_04845_05090.npz": {
+      "bytes": 752390,
+      "sha256": "6b10ea37f987e14c682a223134cdbaccc75767c158ced6a436ee0bfad15add2e"
+    },
+    "traj1_64x64_seg16_05112_05566.npz": {
+      "bytes": 1423028,
+      "sha256": "7d691ddb86d2fc0f79f7d086b656d32c9e1aef8b84e78062451b71c3591fe608"
+    },
+    "traj1_64x64_seg17_05585_05785.npz": {
+      "bytes": 634868,
+      "sha256": "7c303128c040c3bf46a929b3b971722c627dfc4b41b2fa6e7c5f34bf6266dcc6"
+    },
+    "traj2_64x64_seg00_00004_00100.npz": {
+      "bytes": 320079,
+      "sha256": "275753e2fe789ac0b838e89fe16e9a52d20cf6c5539cee582e4c1918355f463a"
+    },
+    "traj2_64x64_seg01_00125_00219.npz": {
+      "bytes": 323369,
+      "sha256": "7d65dfdd0966692da91e4be97431c34f38188680959ab27ce9e5752478fc63fa"
+    },
+    "traj2_64x64_seg02_00226_00437.npz": {
+      "bytes": 689911,
+      "sha256": "c5802c2413ee25ef8aacaa4ac37d068f813553df16e066cb5e030e1abed593ed"
+    },
+    "traj2_64x64_seg03_00447_00664.npz": {
+      "bytes": 734953,
+      "sha256": "1c61d8cf1ff2f12f42cdb0b69d85487d34e2e6a3fec86e79db7ebb53882ecbed"
+    },
+    "traj2_64x64_seg04_00686_00954.npz": {
+      "bytes": 883442,
+      "sha256": "5cf78629faf583716b675a7fab963dc68fba787861db21cceefbdc213804f2b6"
+    },
+    "traj2_64x64_seg05_01016_01155.npz": {
+      "bytes": 484033,
+      "sha256": "dee20cb8ac39ce56c56382f1a64e38cbec58e0a19ba6d087e36472621e18dbcb"
+    },
+    "traj2_64x64_seg06_01163_01514.npz": {
+      "bytes": 1187035,
+      "sha256": "973ce0720fcfc874ac01e522e9af2130da5495a07e576e164e9b4818db817d8f"
+    },
+    "traj2_64x64_seg07_01535_01757.npz": {
+      "bytes": 754430,
+      "sha256": "792b50206b2fc5b531270c0b6e74f7889966105bc7602b0bb0d4ac8b9024482e"
+    },
+    "traj2_64x64_seg08_01778_01961.npz": {
+      "bytes": 622147,
+      "sha256": "f20fbff44cdb2ee6dec8a11a9880e2456c7ee599312cb8dbd2376ea5f5615df5"
+    },
+    "traj2_64x64_seg09_02010_02267.npz": {
+      "bytes": 861079,
+      "sha256": "f6c1efb92d6a5a4657bee21f9f3016ce55eec9719556a2378362d82f1ff6745e"
+    },
+    "traj2_64x64_seg10_02276_02514.npz": {
+      "bytes": 802813,
+      "sha256": "f3760948f91ad2058a32f42ebcdfe0d1433c976120e9f7d2527b586ea5928c27"
+    },
+    "traj2_64x64_seg11_02521_02656.npz": {
+      "bytes": 455336,
+      "sha256": "ba01955778342733e7aa24eb2f0bc1eb49f3ff82e42ec097c57a0c7f4ffc9dd1"
+    },
+    "traj2_64x64_seg12_02680_02789.npz": {
+      "bytes": 363547,
+      "sha256": "bd5738d6d3481900e4090bc6233a16144c70c9b2a33266c6457b65d5ab51d497"
+    },
+    "traj2_64x64_seg13_02807_03037.npz": {
+      "bytes": 780099,
+      "sha256": "a9383ed1768b2bce57706915734b2c38dcf6f44cd7402dd264433c4f8047a457"
+    },
+    "traj2_64x64_seg14_03046_03175.npz": {
+      "bytes": 445434,
+      "sha256": "529764d92efee6f7588fb110cb5f86dd039e567c0d7c08ce83c5b081242033e6"
+    },
+    "traj2_64x64_seg15_03182_03276.npz": {
+      "bytes": 313578,
+      "sha256": "ff30266f52d7859e12d3bfd6cbe46d2d0089ec68da7db7f3ac35d1bf3ab728a3"
+    },
+    "traj2_64x64_seg16_03283_03612.npz": {
+      "bytes": 1130623,
+      "sha256": "d629f0e91afc6672080db8877b7e7d7269e8ce2b1b0f003407d23f9773380aaa"
+    },
+    "traj2_64x64_seg17_03621_03737.npz": {
+      "bytes": 390731,
+      "sha256": "9fe83031be72ddf8743fdd9828409381f53990af37235cc0ce47fd61cd583408"
+    },
+    "traj2_64x64_seg18_03772_04204.npz": {
+      "bytes": 1471038,
+      "sha256": "1f736c4de4186f0f2b13b55a6ca5185a8344d9c15d0e5c8a2289e8429629df54"
+    },
+    "traj2_64x64_seg19_04219_04448.npz": {
+      "bytes": 781403,
+      "sha256": "96371dd928dbcfd672286db87571bf6be74ec80b0069ccad408080f8b58f9008"
+    },
+    "traj2_64x64_seg20_04456_04670.npz": {
+      "bytes": 718488,
+      "sha256": "8b66c140467111075dad00d75bffb6c6eaa6b81d87d695bb50529561b2fbb04b"
+    },
+    "traj2_64x64_seg21_04696_04909.npz": {
+      "bytes": 719217,
+      "sha256": "8da5348c07ee918c45b22f8304b8800c390defbcb0a286bd8a81fecd5bcb3ed5"
+    },
+    "traj2_64x64_seg22_04960_05365.npz": {
+      "bytes": 1377013,
+      "sha256": "d0f5c1ec0dd30c24ccbcf3ff20905faaa8ac91dc0f4bd6362767bd9221c6a883"
+    },
+    "traj2_64x64_seg23_05391_05617.npz": {
+      "bytes": 755578,
+      "sha256": "5fd9ba79e94dabdd5a01ba99d657936f134c9722ef5e4f5e8960276f735228c3"
+    },
+    "traj2_64x64_seg24_05643_05855.npz": {
+      "bytes": 717934,
+      "sha256": "cbc7a8a24fdefe48ff2f8644655622e85e8156cadd401203415ad011554a8799"
+    },
+    "traj2_64x64_seg25_05869_06088.npz": {
+      "bytes": 743694,
+      "sha256": "ca2c0aef9a1291729bc5b89d2f91ebd8d4b0a77cba1603a7226eb95c9de1b463"
+    },
+    "traj2_64x64_seg26_06107_06314.npz": {
+      "bytes": 706379,
+      "sha256": "6ed6f57496fb12e41eb56babdb0364ad711921a08e24c7e2d1bfb612395513b6"
+    },
+    "traj2_64x64_seg27_06338_06544.npz": {
+      "bytes": 707204,
+      "sha256": "f0f6e9c6c1d58485bdc0600100680aa90b1d015c149a1258da53538e2c8f8604"
+    },
+    "traj2_64x64_seg28_06570_06780.npz": {
+      "bytes": 710457,
+      "sha256": "0ed97f58af57d53a9249d02435995b4a0b8f02cf3050f1d995c27c93b4ccdd8f"
+    },
+    "traj2_64x64_seg29_06801_07009.npz": {
+      "bytes": 709769,
+      "sha256": "e0651bcb22a40c621b0105898e56fc50a252e72fbe4d8871db25153d94199fbf"
+    },
+    "traj2_64x64_seg30_07031_07243.npz": {
+      "bytes": 723268,
+      "sha256": "3eacf6e2e9178f8ab606a99d00b07d1f96bcf0645dc2425754e21b7e858edd40"
+    },
+    "traj2_64x64_seg31_07273_07379.npz": {
+      "bytes": 369174,
+      "sha256": "a6f131c3988371347718933df2c68794ab58f5cfd5fe05a3f10355db4aacf72c"
+    },
+    "traj2_64x64_seg32_07386_07478.npz": {
+      "bytes": 303809,
+      "sha256": "7c810fd0909ebdd6c2eebd60304a122c9d439360d5d639dd60d2f0617ecb25fb"
+    },
+    "traj2_64x64_seg33_07514_07975.npz": {
+      "bytes": 1559632,
+      "sha256": "1128bbc561c247072d0e5628011e09a7a675d4725b79060544e3d5e689a0bb43"
+    },
+    "traj2_64x64_seg34_07992_08225.npz": {
+      "bytes": 794632,
+      "sha256": "c2ada9a5ed73a4657ce19a0165e1a44712989557b1262f683c38dd04c82a40c3"
+    },
+    "traj2_64x64_seg35_08235_08406.npz": {
+      "bytes": 584054,
+      "sha256": "3e6a21d85255ab17c532e031a2f77aff479833b7a9852e63668c1bd15189bf98"
+    },
+    "traj2_64x64_seg36_08467_08687.npz": {
+      "bytes": 743636,
+      "sha256": "ebe5cac73ca94f538ad41eed95d9985fbc442e4c754ec0925a43be89f3476b8e"
+    },
+    "traj2_64x64_seg37_08694_08933.npz": {
+      "bytes": 820963,
+      "sha256": "b909b27cb7d486d2d57f2e3a7062743aa02e2b53f56875144bbb32882aa8559d"
+    },
+    "traj2_64x64_seg38_08940_09157.npz": {
+      "bytes": 737791,
+      "sha256": "bbe6957b879a6ccee0188a3dd8f9328e785d1f827495808e1e06d532d306706f"
+    },
+    "traj2_64x64_seg39_09209_09903.npz": {
+      "bytes": 2357581,
+      "sha256": "39d5562ba71f1c48ea837c898c5ddc534cccab4f07e37b83beb25bb47a0b4a79"
+    },
+    "traj2_64x64_seg40_09938_10156.npz": {
+      "bytes": 743324,
+      "sha256": "6cc23e508763ff45265301ca415debee92f097072593bc8058ad80cbade16250"
+    },
+    "traj2_64x64_seg41_10165_10637.npz": {
+      "bytes": 1601109,
+      "sha256": "da0ef00197d712f93b6b8fa29a2ec559a12f85c7848e0def22d3cdc8090e3e0b"
+    },
+    "traj2_64x64_seg42_10644_10851.npz": {
+      "bytes": 710165,
+      "sha256": "987e08aa3ca88f813e9a526bc963c50c996823330d1a20c41117be0fec520042"
+    },
+    "traj2_64x64_seg43_10862_11104.npz": {
+      "bytes": 824098,
+      "sha256": "3589fe46250fac52dbe552271de9d8f5adbd7381a248495c10da486d15f14975"
+    },
+    "traj2_64x64_seg44_11123_11376.npz": {
+      "bytes": 859490,
+      "sha256": "671155e331eddafd8a65addbb77be9f1cdbfea91dea2751e77e2795470393a1c"
+    },
+    "traj2_64x64_seg45_11392_11641.npz": {
+      "bytes": 850674,
+      "sha256": "e767edbcd2de1f30bc0746de47aff23be1e11137b5eddf2c81e9cea703855d83"
+    },
+    "traj2_64x64_seg46_11663_12091.npz": {
+      "bytes": 1469293,
+      "sha256": "3f8d5fe57e9179a8d35c0854484b4e3292cd1118d96c3d5d10bb42d4439b8675"
+    },
+    "traj2_64x64_seg47_12106_12257.npz": {
+      "bytes": 497540,
+      "sha256": "2c98b174ae2337844b1d9c2ebb86544f1bde79d17e5b9b37321032cd3778c831"
+    },
+    "traj2_64x64_seg48_12265_12805.npz": {
+      "bytes": 1834634,
+      "sha256": "0b218f5d46586c4b19165d240033ef62510c04a2ede2393c066d416906bcba20"
+    },
+    "traj2_64x64_seg49_12843_12987.npz": {
+      "bytes": 473952,
+      "sha256": "138251a4b52082cd89c406b06b6f651a87cae8b1123cd23a8befda129bf26f06"
+    },
+    "traj2_64x64_seg50_13007_13207.npz": {
+      "bytes": 697019,
+      "sha256": "327fb5cbb6c63e4e92286dc3b7ac966897ce8f88f5fcdca446cec432acf5bfc4"
+    },
+    "traj2_64x64_seg51_13222_13449.npz": {
+      "bytes": 737744,
+      "sha256": "d0f37c9d756edc536ed814d8898ca2c09cecedbb75665ce601bf6fa3b6d8a891"
+    },
+    "traj2_64x64_seg52_13491_13571.npz": {
+      "bytes": 272128,
+      "sha256": "bac65bac454a7dfcb28a38b5c272eddb97823a3268b71a42575a5fbfd7875e4f"
+    }
+  }
+}

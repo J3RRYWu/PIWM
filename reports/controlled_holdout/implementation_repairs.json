@@ -1,0 +1,79 @@
+[
+  {
+    "stage": "training; no test evaluated",
+    "change": "Serialize nonfinite validation history values as JSON null instead of failing to save history.",
+    "numerical_training_changed": false,
+    "protocol_changed": false,
+    "prior_source_snapshot": {
+      "scripts\\run_controlled_holdout.py": "f17d5ac763be026433e28c4aa04b94d6ebc7a16962338e393b42a8fe9499960f",
+      "src\\baselines\\controlled_dynamics.py": "47f20f4d3f85c4e68c1019de4877945797ba1b9c71070adc5a9d4acb3ec738a8",
+      "src\\models\\frenet_dynamics.py": "14a845bcb6c094fe6bdfb52711d9f956145f1177414db2ff1de0582c71a7a568",
+      "src\\models\\road_perception.py": "5f8e0cb1a66a532ec976ccacddec858cbc3b6c7dbea64af4e98e0b7253ff8ab2"
+    },
+    "updated_source_snapshot": {
+      "scripts\\run_controlled_holdout.py": "2175b42f3463ff7b055444867cb958fc2a995f15fd91d839032de48c2618e459",
+      "src\\baselines\\controlled_dynamics.py": "47f20f4d3f85c4e68c1019de4877945797ba1b9c71070adc5a9d4acb3ec738a8",
+      "src\\models\\frenet_dynamics.py": "14a845bcb6c094fe6bdfb52711d9f956145f1177414db2ff1de0582c71a7a568",
+      "src\\models\\road_perception.py": "5f8e0cb1a66a532ec976ccacddec858cbc3b6c7dbea64af4e98e0b7253ff8ab2"
+    }
+  },
+  {
+    "stage": "training; no test evaluated",
+    "change": "Add independent fold/seed jobs for concurrent execution; verify all checkpoints before opening test data. No model/optimizer/budget changes.",
+    "prior_source_snapshot": {
+      "scripts\\run_controlled_holdout.py": "2175b42f3463ff7b055444867cb958fc2a995f15fd91d839032de48c2618e459",
+      "src\\baselines\\controlled_dynamics.py": "47f20f4d3f85c4e68c1019de4877945797ba1b9c71070adc5a9d4acb3ec738a8",
+      "src\\models\\frenet_dynamics.py": "14a845bcb6c094fe6bdfb52711d9f956145f1177414db2ff1de0582c71a7a568",
+      "src\\models\\road_perception.py": "5f8e0cb1a66a532ec976ccacddec858cbc3b6c7dbea64af4e98e0b7253ff8ab2"
+    },
+    "updated_source_snapshot": {
+      "scripts\\run_controlled_holdout.py": "4dccc2ce22e982893a7dd6b591e19a2d03037b133b7b636c901656706f5930bc",
+      "src\\baselines\\controlled_dynamics.py": "47f20f4d3f85c4e68c1019de4877945797ba1b9c71070adc5a9d4acb3ec738a8",
+      "src\\models\\frenet_dynamics.py": "14a845bcb6c094fe6bdfb52711d9f956145f1177414db2ff1de0582c71a7a568",
+      "src\\models\\road_perception.py": "5f8e0cb1a66a532ec976ccacddec858cbc3b6c7dbea64af4e98e0b7253ff8ab2"
+    }
+  },
+  {
+    "stage": "before test evaluation",
+    "change": "Fix road spline initial tangent to road-frame +x. Synthetic radius-2m circle previously acquired 0.125 rad erroneous rotation and 0.23956m position error at 2m. Retire/retrain every Frenet checkpoint; unaffected models retained.",
+    "numerical_readout_changed": true,
+    "selection_budget_unchanged": true,
+    "prior_source_snapshot": {
+      "scripts\\run_controlled_holdout.py": "4dccc2ce22e982893a7dd6b591e19a2d03037b133b7b636c901656706f5930bc",
+      "src\\baselines\\controlled_dynamics.py": "47f20f4d3f85c4e68c1019de4877945797ba1b9c71070adc5a9d4acb3ec738a8",
+      "src\\models\\frenet_dynamics.py": "14a845bcb6c094fe6bdfb52711d9f956145f1177414db2ff1de0582c71a7a568",
+      "src\\models\\road_perception.py": "5f8e0cb1a66a532ec976ccacddec858cbc3b6c7dbea64af4e98e0b7253ff8ab2",
+      "scripts/run_controlled_jobs.py": "cce42368ebfd93a44526b7f68af915ff332e667382940de78eabea1ee9a981ea",
+      "scripts/check_controlled_holdout.py": "e200fa1128f276250f42f26d16fcbf320ed94614f5a2e08d80fd84c2ce4038e2"
+    },
+    "updated_source_snapshot": {
+      "scripts\\run_controlled_holdout.py": "4dccc2ce22e982893a7dd6b591e19a2d03037b133b7b636c901656706f5930bc",
+      "src\\baselines\\controlled_dynamics.py": "e85f6bad84db9531c250096cfaa8fc8e20bbc847d43d22aef254b7f55bf251cb",
+      "src\\models\\frenet_dynamics.py": "14a845bcb6c094fe6bdfb52711d9f956145f1177414db2ff1de0582c71a7a568",
+      "src\\models\\road_perception.py": "5f8e0cb1a66a532ec976ccacddec858cbc3b6c7dbea64af4e98e0b7253ff8ab2",
+      "scripts/run_controlled_jobs.py": "cce42368ebfd93a44526b7f68af915ff332e667382940de78eabea1ee9a981ea",
+      "scripts/check_controlled_holdout.py": "50982b69757633f81bb70b8384473307e2df7e0dfc4f8b9596369b0ead19a36f"
+    }
+  },
+  {
+    "stage": "before test evaluation",
+    "change": "Synthetic runtime benchmark found CPU 0.06186s vs GPU 0.61232s per batched Frenet training step. Use CPU uniformly for ALL final dynamics training/evaluation; GPU for CNNs. Retire and rerun all dynamics; reuse only completed CNNs.",
+    "model_equations_and_budget_changed": false,
+    "prior_source_snapshot": {
+      "scripts\\run_controlled_holdout.py": "4dccc2ce22e982893a7dd6b591e19a2d03037b133b7b636c901656706f5930bc",
+      "src\\baselines\\controlled_dynamics.py": "e85f6bad84db9531c250096cfaa8fc8e20bbc847d43d22aef254b7f55bf251cb",
+      "src\\models\\frenet_dynamics.py": "14a845bcb6c094fe6bdfb52711d9f956145f1177414db2ff1de0582c71a7a568",
+      "src\\models\\road_perception.py": "5f8e0cb1a66a532ec976ccacddec858cbc3b6c7dbea64af4e98e0b7253ff8ab2",
+      "scripts/run_controlled_jobs.py": "cce42368ebfd93a44526b7f68af915ff332e667382940de78eabea1ee9a981ea",
+      "scripts/check_controlled_holdout.py": "50982b69757633f81bb70b8384473307e2df7e0dfc4f8b9596369b0ead19a36f"
+    },
+    "updated_source_snapshot": {
+      "scripts\\run_controlled_holdout.py": "62168a985c9ed43c38f15857fd2cb27ea9383edfde0f633dd707747a67efb8ad",
+      "src\\baselines\\controlled_dynamics.py": "e85f6bad84db9531c250096cfaa8fc8e20bbc847d43d22aef254b7f55bf251cb",
+      "src\\models\\frenet_dynamics.py": "14a845bcb6c094fe6bdfb52711d9f956145f1177414db2ff1de0582c71a7a568",
+      "src\\models\\road_perception.py": "5f8e0cb1a66a532ec976ccacddec858cbc3b6c7dbea64af4e98e0b7253ff8ab2",
+      "scripts/run_controlled_jobs.py": "cce42368ebfd93a44526b7f68af915ff332e667382940de78eabea1ee9a981ea",
+      "scripts/check_controlled_holdout.py": "50982b69757633f81bb70b8384473307e2df7e0dfc4f8b9596369b0ead19a36f"
+    }
+  }
+]

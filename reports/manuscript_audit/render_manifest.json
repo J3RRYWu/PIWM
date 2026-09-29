@@ -1,0 +1,19 @@
+{
+  "pages": 43,
+  "pdf_sha256": "adc502458c6a3b07c2dfa1d70b419a2bb37c5c785fd0da91d1de29e4596cd64d",
+  "selected_pages": [
+    1,
+    9,
+    14,
+    15,
+    16,
+    17,
+    19
+  ],
+  "rendered_all_pages": true,
+  "visual_review": "PASS: all 43 pages inspected as contact sheets; full-size architecture, tables, and temporal plot inspected; no clipping/overlap found.",
+  "latex_undefined_references": 0,
+  "latex_overfull_warnings": 0,
+  "bibtex_missing_page_warnings": 5,
+  "submission_metadata": "incomplete; author confirmation needed"
+}

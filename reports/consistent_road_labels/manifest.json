@@ -1,0 +1,323 @@
+{
+  "status": "PASS",
+  "source_track_sha256": "d21b063b792229fe396c50e2638ae9470b2bb7d57d3127e3e1254283e2717a5d",
+  "parent_protocol_sha256": "32f1a85866e8e64a873e66b85b1c6357581f2e7d4d3f7f7b83fd750eea6cd086",
+  "geometry": "Periodic cubic spline through existing smoothed centers; chord-length parameter then dense arc integration at 64 samples per segment; PCHIP inverse arc map; current-xy projection only.",
+  "source_sha256": {
+    "scripts\\build_consistent_road_labels.py": "6c1a83b2b0f1927f5ac12eb45687a13bc1a8d4ef9a4631cbbae6e3eac95514a1",
+    "src\\arc_length_track.py": "f10cdfbf822334c7f85b8b5de6e9754a7cc677bc292daa9bb52f508db7bab8d8"
+  },
+  "files": {
+    "traj1_64x64_seg00_00004_00157.npz": {
+      "sha256": "85e911237d940cc0cbf9cc3af0ca85da19735013af0a7aa1d8352f14630626f1",
+      "frames": 153
+    },
+    "traj1_64x64_seg01_00180_00393.npz": {
+      "sha256": "fefea7ec37033708bd6387a7bfa6ce80e33b6618e26bba1cd248e8340ac942e2",
+      "frames": 213
+    },
+    "traj1_64x64_seg02_00416_00566.npz": {
+      "sha256": "d06550e20c0a0ed0e70067e693e40166a8004eb779f2114f471d8368a96af23c",
+      "frames": 150
+    },
+    "traj1_64x64_seg03_00601_00934.npz": {
+      "sha256": "1419e9fbb2a2a0b617152990e746b3cc0effd1cfac8188cb7f00ae2df6de8435",
+      "frames": 333
+    },
+    "traj1_64x64_seg04_00966_01717.npz": {
+      "sha256": "7f4c0da0f5dd956dcf9efe4d35984bb1ff792a7e2d504fb2d1a2012c910909ee",
+      "frames": 751
+    },
+    "traj1_64x64_seg05_01750_02110.npz": {
+      "sha256": "873c2a1f3faa1780fa3c62ba5f67005c372e216c11ddb84f87a2594587c4fe3a",
+      "frames": 360
+    },
+    "traj1_64x64_seg06_02134_02575.npz": {
+      "sha256": "beb76880442a169c1673ab1012ddbb7d1839059e761dc2078976c2989995f900",
+      "frames": 441
+    },
+    "traj1_64x64_seg07_02583_02736.npz": {
+      "sha256": "f17b00881883958d02aeff649399876e1345d953381b8b4e2083b25b7ec03d1d",
+      "frames": 153
+    },
+    "traj1_64x64_seg08_02743_02986.npz": {
+      "sha256": "a87e79dde3c0e7759590291d4da52729326043f6608fc348c869b08508584730",
+      "frames": 243
+    },
+    "traj1_64x64_seg09_03025_03409.npz": {
+      "sha256": "04beb57773867a7674e8624fb1bbc0c055fa928f6ea5808e18c1b06796a35169",
+      "frames": 384
+    },
+    "traj1_64x64_seg10_03432_03657.npz": {
+      "sha256": "afe0642be3340fd21ad8a8a7de82ecfa7f8c68d924d9e35b3b266a712e1e94be",
+      "frames": 225
+    },
+    "traj1_64x64_seg11_03664_03833.npz": {
+      "sha256": "16857a5e3520176d2eabd1314416235ac4774a1bb6f3ec1df498fd00376436a9",
+      "frames": 169
+    },
+    "traj1_64x64_seg12_03853_04245.npz": {
+      "sha256": "fbde1c2781f5745eef2b70dc87cc6e707044fc64764bb3299e3369d79b84d95a",
+      "frames": 392
+    },
+    "traj1_64x64_seg13_04266_04662.npz": {
+      "sha256": "cf92945fc816fab2a04af550ef77bb608967a0a5a1e5f7e16627ef3679e24f4b",
+      "frames": 396
+    },
+    "traj1_64x64_seg14_04698_04838.npz": {
+      "sha256": "b8a7f20f27221263b54270973f02eb6e9b39d832205b0af81491c5a26e70a57b",
+      "frames": 140
+    },
+    "traj1_64x64_seg15_04845_05090.npz": {
+      "sha256": "c11c533000d5b84a0942d5e7fd1f7f35e3fa1c972b1df17c89b2de8a34984eed",
+      "frames": 245
+    },
+    "traj1_64x64_seg16_05112_05566.npz": {
+      "sha256": "e63d35b4eadd84909e2cc2caff682d609dc1346ccf671768063fe800d8595155",
+      "frames": 454
+    },
+    "traj1_64x64_seg17_05585_05785.npz": {
+      "sha256": "9353dcd6e0c612a346b40dd4d997a66f89bcca90548bbbe18c4eb42fa0ab6cba",
+      "frames": 200
+    },
+    "traj2_64x64_seg00_00004_00100.npz": {
+      "sha256": "e3e2b7a2fc303311c8ff0df3ecb4b38b9f6d275a52ca59ca09ba7ed0ae6cbd44",
+      "frames": 96
+    },
+    "traj2_64x64_seg01_00125_00219.npz": {
+      "sha256": "7c5b0dc908669093dff94314562c3d44d159d6fa9940463b12e2a11a8d47bac4",
+      "frames": 94
+    },
+    "traj2_64x64_seg02_00226_00437.npz": {
+      "sha256": "6a8cf41a21f7ca263c3facb96bbdd472f01d805bd4e4bd99e4cd6e76a4aceb10",
+      "frames": 211
+    },
+    "traj2_64x64_seg03_00447_00664.npz": {
+      "sha256": "c4e206e97d937d73d8c52736b87ef1aa72fb0fdd881d5b7a18ab0cf2ddbb903a",
+      "frames": 217
+    },
+    "traj2_64x64_seg04_00686_00954.npz": {
+      "sha256": "da1cd5e6847b0f30bf13cd3b7791754d0442053e02ee226538832a4d6d041d2b",
+      "frames": 268
+    },
+    "traj2_64x64_seg05_01016_01155.npz": {
+      "sha256": "57e51fea950159d9f623681e164553ffbdf6d83d31e5e43e6013803916e7721a",
+      "frames": 139
+    },
+    "traj2_64x64_seg06_01163_01514.npz": {
+      "sha256": "7d36a27182f4d8e4008e8b5179e0bec2e18959ad148cc3fe0f05af6f91728feb",
+      "frames": 351
+    },
+    "traj2_64x64_seg07_01535_01757.npz": {
+      "sha256": "a5f61610b16470cf407d9a7a6d2365fd608f69789386f569d25e2b65a5d62695",
+      "frames": 222
+    },
+    "traj2_64x64_seg08_01778_01961.npz": {
+      "sha256": "a7bfc525b0c90f2bc9caa55978fab587c8ae58dcf1e259b410829bfe0ee9e6ee",
+      "frames": 183
+    },
+    "traj2_64x64_seg09_02010_02267.npz": {
+      "sha256": "a9808049b564c696388ed1db23ff10346f23afd3cb8faf4df1ae8b753a8251df",
+      "frames": 257
+    },
+    "traj2_64x64_seg10_02276_02514.npz": {
+      "sha256": "8a9e42cc2513febfd429359f660d25919311e50be262b96bb1739faf32ff7526",
+      "frames": 238
+    },
+    "traj2_64x64_seg11_02521_02656.npz": {
+      "sha256": "3c7e8a8662debe6b32336db692a612918b46eab6871d3e7f1bd0b286cc2a42b5",
+      "frames": 135
+    },
+    "traj2_64x64_seg12_02680_02789.npz": {
+      "sha256": "e38237a96ec4f39cb52e585780bc3751e51a24040e9e94a949600f26085d12fa",
+      "frames": 109
+    },
+    "traj2_64x64_seg13_02807_03037.npz": {
+      "sha256": "5818247ebb274f218f08af1ffec4e878028031aae13def3b4e54cbc4f71ac06a",
+      "frames": 230
+    },
+    "traj2_64x64_seg14_03046_03175.npz": {
+      "sha256": "da79ca64973052aec075dbde6e725becc6830c8b4ecdd067484015699d5d155b",
+      "frames": 129
+    },
+    "traj2_64x64_seg15_03182_03276.npz": {
+      "sha256": "319c70b8564bc66584cd480fa1b3d652a758d646e7470621c53024aea96803fa",
+      "frames": 94
+    },
+    "traj2_64x64_seg16_03283_03612.npz": {
+      "sha256": "0417837b76cc9855d37b8fc0fe8f95c935e8c7b5a3fa1e6825728bef463008d0",
+      "frames": 329
+    },
+    "traj2_64x64_seg17_03621_03737.npz": {
+      "sha256": "59e53f51cce138e89519ff17884ae19fb603a40e437739f91d677ee8b2739075",
+      "frames": 116
+    },
+    "traj2_64x64_seg18_03772_04204.npz": {
+      "sha256": "4b8c86dcb82c77bc3c7ec0421b3fdae4aad8a3e62bb2bc3b40745aa614e298a0",
+      "frames": 432
+    },
+    "traj2_64x64_seg19_04219_04448.npz": {
+      "sha256": "8178a69bd624b42f98b7ecde91ff95003f60596edefb55a138e36349b1a93a0b",
+      "frames": 229
+    },
+    "traj2_64x64_seg20_04456_04670.npz": {
+      "sha256": "2bfd3baf2baa0bcf37d22c5a50421f91c8f59bbf7105bfe34de1fe8de73b2e78",
+      "frames": 214
+    },
+    "traj2_64x64_seg21_04696_04909.npz": {
+      "sha256": "be41fd3430574c8d7a482234d5216b4ee109811ddfe40cca94b8998402374b1d",
+      "frames": 213
+    },
+    "traj2_64x64_seg22_04960_05365.npz": {
+      "sha256": "8fc431570edea9b88cf95734cd243cb364e0b9a845a9a7cf59663365e06b2c97",
+      "frames": 405
+    },
+    "traj2_64x64_seg23_05391_05617.npz": {
+      "sha256": "f956c872359a0d5c78d3f79e35453cba79c3c98fbc9287692ad79a2a1244a96a",
+      "frames": 226
+    },
+    "traj2_64x64_seg24_05643_05855.npz": {
+      "sha256": "85f1d54ff5d9c97d8d7f07652ddbaa7c6d536ac6d2d27db9781a0963d1fc7bf0",
+      "frames": 212
+    },
+    "traj2_64x64_seg25_05869_06088.npz": {
+      "sha256": "b22da4bbe1f20219c287f37706b8b59ad4e05eaf7b6bf3bbc397a41ca326ffcd",
+      "frames": 219
+    },
+    "traj2_64x64_seg26_06107_06314.npz": {
+      "sha256": "7a51ba40ef30d619d5e7ba75c4dbe246974e11b80a0ef71bad0bb59c3558d36a",
+      "frames": 207
+    },
+    "traj2_64x64_seg27_06338_06544.npz": {
+      "sha256": "5deb35348ea38d5acdd27101798aebdc2253e164f7cd0270cefb22afd75d342a",
+      "frames": 206
+    },
+    "traj2_64x64_seg28_06570_06780.npz": {
+      "sha256": "ed0c523f24b7f2d4588e16631acdadd157cabdabf2e1fbdee7a21412a1e3d7e7",
+      "frames": 210
+    },
+    "traj2_64x64_seg29_06801_07009.npz": {
+      "sha256": "208e4183dc0b35d38f14b2b2a3f969e370d7658c70f8f8df640db1c110e55203",
+      "frames": 208
+    },
+    "traj2_64x64_seg30_07031_07243.npz": {
+      "sha256": "6a6ad5ee9bd14c1dfe92b3df36bba4c9e5c1895c04263545ff0cebd37536fc98",
+      "frames": 212
+    },
+    "traj2_64x64_seg31_07273_07379.npz": {
+      "sha256": "1920cc74cdcbf3d0d8d95160d7351f9b729199093f422c06977eba99b3d243d6",
+      "frames": 106
+    },
+    "traj2_64x64_seg32_07386_07478.npz": {
+      "sha256": "ffedf2db8328911a3ad22ce5f7ba7c855dc48a03123195ee2c821bc4a5a9b49e",
+      "frames": 92
+    },
+    "traj2_64x64_seg33_07514_07975.npz": {
+      "sha256": "07340618ae17b923b4291c6b4b53e772fa141fc5066944433fbc93e6f170009a",
+      "frames": 461
+    },
+    "traj2_64x64_seg34_07992_08225.npz": {
+      "sha256": "45a2c93e26efbc0390617fe26a38b9c8f8e7660fda12ae4875238280b78a7983",
+      "frames": 233
+    },
+    "traj2_64x64_seg35_08235_08406.npz": {
+      "sha256": "322780ad61c12eefae2dd61cb34cdec73310b100db37ce8b18bd199fb1ff490d",
+      "frames": 171
+    },
+    "traj2_64x64_seg36_08467_08687.npz": {
+      "sha256": "93914027a434014f59be74381a930531159b7a73f569c2e3940eb5acf8754c22",
+      "frames": 220
+    },
+    "traj2_64x64_seg37_08694_08933.npz": {
+      "sha256": "0cfc58e576b36cd32e04b34a5dc1d9d82fd671fe554b726ec0e8957b5275c3f6",
+      "frames": 239
+    },
+    "traj2_64x64_seg38_08940_09157.npz": {
+      "sha256": "b77cc6cd2efc9574ac48a2b26dbd2022bde8aa363cbe4697fc2e5a8aa70e6578",
+      "frames": 217
+    },
+    "traj2_64x64_seg39_09209_09903.npz": {
+      "sha256": "572c707de3b9721890f8836d052741471cd8fa183eb2c87d0e2487c628c3515e",
+      "frames": 694
+    },
+    "traj2_64x64_seg40_09938_10156.npz": {
+      "sha256": "475a0d060dcccc77f0853f1a1d5f05782fc425debd4e72f7c02248935bbfa732",
+      "frames": 218
+    },
+    "traj2_64x64_seg41_10165_10637.npz": {
+      "sha256": "c59c9ea938ed1f7292c80adadeeae79e8f639e27137e53b15e5d9d5ac6450b16",
+      "frames": 472
+    },
+    "traj2_64x64_seg42_10644_10851.npz": {
+      "sha256": "b440249871b006dad959366e6db4d59229afef02bf79cfa78a02599850f21f60",
+      "frames": 207
+    },
+    "traj2_64x64_seg43_10862_11104.npz": {
+      "sha256": "345f051c71c9d75bed2aa89d738bf31b73134873e90a7da6cb24b794766ba97c",
+      "frames": 242
+    },
+    "traj2_64x64_seg44_11123_11376.npz": {
+      "sha256": "5e5826f9b1a2d819c5d4590aba0f585831f4d0aac0b7b7de110370797d096dd4",
+      "frames": 253
+    },
+    "traj2_64x64_seg45_11392_11641.npz": {
+      "sha256": "a34e8b5d94f2b7f81a8acf9fd6d31273860fe271972dac8e22504079ade610da",
+      "frames": 249
+    },
+    "traj2_64x64_seg46_11663_12091.npz": {
+      "sha256": "40cbf5539385e8d462e0fbf408e62980dd3b72b417e856a4d97860670c04d5e3",
+      "frames": 428
+    },
+    "traj2_64x64_seg47_12106_12257.npz": {
+      "sha256": "3ad57502c4f74a5c20cff4063c6f394a17b8f39fe1c95686bde22abb8cace2ba",
+      "frames": 151
+    },
+    "traj2_64x64_seg48_12265_12805.npz": {
+      "sha256": "dda055b57cba64ac02a3ebfb83dd7f20681d7237a607e7ab5df5c9a44c540037",
+      "frames": 540
+    },
+    "traj2_64x64_seg49_12843_12987.npz": {
+      "sha256": "9c9460083490ee8f36012ef2f00372b467c5c44a153a3be08e2c7ed794191620",
+      "frames": 144
+    },
+    "traj2_64x64_seg50_13007_13207.npz": {
+      "sha256": "a0322a3cb440c1723838de6de3cd6b995aff3d327e021e42ab45b03ae7e32f46",
+      "frames": 200
+    },
+    "traj2_64x64_seg51_13222_13449.npz": {
+      "sha256": "2ff2f72d504266e36d526fce13ed4cba98ab2a64e461bfefaf02325c78f94231",
+      "frames": 227
+    },
+    "traj2_64x64_seg52_13491_13571.npz": {
+      "sha256": "7e69dc35aedf876c471034d610df53b77685b3127a4c397ba9bdd155e28bb38e",
+      "frames": 80
+    }
+  },
+  "checks": {
+    "status": "PASS",
+    "max_unit_speed_error": 8.108570015430416e-07,
+    "max_heading_derivative_curvature_error": 2.6853624417455535e-06,
+    "dense_integration_max_position_difference_m": 4.289606548345653e-05,
+    "circle_length_error": 1.0138916373136908e-07,
+    "nominal_legacy_length": 10.450000000000001,
+    "corrected_curve_length": 9.743901165252762,
+    "max_projection_tangential_residual_m": 6.106226635438361e-15
+  },
+  "coarse_arc_compatibility": {
+    "train": {
+      "windows": 1216,
+      "coarse_arc_coordinate_RMSE": 0.47118592262268066,
+      "coarse_arc_endpoint_median": 0.8843010663986206
+    },
+    "validation": {
+      "windows": 500,
+      "coarse_arc_coordinate_RMSE": 0.47460001707077026,
+      "coarse_arc_endpoint_median": 0.8934115171432495
+    }
+  },
+  "limitations": [
+    "Existing surveyed map and historical orientation retained; not a new map/track.",
+    "Labels are consistent with a smooth mathematical curve, not exact physical road truth.",
+    "Ten 0.5-m curvature knots and piecewise-constant integration still approximate a continuously varying curve."
+  ]
+}

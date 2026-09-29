@@ -1,0 +1,211 @@
+{
+  "scope": "Descriptive paired comparison, first averaging training seeds then each original test segment. Segments/windows are correlated; no p-values or independent-session confidence intervals.",
+  "primary": "guarded_full",
+  "segments": [
+    {
+      "file": "traj1_64x64_seg14_04698_04838.npz",
+      "windows": 7,
+      "E100": {
+        "kinematic": 0.7006804347038269,
+        "cartesian_no_road": 1.0815523862838745,
+        "cartesian_road": 0.7524868249893188,
+        "guarded_full": 0.09623683989048004,
+        "guarded_shape": 0.3613271117210388,
+        "geometry_midpoint": 0.09781371802091599
+      }
+    },
+    {
+      "file": "traj1_64x64_seg15_04845_05090.npz",
+      "windows": 33,
+      "E100": {
+        "kinematic": 0.7484598755836487,
+        "cartesian_no_road": 0.7778447866439819,
+        "cartesian_road": 0.7506964802742004,
+        "guarded_full": 0.1614857017993927,
+        "guarded_shape": 0.2081395983695984,
+        "geometry_midpoint": 0.2735963761806488
+      }
+    },
+    {
+      "file": "traj1_64x64_seg16_05112_05566.npz",
+      "windows": 85,
+      "E100": {
+        "kinematic": 0.8500893712043762,
+        "cartesian_no_road": 0.6128240823745728,
+        "cartesian_road": 0.7745714783668518,
+        "guarded_full": 0.20440930128097534,
+        "guarded_shape": 0.25704389810562134,
+        "geometry_midpoint": 0.3011481761932373
+      }
+    },
+    {
+      "file": "traj1_64x64_seg17_05585_05785.npz",
+      "windows": 22,
+      "E100": {
+        "kinematic": 1.1043260097503662,
+        "cartesian_no_road": 0.631186842918396,
+        "cartesian_road": 0.9424012899398804,
+        "guarded_full": 0.3294369876384735,
+        "guarded_shape": 0.3161531090736389,
+        "geometry_midpoint": 0.40554893016815186
+      }
+    },
+    {
+      "file": "traj2_64x64_seg42_10644_10851.npz",
+      "windows": 24,
+      "E100": {
+        "kinematic": 0.8130108714103699,
+        "cartesian_no_road": 0.8448758721351624,
+        "cartesian_road": 1.8970800638198853,
+        "guarded_full": 0.4006776809692383,
+        "guarded_shape": 0.6907979846000671,
+        "geometry_midpoint": 0.37693285942077637
+      }
+    },
+    {
+      "file": "traj2_64x64_seg43_10862_11104.npz",
+      "windows": 32,
+      "E100": {
+        "kinematic": 0.6791329383850098,
+        "cartesian_no_road": 0.7869943380355835,
+        "cartesian_road": 1.3615564107894897,
+        "guarded_full": 0.22892417013645172,
+        "guarded_shape": 0.4789646863937378,
+        "geometry_midpoint": 0.24045835435390472
+      }
+    },
+    {
+      "file": "traj2_64x64_seg44_11123_11376.npz",
+      "windows": 35,
+      "E100": {
+        "kinematic": 0.6989195346832275,
+        "cartesian_no_road": 0.9913873076438904,
+        "cartesian_road": 1.3829307556152344,
+        "guarded_full": 0.2893330752849579,
+        "guarded_shape": 0.42918580770492554,
+        "geometry_midpoint": 0.34698525071144104
+      }
+    },
+    {
+      "file": "traj2_64x64_seg45_11392_11641.npz",
+      "windows": 34,
+      "E100": {
+        "kinematic": 0.6029146313667297,
+        "cartesian_no_road": 1.0343010425567627,
+        "cartesian_road": 1.1770919561386108,
+        "guarded_full": 0.4525015652179718,
+        "guarded_shape": 0.4324718415737152,
+        "geometry_midpoint": 0.5097563862800598
+      }
+    },
+    {
+      "file": "traj2_64x64_seg46_11663_12091.npz",
+      "windows": 79,
+      "E100": {
+        "kinematic": 0.6489627957344055,
+        "cartesian_no_road": 1.226497769355774,
+        "cartesian_road": 1.394550085067749,
+        "guarded_full": 0.43178582191467285,
+        "guarded_shape": 0.44863399863243103,
+        "geometry_midpoint": 0.35500356554985046
+      }
+    },
+    {
+      "file": "traj2_64x64_seg47_12106_12257.npz",
+      "windows": 10,
+      "E100": {
+        "kinematic": 0.9349392056465149,
+        "cartesian_no_road": 1.3907759189605713,
+        "cartesian_road": 0.862696647644043,
+        "guarded_full": 0.39246052503585815,
+        "guarded_shape": 0.3888843059539795,
+        "geometry_midpoint": 0.30435317754745483
+      }
+    },
+    {
+      "file": "traj2_64x64_seg48_12265_12805.npz",
+      "windows": 107,
+      "E100": {
+        "kinematic": 0.986594021320343,
+        "cartesian_no_road": 1.0491509437561035,
+        "cartesian_road": 1.0240848064422607,
+        "guarded_full": 0.44496020674705505,
+        "guarded_shape": 0.5166705250740051,
+        "geometry_midpoint": 0.4517925977706909
+      }
+    },
+    {
+      "file": "traj2_64x64_seg49_12843_12987.npz",
+      "windows": 8,
+      "E100": {
+        "kinematic": 1.505666732788086,
+        "cartesian_no_road": 1.0297614336013794,
+        "cartesian_road": 0.7704404592514038,
+        "guarded_full": 0.23147326707839966,
+        "guarded_shape": 0.32541483640670776,
+        "geometry_midpoint": 0.28489771485328674
+      }
+    },
+    {
+      "file": "traj2_64x64_seg50_13007_13207.npz",
+      "windows": 22,
+      "E100": {
+        "kinematic": 1.442820429801941,
+        "cartesian_no_road": 1.0393847227096558,
+        "cartesian_road": 0.8711515665054321,
+        "guarded_full": 0.19611310958862305,
+        "guarded_shape": 0.3457584083080292,
+        "geometry_midpoint": 0.23851634562015533
+      }
+    },
+    {
+      "file": "traj2_64x64_seg51_13222_13449.npz",
+      "windows": 29,
+      "E100": {
+        "kinematic": 1.751405119895935,
+        "cartesian_no_road": 0.7408265471458435,
+        "cartesian_road": 1.0035911798477173,
+        "guarded_full": 0.551533043384552,
+        "guarded_shape": 0.42792561650276184,
+        "geometry_midpoint": 0.6421487331390381
+      }
+    }
+  ],
+  "comparisons": {
+    "kinematic": {
+      "segments_improved": 14,
+      "segments_total": 14,
+      "equal_segment_mean_difference": -0.646899334021977,
+      "worst_segment_difference": -0.15041306614875793,
+      "pooled_relative_reduction": 0.6176775097846985
+    },
+    "cartesian_no_road": {
+      "segments_improved": 14,
+      "segments_total": 14,
+      "equal_segment_mean_difference": -0.6304309070110321,
+      "worst_segment_difference": -0.1892935037612915,
+      "pooled_relative_reduction": 0.630988597869873
+    },
+    "cartesian_road": {
+      "segments_improved": 14,
+      "segments_total": 14,
+      "equal_segment_mean_difference": -0.7538570506232125,
+      "worst_segment_difference": -0.4520581364631653,
+      "pooled_relative_reduction": 0.6864746809005737
+    },
+    "guarded_shape": {
+      "segments_improved": 10,
+      "segments_total": 14,
+      "equal_segment_mean_difference": -0.08686003088951111,
+      "worst_segment_difference": 0.12360742688179016,
+      "pooled_relative_reduction": 0.16668635606765747
+    },
+    "geometry_midpoint": {
+      "segments_improved": 11,
+      "segments_total": 14,
+      "equal_segment_mean_difference": -0.029830063560179303,
+      "worst_segment_difference": 0.08810734748840332,
+      "pooled_relative_reduction": 0.07725352048873901
+    }
+  }
+}

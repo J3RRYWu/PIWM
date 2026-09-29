@@ -1,0 +1,25 @@
+{
+  "replace_performance_model": false,
+  "conditions": {
+    "temporal": false,
+    "outer0": false,
+    "outer1": true
+  },
+  "mean_E100": {
+    "temporal": {
+      "physical_scene": 1.0168646971384685,
+      "kinematic": 0.8977678616841634,
+      "guarded_full": 0.3586639066537221
+    },
+    "outer0": {
+      "physical_scene": 1.0310194492340088,
+      "kinematic": 0.9361875851949056,
+      "guarded_full": 1.0384101072947185
+    },
+    "outer1": {
+      "physical_scene": 1.107982873916626,
+      "kinematic": 1.1584222714106243,
+      "guarded_full": 1.3273674249649048
+    }
+  }
+}

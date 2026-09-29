@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "rows": 72,
+  "checks": [
+    "frozen sources and parents",
+    "raw/prepared/corrected-label hashes",
+    "all seeds, 25/40 epochs, validation minima",
+    "disjoint inherited partitions",
+    "identical windows across seeds and inherited protocols where manifests exist",
+    "checkpoint/normalizer hashes",
+    "all metrics recalculated from saved errors",
+    "zero initial position errors"
+  ]
+}

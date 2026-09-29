@@ -1,26 +1,7 @@
-"""fig_main, redrawn from the 5-fold run instead of one checkpoint per model.
-
-WHY A SECOND FIGURE RATHER THAN AN EDIT TO paper_figures.py
-`src/paper_figures.py` recomputes its curves from a single checkpoint per model on
-the legacy hold-out. That is exactly what the 2026-08 audit found to be untrustworthy:
-both the ours row and the baseline rows in the paper turned out to be lucky draws.
-This one plots what the 5-fold run measured -- so its subject is no longer "which
-curve is lower" but "how much does each curve move when the split changes", which
-is where our actual advantage is (std over folds 0.045 m against Vid2Param's 0.142
-and DVBF's 0.131). The BAND is the fold-to-fold min-max, chosen over a standard
-error because SE over windows shrinks with window count and would hide exactly what
-is being shown; the legend reports the std over folds, matching the tables.
-
-Curves come from the cache written by scripts/eval_folds_table.py -- no rollouts are
-recomputed here, so this figure and the CV tables cannot drift apart. Pass
-`--curves reports/matrix/folds_table_symmetric_curves.npz` for the symmetric-selection
-version, which is what the article reports.
-
-SINDYc is deliberately absent: its cached curve was measured on the legacy split,
-and dropping a legacy-split curve into a CV figure is the provenance mistake this
-whole round has been cleaning up. paper_figures.py keeps it for the single-split figure.
-
-    <py311> scripts/fig_main_cv.py            # -> figures/fig_main_cv.{pdf,png}
+"""Five-fold manuscript figure from the symmetric-selection evaluation cache.
+Top: mean error trajectories. Bottom: individual fold endpoints, their mean
+(diamond), and full min-max range. No rollouts or statistics are re-estimated.
+Run from piwm/: .venv/Scripts/python.exe scripts/fig_main_cv.py
 """
 import os as _os, sys as _sys
 _SRC = _os.path.join(_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))), "src")
@@ -87,40 +68,45 @@ def main():
     folds = sorted({int(k.split("_", 1)[0][1:]) for k in z.files})
     print(f"{a.curves}: folds {folds}")
 
-    fig, ax = plt.subplots(figsize=(FIG_W, 3.15))
-    steps, top = None, 0.0
+    fig = plt.figure(figsize=(FIG_W, 4.65))
+    ax = fig.add_axes([.11, .50, .86, .32])
+    endax = fig.add_axes([.35, .085, .62, .235])
+    ax.set_title('(a) Mean prediction error', loc='left', pad=9)
+    endpoint_labels, records = [], []
     for row, col, lbl, lw, ls in SERIES:
-        got = [z[f"f{f}_{row}"] for f in folds if f"f{f}_{row}" in z.files]
-        if not got:
-            print(f"  (skip {row}: not in the cache)")
-            continue
-        C = np.stack(got)                      # (n_folds, K+1)
+        if any(f"f{f}_{row}" not in z.files for f in folds):
+            raise SystemExit(f"Incomplete folds for {row}: {a.curves}")
+        C = np.stack([z[f"f{f}_{row}"] for f in folds])
+        assert np.isfinite(C).all() and C.shape[0] == 5
         steps = np.arange(C.shape[1])
-        mu, lo, hi = C.mean(0), C.min(0), C.max(0)
-        half = C[:, -1].std(ddof=1)
-        ax.plot(steps, mu, color=col, lw=lw, ls=ls,
-                label=f"{lbl} ({mu[-1]:.2f} $\\pm$ {half:.2f} m)")
-        ax.fill_between(steps, lo, hi, color=col, alpha=0.13, lw=0)
-        top = max(top, float(hi.max()))
-        print(f"  {row:<9} n={len(got)}  @100 {mu[-1]:.3f} +/- {half:.3f}  "
-              f"fold range [{C[:, -1].min():.3f}, {C[:, -1].max():.3f}]")
-
-    if steps is None:
-        raise SystemExit(f"none of the expected rows are in {a.curves}; "
-                         "run scripts/eval_folds_table.py first")
-    ax.set_xlabel("rollout step")
-    ax.set_ylabel("position error (m)")
-    ax.set_xlim(0, steps[-1])
-    ax.set_ylim(0, a.ymax if a.ymax else top * 1.04)
-    ax.legend(loc="upper left")
-    _os.makedirs("figures", exist_ok=True)
-    for ext in ("pdf", "png"):
-        fig.savefig(f"{OUT}.{ext}")
+        label = {'ours-a': 'PIWM-Frenet', 'ours-c': 'PIWM (map-free)'}.get(row, lbl)
+        ax.plot(steps, C.mean(0), color=col, lw=lw, ls=ls, label=label)
+        endpoint_labels.append(label)
+        records.append((col,C[:, -1]))
+        print(f"{row}: @100 {C[:, -1].mean():.6f} +/- {C[:, -1].std(ddof=1):.6f}")
+    for i,(col,values) in enumerate(records):
+        y=len(records)-1-i
+        endax.plot([values.min(),values.max()],[y,y],color=col,lw=1.4)
+        endax.scatter(values, y+np.linspace(-.13,.13,len(values)), color=col, s=13, alpha=.75, zorder=3)
+        endax.scatter([values.mean()],[y],marker='D',s=30,facecolor=col,edgecolor='white',linewidth=.5,zorder=4)
+    endax.set_yticks(range(len(records)),endpoint_labels[::-1])
+    endax.set_ylim(-.55,len(records)-.45)
+    endax.set_xlim(left=0)
+    endax.set_xlabel('Position error at step 100 (m)')
+    endax.tick_params(axis='y',length=0,pad=7)
+    endax.spines['left'].set_visible(False)
+    endax.grid(axis='y',visible=False)
+    fig.text(.11,.372,'(b) Across-fold spread at step 100',fontsize=10)
+    ax.set_xlabel('Rollout step')
+    ax.set_ylabel('Position error (m)')
+    ax.set_xlim(0,100);ax.set_ylim(0,a.ymax if a.ymax else None)
+    fig.legend(*ax.get_legend_handles_labels(),loc='upper center',bbox_to_anchor=(.52,.995),
+               ncol=3,frameon=False,columnspacing=1.1,handlelength=2,fontsize=8.5)
+    _os.makedirs("figures",exist_ok=True)
+    for ext in ('pdf','png'):
+        fig.savefig(f"{OUT}.{ext}",bbox_inches=None)
+    shutil.copyfile(f"{OUT}.pdf",_os.path.join('Jounral_PIWM','imgs','fig_main_cv.pdf'))
     plt.close(fig)
-    print(f"saved -> {OUT}.pdf / .png"
-          + (f"  (y clipped at {a.ymax})" if a.ymax else ""))
-    print("band = min-max across folds; NOT copied into Jounral_PIWM/imgs/ "
-          "-- do that when the results section is rewritten.")
 
 
 if __name__ == "__main__":

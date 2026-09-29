@@ -1,0 +1,31 @@
+{
+  "status": "PASS",
+  "files": {
+    "Jounral_PIWM\\history_response_study_2026-09-28.md": "57cd2fa59d81360e2a8391e83c5391092f322c961b6afed020b3c0560424ca61",
+    "scripts\\report_response_observer.py": "a452c8d12ff5889e20e214e5165f2934c97ccc83540d0eaa5ba328b9dc79bdc4",
+    "src\\baselines\\response_observer.py": "2f4c171321113949862c004c418d8b5fa936735a0b34946bb1dc2ff89d2d2399",
+    "scripts\\run_response_observer.py": "568a82201711a4cac1df6f2ed05adea37cbf318c406e6a01f13aed882fe7c60d",
+    "scripts\\audit_response_observer.py": "a1d471c6973c251f9bd8a5c432543a937ed3bcf8db549b30524a8bc24f60a838",
+    "reports\\response_observer\\audit.json": "95d9c6ffe529cdb27752e0e7139b1c927706497801564c17f4e3768659fb37b5",
+    "reports\\response_observer\\decision.json": "e1f50b8fc2b1030d7f5a74e31ddaddcecfc1abbe1a909d61337d6ee39f7ec14a",
+    "reports\\response_observer\\history_interventions.json": "c83355dcbadc3de875a9b83e1a3d79dd788aa35207f605c21890f2562128c3f9",
+    "reports\\response_observer\\history_intervention_protocol.json": "843b8bd6eef26d0c2ee59290f1ea32574ebfb3117d5e14db0cc20493dce7f814",
+    "reports\\response_observer\\independent_audit.json": "3ef03d362b493fcc64577d21cf5e590ae9bd8a24609bc5c5a9777d6737fe7c86",
+    "reports\\response_observer\\per_segment_results.json": "f6628953c58ced7cb73971a0d8f0273243127ac0ffb35a9d6a3ecc31de6532b7",
+    "reports\\response_observer\\per_source_results.json": "f92e074bcbd29a8d36150a85ae8b5fb9a7e73fb7202f5cd4e231661036532f1d",
+    "reports\\response_observer\\preflight.json": "437ffce8fe4128aa48b88d5a9c982dcaf80820e4d9f969f8a5e84d35d6086cd7",
+    "reports\\response_observer\\protocol.json": "b65f700e6c6a720a72191ac58705379fd922de00c0ba7ccd9695fe053aecfa77",
+    "reports\\response_observer\\results.json": "12b43360788c37a31eeb683f6201aa561f3377d573a04ef3c4288101c42334f8",
+    "reports\\response_observer\\validation_motion_errors.json": "bae83f14d59d36553bb4d7de76299bf1e6e9f7b2d773d74a4dec0f44a2a438d0",
+    "reports\\response_observer\\curves.npz": "eb507aff474de3a21a6ff30e2911f3c9fa02df577ceaf4e0c8295ead22082c38",
+    "reports\\response_observer\\estimated_responses.npz": "eeb184b726fd2351ecb183e38b6763546c1adf5df3a3132bdf440aadea631783",
+    "reports\\response_observer\\comparison.png": "226ed23e39569cdd9ca0b95c5b9e48665113f6832d6eb79f69d1e34feb941ee4",
+    "reports\\response_observer\\RESULTS.md": "ddc33180bc698ada979de1319a8a8cddd48302b55d74006c72fb4947615f20e0",
+    "scripts\\diagnose_history_response.py": "53d332e18e1fbc99cb546f14d37307873ed5aa652dbcc959a8e93ef3042bbe54",
+    "reports\\response_observer\\history_intervention_curves.npz": "da7713509e4044e5d3e8ab4fb2de8b62083ec507f42ee75d19b6a8c80dbf258e",
+    "HANDOFF.md": "3ac22bec7d0254b03aa8d70ab174d413e469153ae7e1efe7d6349fd86bb9d93f",
+    "Jounral_PIWM\\HANDOFF.md": "e318d9fac0a3a1cb4cb8d45f6f171c9dec1b7111e8f66bfedb6842f9dd2a5bbb",
+    "reports\\EXPERIMENT_LEDGER.md": "1d8d6c31f70e369b82821cbe54d62c140b096cdb86a39b919d8993957c2f0466"
+  },
+  "manuscript_pdf_sha256": "69491cbf6c9edaf08437abe33ed29fd805f7bfa7a6154508fad38614eb24a4f2"
+}

@@ -1,0 +1,271 @@
+{
+  "protocol_sha256": "4601e5f0d8f22a94cc2e34eda995d02ba1ded3869a1e0bf5e19cfeb2b3968fae",
+  "results": {
+    "temporal/seed0/arc_full": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.12171291559934616,
+      "E50": 0.20704129338264465,
+      "E100": 0.40463075041770935,
+      "ADE": 0.2152024507522583
+    },
+    "temporal/seed0/arc_shape": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.17593571543693542,
+      "E50": 0.28927507996559143,
+      "E100": 0.49458906054496765,
+      "ADE": 0.285507470369339
+    },
+    "temporal/seed0/arc_independent_encoder": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.11704576015472412,
+      "E50": 0.21706782281398773,
+      "E100": 0.47195127606391907,
+      "ADE": 0.2347841113805771
+    },
+    "temporal/seed0/cartesian_road": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.13298025727272034,
+      "E50": 0.3721054196357727,
+      "E100": 1.0994548797607422,
+      "ADE": 0.4356449842453003
+    },
+    "temporal/seed1/arc_full": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.12836529314517975,
+      "E50": 0.21215097606182098,
+      "E100": 0.4016663432121277,
+      "ADE": 0.21796129643917084
+    },
+    "temporal/seed1/arc_shape": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.13334040343761444,
+      "E50": 0.24909816682338715,
+      "E100": 0.4104764759540558,
+      "ADE": 0.2333006113767624
+    },
+    "temporal/seed1/arc_independent_encoder": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.11980435252189636,
+      "E50": 0.22965647280216217,
+      "E100": 0.4882379472255707,
+      "ADE": 0.24506279826164246
+    },
+    "temporal/seed1/cartesian_road": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.1166047528386116,
+      "E50": 0.30432018637657166,
+      "E100": 1.0580148696899414,
+      "ADE": 0.3913974165916443
+    },
+    "temporal/seed2/arc_full": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.12689852714538574,
+      "E50": 0.21600836515426636,
+      "E100": 0.39399150013923645,
+      "ADE": 0.2173428237438202
+    },
+    "temporal/seed2/arc_shape": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.14833983778953552,
+      "E50": 0.27020716667175293,
+      "E100": 0.4562622010707855,
+      "ADE": 0.2579970061779022
+    },
+    "temporal/seed2/arc_independent_encoder": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.11470874398946762,
+      "E50": 0.21403197944164276,
+      "E100": 0.44406256079673767,
+      "ADE": 0.22661224007606506
+    },
+    "temporal/seed2/cartesian_road": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.12992475926876068,
+      "E50": 0.32475683093070984,
+      "E100": 1.081404209136963,
+      "ADE": 0.41536518931388855
+    }
+  },
+  "diagnostics": {
+    "temporal/seed0/arc_full": {
+      "samples": 52700,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.00026565464895635674,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": 0.08243721723556519,
+      "max_abs_state": [
+        4.564637660980225,
+        0.45679059624671936,
+        1.8085304498672485,
+        1.0060628652572632,
+        2.7122528553009033
+      ]
+    },
+    "temporal/seed0/arc_shape": {
+      "samples": 52700,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": 1.0,
+      "max_abs_state": [
+        3.817627429962158,
+        0.431169331073761,
+        1.8085304498672485,
+        0.9735130071640015,
+        2.5458860397338867
+      ]
+    },
+    "temporal/seed0/arc_independent_encoder": {
+      "samples": 52700,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.00018975332068311195,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": 0.09320282936096191,
+      "max_abs_state": [
+        4.72260046005249,
+        0.46749186515808105,
+        1.8085304498672485,
+        1.0159066915512085,
+        2.7400803565979004
+      ]
+    },
+    "temporal/seed0/cartesian_road": {
+      "samples": 0,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": null,
+      "max_abs_state": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "temporal/seed1/arc_full": {
+      "samples": 52700,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 9.487666034155598e-05,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": 0.16393667459487915,
+      "max_abs_state": [
+        4.46824836730957,
+        0.4423423409461975,
+        1.8085304498672485,
+        1.0299286842346191,
+        2.630934238433838
+      ]
+    },
+    "temporal/seed1/arc_shape": {
+      "samples": 52700,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": 1.0,
+      "max_abs_state": [
+        3.9316585063934326,
+        0.5004870295524597,
+        1.8085304498672485,
+        0.9880866408348083,
+        2.2708489894866943
+      ]
+    },
+    "temporal/seed1/arc_independent_encoder": {
+      "samples": 52700,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 5.692599620493358e-05,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": 0.11765623092651367,
+      "max_abs_state": [
+        4.625679969787598,
+        0.4640294909477234,
+        1.8085304498672485,
+        0.996928870677948,
+        2.602654457092285
+      ]
+    },
+    "temporal/seed1/cartesian_road": {
+      "samples": 0,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": null,
+      "max_abs_state": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "temporal/seed2/arc_full": {
+      "samples": 52700,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.00020872865275142316,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": 0.05827969312667847,
+      "max_abs_state": [
+        4.489039421081543,
+        0.4330703914165497,
+        1.8085304498672485,
+        0.98285973072052,
+        2.7299251556396484
+      ]
+    },
+    "temporal/seed2/arc_shape": {
+      "samples": 52700,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": 1.0,
+      "max_abs_state": [
+        4.01008415222168,
+        0.4645889401435852,
+        1.8085304498672485,
+        0.9735130071640015,
+        2.3477814197540283
+      ]
+    },
+    "temporal/seed2/arc_independent_encoder": {
+      "samples": 52700,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.00013282732447817837,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": 0.10708153247833252,
+      "max_abs_state": [
+        4.591419219970703,
+        0.47567617893218994,
+        1.8085304498672485,
+        0.9903708100318909,
+        2.874264717102051
+      ]
+    },
+    "temporal/seed2/cartesian_road": {
+      "samples": 0,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": null,
+      "max_abs_state": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  }
+}

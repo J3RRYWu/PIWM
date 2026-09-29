@@ -1,0 +1,79 @@
+{
+  "status": "PASS",
+  "scope": "24 evenly spaced test windows per saved checkpoint; no refitting or selection",
+  "checks": {
+    "temporal/seed0/kinematic": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 0.0
+    },
+    "temporal/seed0/cartesian_no_road": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 0.0
+    },
+    "temporal/seed0/cartesian_road": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 0.0
+    },
+    "temporal/seed0/guarded_full": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 6.258487701416016e-07
+    },
+    "temporal/seed0/guarded_shape": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 8.940696716308594e-07
+    },
+    "temporal/seed0/geometry_midpoint": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 8.713454008102417e-06
+    },
+    "temporal/seed1/kinematic": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 0.0
+    },
+    "temporal/seed1/cartesian_no_road": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 0.0
+    },
+    "temporal/seed1/cartesian_road": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 0.0
+    },
+    "temporal/seed1/guarded_full": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 2.8312206268310547e-07
+    },
+    "temporal/seed1/guarded_shape": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 1.9371509552001953e-07
+    },
+    "temporal/seed1/geometry_midpoint": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 5.364418029785156e-07
+    },
+    "temporal/seed2/kinematic": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 0.0
+    },
+    "temporal/seed2/cartesian_no_road": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 0.0
+    },
+    "temporal/seed2/cartesian_road": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 0.0
+    },
+    "temporal/seed2/guarded_full": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 7.897615432739258e-07
+    },
+    "temporal/seed2/guarded_shape": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 2.682209014892578e-07
+    },
+    "temporal/seed2/geometry_midpoint": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 3.1813979148864746e-06
+    }
+  },
+  "script_sha256": "a21bdb81c704e87dd28a5ee3d10217f8e7a703b81eeddf33f7267affc46657ce"
+}

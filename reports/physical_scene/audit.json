@@ -1,0 +1,56 @@
+{
+  "status": "PASS",
+  "new_fits": 9,
+  "reused_rows": 18,
+  "checks": {
+    "temporal/seed0/physical_scene": {
+      "recomputed_windows": 24,
+      "max_difference": 3.5762786865234375e-07,
+      "road_independence": true
+    },
+    "temporal/seed1/physical_scene": {
+      "recomputed_windows": 24,
+      "max_difference": 5.364418029785156e-07,
+      "road_independence": true
+    },
+    "temporal/seed2/physical_scene": {
+      "recomputed_windows": 24,
+      "max_difference": 2.384185791015625e-07,
+      "road_independence": true
+    },
+    "outer0/seed0/physical_scene": {
+      "recomputed_windows": 24,
+      "max_difference": 4.76837158203125e-07,
+      "road_independence": true
+    },
+    "outer0/seed1/physical_scene": {
+      "recomputed_windows": 24,
+      "max_difference": 4.76837158203125e-07,
+      "road_independence": true
+    },
+    "outer0/seed2/physical_scene": {
+      "recomputed_windows": 24,
+      "max_difference": 5.960464477539062e-07,
+      "road_independence": true
+    },
+    "outer1/seed0/physical_scene": {
+      "recomputed_windows": 24,
+      "max_difference": 4.76837158203125e-07,
+      "road_independence": true
+    },
+    "outer1/seed1/physical_scene": {
+      "recomputed_windows": 24,
+      "max_difference": 2.384185791015625e-07,
+      "road_independence": true
+    },
+    "outer1/seed2/physical_scene": {
+      "recomputed_windows": 24,
+      "max_difference": 5.960464477539062e-07,
+      "road_independence": true
+    }
+  },
+  "validation_minima": true,
+  "frozen_hashes": true,
+  "all_metrics_recomputed": true,
+  "scene_inverse_checked_all_test_windows": true
+}

@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "decision": "MECHANISM_ONLY",
+  "fits": 18,
+  "evaluation_rows": 216,
+  "report_sha256": "e576a14ce3ce22a0dcae094770a36e867b2d3250cc5115dbf590303d0af076d8",
+  "protocol_sha256": "3d5fa6970284063276370f43e63fc8c2c90f025c0cadf7f4978c7d20979cea80",
+  "figure_sha256": "d706f94e36d1670f27bfe83d0bf481256aa7feba07c5f2d95bb457d36fc63ffd",
+  "manuscript_unchanged": true,
+  "manuscript_sha256": "69491cbf6c9edaf08437abe33ed29fd805f7bfa7a6154508fad38614eb24a4f2",
+  "summary_script_sha256": "9720f05e691404158fe28a65732c0e9fbcea901409542a8571fe37b6c6ee9e89"
+}

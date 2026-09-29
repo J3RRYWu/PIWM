@@ -1,0 +1,29 @@
+{
+  "status": "Retrospective test-partition diagnostic; no tuning or retraining",
+  "branch_protocol_sha256": "507d0e7b55b9bff7a192f9e633d50fd841a3c95fe45a834157535f491f5d7c1a",
+  "diagnostic_protocol_sha256": "7a26989ba88fe943db17ee700d4935b4626aa49b29ebd6554bf4146ea9545f0e",
+  "sources": {
+    "scripts\\diagnose_road_transfer.py": "3d39f414bc2c98f5b09672a10f372c18bae3aa2e6f251c540d511ad9e08dc06d"
+  },
+  "train_diagnostics": {
+    "temporal_seed0": "0cf29069a2a188ca3f047252d23d284c9fa910acd314c9d5705c5f443d3ff818",
+    "temporal_seed1": "4c82c19252fcd7fa911a706fd36b664e0a09445e5ac6a664118fcdb83c5e153f",
+    "temporal_seed2": "94337068533e63c2d6f1d700175386beb4e563fbc354b4f67656878f9d623b00",
+    "outer0_seed0": "ea5b5e2f211e15c4d6c9c468f49722a11f0937f6e9ae0972ed3340f1a97bf7eb",
+    "outer0_seed1": "dc10f03238d01ed811687932d5e75264c37630d5a1049869ea1280d6b9a1a28b",
+    "outer0_seed2": "dd41ccbd6698775a12e2ed6807c618b74a12829d6b8841736ee6e2ef89b6d49d",
+    "outer1_seed0": "5cc3b4e34fb7ba2239766c04ac05e81e185f45ac0f9253bb675b41501782e594",
+    "outer1_seed1": "394cd578a29a85773e01215cdbca80172b566ba495462d5b74cc14571becd677",
+    "outer1_seed2": "50df31fcea86c5692e27accc6684ba4f532efca04a5392110930a9b0ae773577"
+  },
+  "models": [
+    "guarded_full",
+    "geometry_midpoint"
+  ],
+  "modes": [
+    "predicted",
+    "exact"
+  ],
+  "grouping": "training thirds for initial speed, predicted curvature/shape RMSE; action support within vs any outside train coordinate ranges",
+  "timing": "after all 27 branch fits; no new independent dataset; exact preview is a privileged intervention, not causal identification"
+}

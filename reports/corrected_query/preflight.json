@@ -1,0 +1,42 @@
+{
+  "status": "PASS",
+  "checks": {
+    "kinematic": {
+      "parameters": 7,
+      "finite_backward": true
+    },
+    "cartesian_road": {
+      "parameters": 13733,
+      "finite_backward": true
+    },
+    "cartesian_guarded": {
+      "parameters": 13733,
+      "finite_backward": true
+    },
+    "guarded_full": {
+      "parameters": 14276,
+      "finite_backward": true
+    },
+    "guarded_fixed_query": {
+      "parameters": 14276,
+      "finite_backward": true
+    },
+    "guarded_static_context": {
+      "parameters": 14276,
+      "finite_backward": true
+    },
+    "geometry_midpoint": {
+      "parameters": 14276,
+      "finite_backward": true
+    },
+    "arc_full": {
+      "parameters": 14276,
+      "finite_backward": true
+    }
+  },
+  "identities": [
+    "dynamic query exactly reproduces prior guarded implementation on the same inputs",
+    "all query modes coincide for constant curvature profiles",
+    "all variants finite 32-step forward/backward, zero initial ego positions"
+  ]
+}

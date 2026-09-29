@@ -1,3 +1,53 @@
+## 2026-09-28 最新：有限仿真试验完成，未扩大实验
+
+本次新增 18 个仿真动力学模型（与此前 231 个真实日志协议模型分列），6 类 × 3 种子，全部 216 个评估情景及审计完成。未新增真实记录或 CNN。结果目录 `reports/synthetic_mechanism/`，权重 `checkpoints/synthetic_mechanism/`；最新报告 `Jounral_PIWM/synthetic_mechanism_pilot_2026-09-28.md`。
+
+冻结判据为 MECHANISM_ONLY，GO=false：动作范围外推效应得到本生成条件下的支持，两个结构候选均未通过继续深入门槛，运动学基线更强。平滑耦合道路扰动较小，不能据此否定真实感知作用。训练分位数限幅与范围外真实增量不相容的补充核查仅属事后描述。
+
+当前主论文仍为此前 40 页，SHA256 `69491cbf6c9edaf08437abe33ed29fd805f7bfa7a6154508fad38614eb24a4f2`，没有混入试验性仿真；模拟评分仍 3/5 Major Revision。无追加训练、自动任务、提交、推送或投稿。可审阅后 commit 并备份忽略资产。
+
+## 2026-09-28 最新：曲率分支审计完成
+
+此段优先于下面更早的进度。当前论文 40 页；完整模型仍是预先固定的性能参照。新增 27 个动力学训练，全部完成；累计新协议训练为 36 个 CNN、231 个动力学模型（不计历史开发模型），原始记录仍为同一赛道两条。
+
+- 分支对照：`reports/curvature_branches/`；脚本 `scripts/run_curvature_branches.py`；新增模型 `src/baselines/branch_query.py`。主报告序列化的 NumPy 整数问题由独立 `scripts/summarize_curvature_branches.py` 适配，冻结源码与结果未改。
+- 无重训诊断：`reports/road_branch_diagnosis/`（72 组训练／验证）及 `reports/road_branch_transfer/`（36 组测试）。两个来源测试均为动作范围外推；完整模型的精确道路替换仍未超过运动学的来源 E100。
+- 时间 E100：full .359；response-off .378；pose-off .368；both-off .371。完整模型相对 both-off 约 3.3% 收益，不能把相对静态曲率的 9.9% 当成同一对照。新变体未在任一来源方向的平均 E100 超过运动学。
+- 最新复审：`Jounral_PIWM/RAS_curvature_branch_review_2026-09-28.md`，Overall 3/5 Major Revision，尚非 weak accept。全部不利结果保留。
+- 主稿更新由 `scripts/revise_branch_manuscript.py` 一次性执行；再次运行会拒绝覆盖。上一稿备份 `_archive/journal/curvature_branches_before/`。旧生成器可能回退当前稿，不要盲目重跑。
+- 当前 PDF SHA256: `69491cbf6c9edaf08437abe33ed29fd805f7bfa7a6154508fad38614eb24a4f2`；40 页，编译及渲染核查通过。无新增训练进程、自动任务、提交或推送。几何后备方法训练和独立生成条件验证尚未做。
+- 审阅后 commit；权重／数据等被忽略资产需单独备份。
+
+## 2026-09-28：几何修正、查询对照和初始化敏感性已完成（优先于下方历史记录）
+
+当前主稿由 `scripts/revise_corrected_manuscript.py` 根据本轮审计结果生成；上一稿在 `_archive/journal/corrected_query_before/`。新标签在 `reports/consistent_road_labels/`；18 个 CNN、72 个动力学训练及全部三划分结果在 `reports/corrected_query/`。279 组无重训初始化情景在 `reports/corrected_initialization/`。所有训练和评估完成，全部审计通过，无后台训练或自动任务。
+
+时间 E100：guarded_full=0.359±0.005 m，bounded Cartesian=0.983±0.125 m，kinematic=0.898±0.006 m；static neural curvature=0.398±0.017 m，geometry midpoint=0.366±0.016 m，coupled arc=0.387±0.007 m。来源留出仍不如运动学，动态神经查询在来源转移中也无平均优势。初始化联合扰动主模型变为 0.371/0.417 m，结果只对应预设零均值高斯情景。
+
+三种子与全部对照保留。主模型仍是拟合前指定的 guarded_full，不能把另一个模型事后改称预选主模型。连续标签一致不等于稀疏曲率可以精确重建道路；0.5 m 离散误差另有诊断。全步坐标监测不含 midpoint 内部阶段。
+
+严格复审：`Jounral_PIWM/RAS_revision_audit_2026-09-28.md`，Overall 3/5 Major Revision，非官方 RAS 评分，未达到可以承诺弱接收或较高录用把握的程度。主稿 37 页，全页与重点图表检查通过，无 undefined/overfull/duplicate-label 警告；两项空页码提示仍保留。作者身份、CRediT、声明和发布方式待确认。
+
+旧六轮在论文附录完整保存。生成器会覆盖手工修改，作者开始改稿后不要直接运行新旧生成器；先保留修改。checkpoints、部分日志和原始数据仍需单独备份。没有 commit、push、投稿、公开数据或发消息给他人。
+
+---
+
+## 2026-09-27：严格审计修订状态（优先于下方历史记录）
+
+当前主稿由 `scripts/revise_audited_manuscript.py` 生成，原稿备份在 `_archive/journal/audited_revision_before/`。本轮六组受控／探索性实验已全部完成，结果与审计分别在 `reports/controlled_holdout`、`frenet_diagnostic`、`road_geometry_training`、`conditioned_dynamics`、`temporal_holdout`、`coupled_road`。旧五折数字在主稿历史附录保留，不能作为新协议测试结果使用。
+
+时间留出 guarded full 的 pooled E100 为 0.343±0.010 m，对照运动学为 0.898±0.006 m；耦合圆弧模型为 0.400±0.005 m。来源留出没有一致优于运动学。只有两条已开发记录、已知初始状态及未来动作；不可声称独立新场景、纯视觉部署或误差有界。
+
+最终模拟复审与后续优先级见 `Jounral_PIWM/RAS_revision_audit_2026-09-27.md`，3/5 Major Revision，非 RAS 官方评分。当前不是可直接上传的终稿：作者信息与声明待确认。新增实质发现：旧几何标签的名义弧长与平滑中心线不精确一致；下一步优先统一标签再做受控复核。
+
+论文已编译为 43 页，当前 PDF 全页缩略图及重点图表检查通过；没有未定义引用或 overfull 警告。BibTeX 仍有 5 项缺页码提示，不能称为所有书目元数据完整。所有本轮训练任务已结束；没有自动继续运行的训练或定时任务。
+
+注意：生成器从归档原稿及结果重建正文，会覆盖手工编辑；作者开始手改后不要直接重跑。`checkpoints/`、部分日志和数据未纳入 Git，需另行备份。此前 HANDOFF 中“可部署”“CV 消除非单调”等建议不自动适用于当前审计稿。
+
+---
+
+> **2026-09-27 图件与会议结果已更新。** 主稿现为 52 页、11 图；旧文中的图件清单和页数已过时。会议的环境画面、18 个预测子图、参数图、定性对比及控制器表已恢复；当前外部图片只在 imgs/ 中保留 8 个 PDF，3 个方法图为主稿 TikZ。未用旧图移至 ../_archive/journal/unused_figures/，可找回。以 FIGURE_REVISION.md 为本轮图件交接记录。
+
 # PIWM 会议 → 期刊 扩展 · 交接文档 (HANDOFF)
 
 > ## 🛑 2026-08-08:正文里的主表数字目前**不可复现**,改稿前必读
@@ -340,3 +390,15 @@ Elsevier Editorial Manager 上传时会把文件拍平，外部路径必然失�
 - 本文件 = 写作线。
 - **谁是准的**：数字以 `piwm/HANDOFF.md` §5 和 `src/eval_frenet_vs_baselines.py` 为准；
   正文里的数字必须能追溯到那里。
+
+
+## 2026-09-28：物理场景模型首轮
+
+实现八参数车辆响应与显式道路刚体变换，新增9个动力学拟合。时间/A/B E100=1.0169/1.0310/1.1080 m，未通过预先固定的主模型替代条件；保留为基线，不改正文。审计 PASS，恒油门驱动增益不可识别。详见 `Jounral_PIWM/physical_model_redesign_2026-09-28.md` 与 `reports/physical_scene/`。累计真实记录动力学拟合240次，合成18次单列。
+
+
+## 2026-09-28：因果历史响应估计完成
+
+新增27次动力学拟合，累计真实记录动力学拟合267次（合成18次单列）。三划分/三种子/三方案，27个权重及数值、因果输入、道路变换审计 PASS。全局继续训练 E100=1.0347/1.0283/1.1020 m；结构化观测器=1.1381/1.1059/1.3070 m；历史MLP=0.9905/0.9408/1.0610 m（时间/A/B）。主观测器三个预设门槛均未通过。MLP有小幅改善，但事后54行历史干预未证明旧状态变化的必要性；不据此宣称历史创新，不替换论文主模型。
+
+完整报告：`Jounral_PIWM/history_response_study_2026-09-28.md`；协议、全部结果与审计：`reports/response_observer/`。模型与运行脚本：`src/baselines/response_observer.py`、`scripts/run_response_observer.py`；事后诊断：`scripts/diagnose_history_response.py`。若另开一轮，应先做重新训练的当前状态与完整历史同容量对照，而不是继续扩大隐藏状态。此轮无后台训练，正文/PDF未改。

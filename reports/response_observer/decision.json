@@ -1,0 +1,73 @@
+{
+  "gates": {
+    "mechanism": {
+      "temporal": false,
+      "outer0": false,
+      "outer1": false
+    },
+    "structure": {
+      "temporal": false,
+      "outer0": false,
+      "outer1": false
+    },
+    "performance": {
+      "temporal": false,
+      "outer0": false,
+      "outer1": false
+    }
+  },
+  "passed": {
+    "mechanism": false,
+    "structure": false,
+    "performance": false
+  },
+  "mean_E100": {
+    "temporal": {
+      "global": 1.034704566001892,
+      "observer": 1.1380910873413086,
+      "history_mlp": 0.9904737671216329,
+      "kinematic": 0.8977678616841634,
+      "guarded_full": 0.3586639066537221,
+      "observer_zero": 1.0970192750295003,
+      "observer_last": 1.1039117177327473,
+      "history_mlp_zero": 1.0823429425557454
+    },
+    "outer0": {
+      "global": 1.0283290942509968,
+      "observer": 1.105901559193929,
+      "history_mlp": 0.9408274491628011,
+      "kinematic": 0.9361875851949056,
+      "guarded_full": 1.0384101072947185,
+      "observer_zero": 1.0904548168182373,
+      "observer_last": 1.092678149541219,
+      "history_mlp_zero": 1.0709943771362305
+    },
+    "outer1": {
+      "global": 1.1019678513209026,
+      "observer": 1.3070075114568074,
+      "history_mlp": 1.060972551504771,
+      "kinematic": 1.1584222714106243,
+      "guarded_full": 1.3273674249649048,
+      "observer_zero": 1.1498213211695354,
+      "observer_last": 1.1766785780588787,
+      "history_mlp_zero": 1.1066014369328816
+    }
+  },
+  "observer_minus_global_per_seed": {
+    "temporal": [
+      0.12659406661987305,
+      0.09239006042480469,
+      0.09117543697357178
+    ],
+    "outer0": [
+      0.07664251327514648,
+      0.08337843418121338,
+      0.07269644737243652
+    ],
+    "outer1": [
+      0.20515906810760498,
+      0.21551954746246338,
+      0.19444036483764648
+    ]
+  }
+}

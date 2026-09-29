@@ -1,0 +1,19 @@
+{
+  "partition": "training only",
+  "results": {
+    "traj1_64x64": {
+      "throttle_min": 0.5666670203208923,
+      "throttle_max": 0.5666670203208923,
+      "speed_min": 0.18992073833942413,
+      "speed_max": 0.6899250745773315,
+      "speed_median": 0.45354896783828735
+    },
+    "traj2_64x64": {
+      "throttle_min": 0.6333330273628235,
+      "throttle_max": 0.6333330273628235,
+      "speed_min": 0.09552975744009018,
+      "speed_max": 1.1675752401351929,
+      "speed_median": 0.8209331035614014
+    }
+  }
+}

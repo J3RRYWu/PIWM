@@ -1,0 +1,7 @@
+This is BibTeX, Version 0.99e (MiKTeX 25.12)
+The top-level auxiliary file: elsarticle-template-num.aux
+The style file: elsarticle-num.bst
+Database file #1: sample-base.bib
+Warning--empty pages in piwm_conf
+Warning--empty pages in karl2016deep
+(There were 2 warnings)

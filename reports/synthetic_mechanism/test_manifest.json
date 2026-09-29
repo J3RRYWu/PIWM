@@ -1,0 +1,10 @@
+{
+  "protocol_sha256": "3d5fa6970284063276370f43e63fc8c2c90f025c0cadf7f4978c7d20979cea80",
+  "files": {
+    "test_nominal_outside.npz": "f7e16209d8c7410cfb7920dc7428f8f65b43a8485053fff3b4a0b29dc8ac4b6e",
+    "test_nominal_within.npz": "2286d39bec3cc8d1d3866a8d7ba334e3a97d9e9f98c3b524aa99bd9d5904cf2c",
+    "test_roads.npz": "045750c5d04329bd86fa34bbdf339b2b7820e7a40ca9750505dedb3e8240c745",
+    "test_shifted_outside.npz": "d6c4d236b40c6a6d0d61056db24c1353932d8e303334bdc30619d8ba298599cd",
+    "test_shifted_within.npz": "e428186aecbc4dc43da9e9d16ab6b81b5ac4a28aa81c0da56d627542b02ba93f"
+  }
+}

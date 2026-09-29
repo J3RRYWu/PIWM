@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "rows": 18,
+  "checks": [
+    "raw and prepared data fingerprints",
+    "temporal partition disjointness and >=115-frame gaps",
+    "25/40-epoch budgets and validation-only selection",
+    "all seed/checkpoint hashes",
+    "identical windows across models and seeds",
+    "metrics recomputed for pooled and source-specific windows",
+    "zero initial errors"
+  ]
+}

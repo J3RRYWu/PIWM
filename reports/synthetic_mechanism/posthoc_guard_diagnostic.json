@@ -1,0 +1,38 @@
+{
+  "status": "descriptive post-hoc diagnostic; not used to alter frozen decision",
+  "limits": [
+    0.009999999776482582,
+    0.009999999776482582
+  ],
+  "results": {
+    "nominal/within": {
+      "speed_increment_exceeds_cap_fraction": 0.0003125,
+      "yaw_increment_exceeds_cap_fraction": 0.00203125,
+      "max_speed_reachability_gap_m_s": 0.0010801870375871658,
+      "episodes_with_unreachable_true_speed_fraction": 0.015625,
+      "maximum_true_path_length_first25_m": 0.9712512493133545
+    },
+    "nominal/outside": {
+      "speed_increment_exceeds_cap_fraction": 0.219375,
+      "yaw_increment_exceeds_cap_fraction": 0.061875,
+      "max_speed_reachability_gap_m_s": 0.30203668400645256,
+      "episodes_with_unreachable_true_speed_fraction": 0.9921875,
+      "maximum_true_path_length_first25_m": 1.184358835220337
+    },
+    "shifted/within": {
+      "speed_increment_exceeds_cap_fraction": 0.0003125,
+      "yaw_increment_exceeds_cap_fraction": 0.001484375,
+      "max_speed_reachability_gap_m_s": 0.001080067828297615,
+      "episodes_with_unreachable_true_speed_fraction": 0.015625,
+      "maximum_true_path_length_first25_m": 0.9712052941322327
+    },
+    "shifted/outside": {
+      "speed_increment_exceeds_cap_fraction": 0.217265625,
+      "yaw_increment_exceeds_cap_fraction": 0.020078125,
+      "max_speed_reachability_gap_m_s": 0.29933587834239006,
+      "episodes_with_unreachable_true_speed_fraction": 0.9921875,
+      "maximum_true_path_length_first25_m": 1.184305191040039
+    }
+  },
+  "interpretation": "Some true increments and speeds lie outside the fixed neural update envelope. This does not identify the full endpoint-error cause, and kinematics has no such cap but also degrades."
+}

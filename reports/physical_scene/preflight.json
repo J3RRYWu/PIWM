@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "inverse_error": 1.1102230246251565e-15,
+  "transport_error": 4.440892098500626e-16,
+  "finite_100step_backward": true,
+  "road_independent_vehicle": true,
+  "stationary_equilibrium": true
+}

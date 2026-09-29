@@ -1,72 +1,38 @@
-"""fig_delta, redrawn from the 5-fold curves instead of the retired single split.
-
-The previous fig_delta_supervision.pdf was produced from the dyn_k16 checkpoint
-family whose numbers did not reproduce, and its caption cited the old baseline
-figure; both contradict the cross-validated Table 3. This one reads the SAME cache
-the table is built from (folds_table_symmetric_curves.npz), so figure and table
-cannot disagree.
-
-Content: our model at delta = 0 / 5% / 10% (fold-mean lines, min-max bands), with
-the strongest baseline at its CLEAN-label best as the reference line -- the honest
-comparison, since the baselines only get worse under noise.
-
-    <py311> scripts/fig_delta_cv.py        # -> figures/fig_delta_cv.{pdf,png}
+"""Clean small multiples from the same five-fold cache as the article table.
+Bands preserve the fold min/max; only one PIWM band is drawn per panel.
+The reference in every panel is Vid2Param trained with clean labels.
 """
-import os as _os, sys as _sys
-_SRC = _os.path.join(_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))), "src")
-_sys.path.insert(0, _SRC)
-
+from pathlib import Path
+import os,sys,shutil
+ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT/'src'))
 import numpy as np
 import matplotlib as mpl
-mpl.use("Agg")
+mpl.use('Agg')
 import matplotlib.pyplot as plt
-
-from fig_main_cv import _ensure_latex          # same MiKTeX-not-on-PATH dance
-from paper_style import apply as apply_style, FIG_W, COL, LBL
-
-CURVES = _os.path.join("reports", "matrix", "folds_table_symmetric_curves.npz")
-OUT = _os.path.join("figures", "fig_delta_cv")
-
-SERIES = [("ours-a",     r"$\delta = 0$",    1.00),
-          ("ours-a_d5",  r"$\delta = 5\%$",  0.65),
-          ("ours-a_d10", r"$\delta = 10\%$", 0.35)]
-
+from fig_main_cv import _ensure_latex
+from paper_style import apply as apply_style, FIG_W,COL
+CURVES=ROOT/'reports/matrix/folds_table_symmetric_curves.npz'
 
 def main():
-    apply_style(usetex=_ensure_latex())
-    z = np.load(CURVES)
-    folds = sorted({int(k.split("_", 1)[0][1:]) for k in z.files})
-
-    fig, ax = plt.subplots(figsize=(FIG_W, 3.0))
-    base = np.array(mpl.colors.to_rgb(COL["Frenet"]))
-    steps = None
-    for row, lbl, shade in SERIES:
-        have = [f for f in folds if f"f{f}_{row}" in z.files]
-        if len(have) != len(folds):
-            raise SystemExit(f"{row} is missing from folds "
-                             f"{sorted(set(folds) - set(have))} in {CURVES}; "
-                             "the cache was written before the matrix finished")
-        C = np.stack([z[f"f{f}_{row}"] for f in folds])
-        steps = np.arange(C.shape[1])
-        col = tuple(base * shade + (1 - shade) * 0.82)   # lighter = noisier
-        half = C[:, -1].std(ddof=1)
-        ax.plot(steps, C.mean(0), color=col, lw=2.0,
-                label=f"{lbl} ({C.mean(0)[-1]:.2f} $\\pm$ {half:.2f} m)")
-        ax.fill_between(steps, C.min(0), C.max(0), color=col, alpha=0.14, lw=0)
-        print(f"{row}: @100 {C.mean(0)[-1]:.3f} +/- {half:.3f}")
-
-    V = np.stack([z[f"f{f}_V2P"] for f in folds]).mean(0)
-    ax.plot(steps, V, color=COL["V2P"], lw=1.4, ls="--",
-            label=f"{LBL['V2P']}, clean labels ({V[-1]:.2f} m)")
-
-    ax.set_xlabel("rollout step"); ax.set_ylabel("position error (m)")
-    ax.set_xlim(0, steps[-1]); ax.set_ylim(bottom=0)
-    ax.legend(loc="upper left")
-    _os.makedirs("figures", exist_ok=True)
-    for ext in ("pdf", "png"):
-        fig.savefig(f"{OUT}.{ext}")
-    print(f"saved -> {OUT}.pdf/.png")
-
-
-if __name__ == "__main__":
-    main()
+    apply_style(usetex=_ensure_latex());z=np.load(CURVES)
+    folds=sorted({int(k.split('_',1)[0][1:]) for k in z.files});assert len(folds)==5
+    fig,axes=plt.subplots(1,3,figsize=(FIG_W,2.7),sharex=True,sharey=True)
+    fig.subplots_adjust(left=.105,right=.98,bottom=.215,top=.72,wspace=.16)
+    ref=np.stack([z[f'f{f}_V2P'] for f in folds]).mean(0)
+    for ax,row,delta in zip(axes,['ours-a','ours-a_d5','ours-a_d10'],['0','5\\%','10\\%']):
+        C=np.stack([z[f'f{f}_{row}'] for f in folds]);assert np.isfinite(C).all()
+        steps=np.arange(C.shape[1])
+        ax.fill_between(steps,C.min(0),C.max(0),color=COL['Frenet'],alpha=.16,lw=0)
+        ax.plot(steps,C.mean(0),color=COL['Frenet'],lw=1.8,label='PIWM-Frenet')
+        ax.plot(steps,ref,color=COL['V2P'],ls='--',lw=1.4,label='Vid2Param (clean labels)')
+        ax.set_title('$\\delta='+delta+'$',fontsize=10,pad=8)
+        ax.set_xlim(0,100);ax.set_ylim(0,.78);ax.set_xticks([0,50,100])
+        ax.tick_params(labelsize=8.5)
+        print(row,C[:,-1].mean(),C[:,-1].std(ddof=1))
+    axes[0].set_ylabel('Position error (m)')
+    fig.text(.54,.055,'Rollout step',ha='center',fontsize=10)
+    fig.legend(*axes[0].get_legend_handles_labels(),ncol=2,frameon=False,loc='upper center',bbox_to_anchor=(.54,.99),fontsize=9)
+    for ext in ['pdf','png']:fig.savefig(ROOT/'figures'/('fig_delta_cv.'+ext),bbox_inches=None)
+    shutil.copyfile(ROOT/'figures/fig_delta_cv.pdf',ROOT/'Jounral_PIWM/imgs/fig_delta_cv.pdf')
+    plt.close(fig)
+if __name__=='__main__':main()

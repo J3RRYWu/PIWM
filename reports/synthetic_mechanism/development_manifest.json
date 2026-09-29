@@ -1,0 +1,11 @@
+{
+  "protocol_sha256": "3d5fa6970284063276370f43e63fc8c2c90f025c0cadf7f4978c7d20979cea80",
+  "files": {
+    "train.npz": "ff898307ebb44692a57e768d87a9f765ac8521a3bc76c29fb96c32a1702209f9",
+    "validation.npz": "721ed705ae016facf31463f6ce40894d114e2e6b38ab142724ee1c4074c8b565",
+    "stats.npz": "a9c81fe5ba00a7630b09f5e1c81440ca9f02dfaf13e9b60d35842a1dda1a25cc",
+    "normalizers.npz": "a9c81fe5ba00a7630b09f5e1c81440ca9f02dfaf13e9b60d35842a1dda1a25cc",
+    "limits.json": "87cc664f5b4d3d9fcd901fbda154bf9f5eeb28bfa89cd00d9e5369dde5bc9492",
+    "dummy_track.npz": "a2ddcf5ed09aca8060a7ef6a6d2fcc9cb096458e3f8d4de8849fb179bc0a8908"
+  }
+}

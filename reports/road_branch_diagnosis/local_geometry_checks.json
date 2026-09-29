@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "states": 128,
+  "dtype": "float64",
+  "readout_velocity_max_error": 1.7763568394002505e-15,
+  "partial_derivative_max_errors": [
+    1.3877787807814457e-17,
+    4.440892098500626e-16,
+    4.440892098500626e-16
+  ],
+  "scope": "Actual Hermite readout and actual zero-residual GeometricFrenet field in smooth interior, no clamps. Not a global stability theorem or a learned-model timestep convergence test.",
+  "script_sha256": "faa4e3c74ec5ba946cc98d4f383d630c8dad67625e1804d1180e11fa25ac7d72"
+}

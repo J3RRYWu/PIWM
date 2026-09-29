@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "checks": [
+    "Execution source matches frozen snapshot",
+    "Prepared and raw data fingerprints unchanged",
+    "Disjoint partitions; all selected checkpoints minimize validation metric; identical windows across seeds",
+    "Nonfinite windows explicitly counted (never discarded); exact zero initial error; every finite metric independently recomputed"
+  ],
+  "rows": 90,
+  "protocol_sha256": "32f1a85866e8e64a873e66b85b1c6357581f2e7d4d3f7f7b83fd750eea6cd086"
+}

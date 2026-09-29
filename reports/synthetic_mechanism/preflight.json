@@ -1,0 +1,38 @@
+{
+  "status": "PASS",
+  "rk4_refinement_position_max_m": 1.5093357317689053e-11,
+  "mirror_max_error": 0.0,
+  "circle_reconstruction_max_m": 1.6265727298403476e-07,
+  "straight_line_identity": true,
+  "road_blind_invariance": true,
+  "checks": {
+    "kinematic": {
+      "parameters": 7,
+      "finite_backward": true
+    },
+    "cartesian_road": {
+      "parameters": 13733,
+      "finite_backward": true
+    },
+    "cartesian_blind": {
+      "parameters": 13733,
+      "finite_backward": true
+    },
+    "guarded_full": {
+      "parameters": 14276,
+      "finite_backward": true
+    },
+    "curvature_both_off": {
+      "parameters": 14276,
+      "finite_backward": true
+    },
+    "geometry_midpoint": {
+      "parameters": 14276,
+      "finite_backward": true
+    }
+  },
+  "sources": {
+    "scripts\\run_synthetic_mechanism.py": "6ecba029c3945e6cf72b048dd8cc3bcd40f1bc50fe429f4a0fed0bab8cfac2c6",
+    "src\\synthetic_vehicle.py": "1730619dd3905e80eaa8d9475c423299523464c1d74d774269fe92d9070d7af0"
+  }
+}

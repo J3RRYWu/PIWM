@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "rows": 18,
+  "checks": [
+    "source/data/checkpoint hashes",
+    "40 epochs, validation-only selection",
+    "identical parent/follow-up windows",
+    "all saved metrics recomputed",
+    "zero initial position error"
+  ]
+}

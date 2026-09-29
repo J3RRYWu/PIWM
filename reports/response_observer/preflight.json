@@ -1,0 +1,22 @@
+{
+  "status": "PASS",
+  "checks": {
+    "global": {
+      "parameters": 12,
+      "finite_backward": true,
+      "zero_response_identity": true
+    },
+    "observer": {
+      "parameters": 12,
+      "finite_backward": true,
+      "zero_response_identity": true
+    },
+    "history_mlp": {
+      "parameters": 1966,
+      "finite_backward": true,
+      "zero_response_identity": true
+    }
+  },
+  "future_mutation_history_unchanged": true,
+  "observer_impulse_identity": true
+}

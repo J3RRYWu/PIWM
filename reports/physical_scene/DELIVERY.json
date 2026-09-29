@@ -1,0 +1,23 @@
+{
+  "status": "PASS",
+  "raw_prepared_labels_hashes_verified": true,
+  "files": {
+    "Jounral_PIWM\\physical_model_redesign_2026-09-28.md": "6b4ef92c7d43c419d67f878b01f00735e80a240e8604a1ac9c4d63823be11e34",
+    "src\\baselines\\physical_scene.py": "bb47acdd89f1f905140767ca16197ae4d941bf756819f4246e0d876f28842787",
+    "scripts\\run_physical_scene.py": "74a5e98b3931d26f1945ccfba7567d32a49bae35513054e3bf5417e9a25e017a",
+    "scripts\\audit_physical_scene.py": "3fe46b801f6b0a1a15a23b472197ece15c3fa70cbd43d1903ce9de42e631ad6f",
+    "reports\\physical_scene\\audit.json": "4dbd1fc2dbe0ee208a3b1fd11138d08d15fbfa277737b7199958239f2cf90ffb",
+    "reports\\physical_scene\\decision.json": "46ab96d2d55742a62cc15a14389c82166ce1c37fe09edc4b1ede5fe000bf5fe2",
+    "reports\\physical_scene\\numerical_and_identifiability_audit.json": "191b212bfcc188e7a730eedc1429acd3046261eb1f01c7f79ef445e4104bb0fc",
+    "reports\\physical_scene\\observation_consistency.json": "62158edfb33bc02db7e55a056d5afca41f6dba2ef5b8122f9e56d1a51d299256",
+    "reports\\physical_scene\\per_source_results.json": "eb0bc98681c155cd7e4957b33947f17bcecbfe486d31f5bd0744e26decea39bd",
+    "reports\\physical_scene\\preflight.json": "f9d559b714b300b7fde4bb80cdca9700b94bd68e7a142173d5c13c0311597690",
+    "reports\\physical_scene\\protocol.json": "9352fdd5e628dd2c0ab6f8eac314770590bec3b68d79f8400522972df600fad3",
+    "reports\\physical_scene\\results.json": "840a66d0dd05e8a637871cb287a3ddc79ed02cf647ccb4976f2867ffc3131951",
+    "reports\\physical_scene\\training_identifiability.json": "6cb070ebd73a9880c8c3c29d37f6bdc25c4057841519406b5d5546c05f1ce9cb",
+    "reports\\physical_scene\\curves.npz": "610b6f26324b6bbc547403ab5ef3c3eab71ea08f87b7295f561dd6ad8723153f",
+    "reports\\physical_scene\\RESULTS.md": "8fbbee005fe253578528a01d22752dfce8f46833e85ec048ebc1ba7a4f19b1c4",
+    "reports\\physical_scene\\comparison.png": "df45d45e8d8ca99c00bd7852482b340a5e896855eedb8ef47d92562043c4d6e6"
+  },
+  "manuscript_pdf_sha256": "69491cbf6c9edaf08437abe33ed29fd805f7bfa7a6154508fad38614eb24a4f2"
+}

@@ -1,0 +1,1233 @@
+\documentclass[preprint,12pt]{elsarticle}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\captionsetup{font=small,labelfont=bf}
+\usepackage[section]{placeins}
+\usepackage{booktabs}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{siunitx}
+%% Without this, the .bbl falls back to \texttt for URLs, which cannot break
+%% and pushes two ScienceDirect links ~75pt past the right margin.
+\usepackage{url}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,calc,backgrounds}
+%% Shared palette for the TikZ schematics; frenetink matches the "ours" curve
+%% colour of the result figures (see src/paper_style.py, COL["Frenet"]).
+\definecolor{frenetink}{HTML}{3B33A0}
+\definecolor{previewor}{HTML}{E8820C}
+%% Without these the document falls back to bitmap (Type 3) EC fonts, which look
+%% ragged on screen, bloat the PDF, and are rejected by some production systems.
+%% Latin Modern is metric-compatible with Computer Modern, so nothing reflows.
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+%% Character protrusion and font expansion: tightens justification, removes most
+%% of the residual overfull boxes, and evens out the greyness of the text block.
+%% Requires scalable fonts, hence lmodern above.
+\usepackage{microtype}
+
+%% Every figure asset lives in imgs/, so this directory is self-contained.
+%% Elsevier's Editorial Manager flattens the uploaded file set, which breaks
+%% any \includegraphics that reaches outside the manuscript directory.
+\graphicspath{{imgs/}}
+
+%% Long DOIs/URLs in the bibliography otherwise overflow the text block.
+\emergencystretch=3em
+
+%% Never strand a single line of a paragraph at the top or bottom of a page.
+\widowpenalty=10000
+\clubpenalty=10000
+
+%% The results section is float-dense (3 figures + 3 tables in a few pages).
+%% With LaTeX's defaults (max 2 top floats, max 3 floats/page, >=20% text per
+%% page) the queue backs up and every figure is deferred past the bibliography.
+\setcounter{topnumber}{3}
+\setcounter{bottomnumber}{2}
+\setcounter{totalnumber}{4}
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\bottomfraction}{0.8}
+\renewcommand{\textfraction}{0.07}
+\renewcommand{\floatpagefraction}{0.7}
+
+\newtheorem{definition}{Definition}
+\newtheorem{problem}{Problem}
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+
+% Convenience macros for the factorized interpretable state.
+\newcommand{\zv}{z^{v}}      % vehicle-relative state
+\newcommand{\zr}{z^{r}}      % road-context state
+\newcommand{\zstar}{z^{*}}   % interpretable state
+
+\journal{Robotics and Autonomous Systems}
+
+\begin{document}
+
+\begin{frontmatter}
+
+\title{Camera-Derived Road Context for Physically Interpretable Vehicle Prediction}
+
+%% ---------------------------------------------------------------
+%% TODO(authors) --- FILL IN BEFORE SUBMISSION.
+%% The placeholder \author below exists only so that the \affiliation
+%% has something to attach to; without any \author, elsarticle typesets
+%% the title followed by an orphan address block and no byline.
+%% The conference version (arXiv:2412.12870) is authored by
+%%   Zhenjiang Mao, Mrinall Eashaan Umasudhan, Ivan Ruchkin.
+%% Confirm the journal author list, order, corresponding author and
+%% e-mail, then replace the placeholder with the block below.
+%%
+%% \author[uf]{First Author}
+%% \author[uf]{Second Author}
+%% \author[uf]{Corresponding Author\corref{cor1}}
+%% \ead{corresponding@ufl.edu}
+%% \cortext[cor1]{Corresponding author.}
+%% ---------------------------------------------------------------
+\author[uf]{[AUTHOR LIST --- TO BE COMPLETED BEFORE SUBMISSION]}
+
+\affiliation[uf]{organization={Trustworthy Engineered Autonomy (TEA) Lab,
+                               University of Florida},
+               city={Gainesville},
+               state={Florida},
+               country={USA}}
+
+%% ---------------------------------------------------------------
+\begin{abstract}
+A visual road representation can support interpretable vehicle prediction, but
+its geometric consistency and predictive value need not coincide. We extend
+PIWM with a finite road preview inferred from a 15-frame image history, queried
+at predicted progress, and connected to road-relative state updates and position
+reconstruction. The task is offline prediction given an initial physical state
+and recorded future actions. Road-relative initialization remains privileged;
+rollout readout uses the predicted preview without querying the stored track.
+We construct mutually consistent geometric labels from one arc-length curve and
+compare independent-head, shared-curve, and unit-speed representations. A fixed
+study covers two existing DonkeyCar recordings, three training seeds, a purged
+chronological split, both source-transfer directions, retrained query controls,
+and a Cartesian model with comparable numerical safeguards.
+At 100 steps (approximately 4.55 s), the fixed guarded model obtains
+0.359 m chronological endpoint error, compared with
+0.983 m for bounded Cartesian dynamics and
+0.898 m for calibrated kinematics.
+The source-transfer results and initialization perturbations delimit this
+comparison. Continuous label consistency does not remove errors from sparse
+curvature sampling, and the query ablations distinguish geometric recursion from
+neural curvature context. The contribution is a specific visual-to-dynamics
+interface and its controlled empirical assessment, rather than a new Frenet
+identity. Reused recordings on one track support retrospective evidence;
+unseen-track generalization and camera-only closed-loop deployment remain
+unverified.
+\end{abstract}
+\begin{keyword}
+physically interpretable prediction \sep road geometry \sep vehicle dynamics
+\sep visual representation learning \sep retrospective evaluation
+\end{keyword}
+\end{frontmatter}
+
+\section{Introduction}\label{sec:intro}
+World models compress observations into states that can be propagated under
+candidate actions~\cite{ha2018world,hafner2023mastering}. Physical interpretability
+provides a useful complement to predictive accuracy: a predicted quantity should
+have an identifiable meaning and unit, and its transition should expose the
+assumptions connecting it to the modeled system. Our conference PIWM
+framework~\cite{piwm_conf} investigated physical alignment under distribution-based
+weak supervision. This article studies a road-context extension on physical
+DonkeyCar records.
+
+Road geometry matters for interpreting lateral displacement and heading relative
+to a lane, and for the actions chosen by a driving controller. It does not, by
+itself, change planar motion when the complete vehicle state, actuation sequence,
+and physical conditions are fixed. We ask whether explicit visual road context
+provides a useful inductive bias for finite-horizon action-conditioned prediction,
+rather than claiming that identical physical states and actions must produce
+different motion on differently painted roads.
+
+Our state contains speed, yaw rate, progress, lateral offset, and road-relative
+heading, accompanied by a finite road preview. The preview is perceived once and
+queried at predicted progress. This avoids recurrent prediction of the profile,
+but does not prevent errors in progress, perception, or actuation from
+propagating. The Frenet chart can become singular, and independently predicted
+curvature and centerline shape need not describe the same curve.
+
+Two original recordings on one laboratory track provide 71 usable segments, not
+71 independent acquisition sessions. The new evaluations separate fitting and
+validation within one source and evaluate on the other. Both sources had already
+informed development, so this analysis is retrospective. Earlier five-fold
+results are preserved separately because their information and model-selection
+conditions differ from those of the new comparisons. A subsequent purged temporal split includes both
+sources in training and evaluates their later segments, while retaining all
+source-transfer results.
+
+The journal extension has three components. First, it specifies a finite visual
+road interface that separates the perceived preview from the road-relative
+vehicle state and queries the preview during supplied-action rollout. Second,
+it compares independent and shared geometric representations and distinguishes
+continuous label consistency from sparse-preview approximation. Third, it tests
+query mechanisms and comparable numerical safeguards with retrained controls,
+while retaining both chronological and source-transfer results and reporting
+initial-state sensitivity. The Frenet equations and residual-learning idea are
+established; the novelty claim is the particular interface and its controlled
+assessment. Physical alignment and weak-supervision principles from the
+conference paper are inherited, not new journal contributions.
+
+Sections~\ref{sec:related} and~\ref{sec:preliminaries} provide background.
+Sections~\ref{sec:problem}--\ref{sec:architecture} specify the implemented task
+and models; Sections~\ref{sec:experiments}--\ref{sec:results} describe the protocol
+and findings, followed by limitations and conclusions.
+
+\section{Related Work}\label{sec:related}
+\subsection{Physics and learned vehicle prediction}\label{sec:rw_traj}\label{sec:rw_phys}
+Embedding vehicle kinematics in a learned predictor is established practice.
+Deep Kinematic Models~\cite{cui2020deep} connect learned motion prediction with
+explicit vehicle kinematics. PRIME~\cite{song2022prime} combines constrained
+model-based candidate generation with a learned trajectory evaluator. PERL~\cite{long2024perl}
+adds a learned residual to a physical car-following model. These methods preclude
+claiming either a kinematic layer or a physics-plus-residual decomposition as a
+new contribution. Our task differs from multimodal behavior prediction: future
+steering and throttle are supplied, and the object of study is a compact visual
+road interface for recursive ego-vehicle prediction. This task difference does
+not establish superior performance over those methods; their published scores
+are not directly comparable to our data and information conditions.
+
+\subsection{Road coordinates and geometric representations}\label{sec:rw_po}
+Frenet domain normalization~\cite{ye2023frenet} addresses scene-geometry variation,
+while Stay on Track~\cite{hallgarten2024stay} wraps motion predictors in
+lane-relative coordinates. Thus road alignment and the use of lane geometry as
+an inductive bias are not new. GeoWAM~\cite{lu2026geowam} studies a broader visual
+geometric scene representation for ego-trajectory prediction. Our narrower
+question concerns a finite road preview inferred once from images: how should
+its shape, curvature, progress query and Cartesian reconstruction interact?
+An independently predicted curvature profile may disagree with the curve used
+for readout. A shared curve removes that particular discrepancy, but can impose
+a different approximation or optimization cost. The present comparisons test
+these tradeoffs under matched inputs rather than claiming a general geometry
+or feasibility guarantee.
+
+\subsection{Relation to world models and the conference study}\label{sec:rw_wm}\label{sec:rw_repr}
+Latent world models support action-conditioned prediction and imagination-based
+control~\cite{ha2018world,hafner2023mastering}. Physical variable alignment offers
+a complementary objective: intermediate values have names and units that can
+be inspected. The conference PIWM study~\cite{piwm_conf} investigated such
+alignment using distribution-based weak supervision and visually encoded
+physical states. Those representation-learning principles and benchmark
+results are inherited work, not new journal contributions. The road extension
+uses direct geometric supervision, a continuous convolutional encoder, and
+explicit supplied-action dynamics; it does not experimentally establish weakly
+supervised road perception. Its added evidence consists of road-query and
+geometric-interface comparisons, matched safeguards, and sensitivity analyses
+on physical-car records. Privileged initialization and a single reused track
+limit claims about autonomous deployment or independent generalization.
+
+\section{Preliminaries}\label{sec:preliminaries}
+For a physical state $x_t$ and action $a_t$, a predictive model approximates
+$x_{t+1}=\phi(x_t,a_t)$ with a learned transition and an observation interface.
+The conference PIWM framework~\cite{piwm_conf} aligns encoded quantities with
+physical variables using distribution-based supervision. Here the driving
+extension uses direct road labels and a supplied initial vehicle state; it
+predicts physical trajectories rather than future camera images.
+
+We distinguish state semantics from dynamical accuracy. Variables such as
+lateral displacement, heading error and curvature have specified units and
+coordinate meanings. That specification makes their errors inspectable, but
+does not imply that every predicted value is correct or that every transition
+is physically realizable. Analytic kinematics supplies an inductive bias;
+learned residuals, numerical integration, curve approximation and protective
+extensions must be assessed separately. A geometrically consistent readout
+means that its curve and coordinate update use compatible derivatives within
+the valid chart, not that the predicted road equals the physical road.
+The conference weak-supervision noise model is retained in
+Appendix~\ref{sec:interp_loss_def}; it is not the supervision used in the new
+road-encoder comparisons.
+
+\section{Prediction Task and Information Conditions}\label{sec:problem}
+At the beginning of each offline prediction window, the inputs are a 15-frame
+camera history, initial speed $v_0$, a causal yaw-rate estimate $\omega_0$,
+initial road-relative displacement $d_0$ and heading error $\psi_0$, and recorded
+future steering/throttle actions. The output is planar motion in the initial
+ego frame. Future images, future measured states, and controller feedback are
+not supplied. Recorded actions are conditioning inputs, not predicted controls.
+
+\subsection{Factorized state}\label{sec:factorized_state}
+The state is $z=(s,d,\psi,v,\omega)$, accompanied by curvature samples and
+centerline points at ten offsets from 0 to 4.5 m. Initial progress is zero.
+Road context defines the coordinate system; we do not assert that this finite
+preview is a sufficient Markov state for arbitrary driving environments.
+
+The surveyed track and logged pose provide road labels and initial $d_0$ and
+$\psi_0$. The controlled forecast readout uses predicted road points instead
+of the surveyed centerline. Evaluation uses original logged planar positions,
+not positions reconstructed from projected road labels. Thus label construction,
+privileged initialization, forecast readout, and evaluation truth are distinct.
+This is not a complete camera-only estimator or closed-loop driving system.
+
+\section{Implemented Driving Models}\label{sec:architecture}
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm,font=\fontsize{9}{11}\selectfont,
+ box/.style={draw=black!40,rounded corners=2pt,line width=.5pt,align=center,inner sep=5pt},
+ ar/.style={-{Stealth[length=1.8mm]},line width=.7pt,draw=black!65},
+ lab/.style={font=\fontsize{8}{10}\selectfont,fill=white,inner sep=2pt}]
+\node[anchor=west,font=\bfseries\fontsize{9}{11}\selectfont] at (0,4.05) {(a) Observe once at $t_0$};
+\node[box,fill=black!3,text width=2.35cm,minimum height=1cm] (cam) at (1.4,3.15)
+ {Camera history\\$y_{t_0-T+1:t_0}$};
+\node[box,fill=blue!6,text width=2.4cm,minimum height=1cm] (enc) at (5.5,3.15)
+ {Road encoder $\mathcal E_p$\\15-frame context};
+\node[box,fill=frenetink!7,text width=3cm,minimum height=1cm] (preview) at (10.4,3.15)
+ {Curvature and shape\\$\hat\kappa(\Delta),\ P(\Delta)$\\$\Delta\in[0,4.5]$ m};
+\draw[ar] (cam) -- (enc);
+\draw[ar] (enc) -- (preview);
+\node[lab,anchor=south] at (5.5,4.13) {Privileged road labels (training only)};
+\draw[ar,dashed] (5.5,4.1) -- (enc.north);
+\node[anchor=west,font=\bfseries\fontsize{9}{11}\selectfont] at (0,1.65) {(b) Predict at every step};
+\node[box,fill=orange!8,text width=2.8cm,minimum height=1.25cm] (state) at (1.7,.4)
+ {$z_t^*=(v,\omega,s,d,e_\psi)$\\Known initial state};
+\node[box,fill=frenetink!7,text width=3.15cm,minimum height=1.25cm] (dyn) at (7.0,.4)
+ {Split dynamics\\Vehicle actuation\\Frenet geometry};
+\node[box,fill=orange!8,text width=1.8cm,minimum height=1.25cm] (next) at (11.6,.4)
+ {Next state\\$\hat z^*_{t+1}$};
+\draw[ar] (state) -- (dyn);
+\draw[ar] (dyn) -- (next);
+\draw[ar] (preview.south) -- (10.4,1.85) -- node[lab,above] {Query at predicted progress} (7,1.85) -- (dyn.north);
+\node[lab] at (4.35,1.2) {Action $a_t$};
+\draw[ar] (4.35,.98) |- ([yshift=3mm]dyn.west);
+\draw[ar,dashed] (next.south) -- (11.6,-1.05) -- node[lab,below] {Autoregressive state update; no new images after $t_0$} (1.7,-1.05) -- (state.south);
+\end{tikzpicture}
+\caption{Implemented prediction pathways. The camera supplies curvature and shape once per rollout; annotated state initializes the dynamics. Recorded actions drive subsequent updates. The original and guarded variants query the curvature head; the consistent variant derives curvature and parameter speed from the shape curve. Position is decoded using that predicted curve, without surveyed-map queries during rollout. Initial road-relative state remains privileged.}
+\label{fig:arch}
+\end{figure}
+\subsection{Road-preview encoder}\label{sec:repr_learning}\label{sec:encoding}
+A convolutional encoder receives the red channel of 15 consecutive $64\times64$
+frames, stacked as channels and scaled to $[0,1]$. Four convolutions have
+32, 64, 128, and 256 channels, kernel size 4, stride 2, and padding 1. The
+flattened output feeds a 256-unit fully connected layer. This feature
+vector feeds linear heads for ten curvature samples and twenty centerline
+coordinates. The longitudinal shape output is a residual relative to nominal
+offsets; the lateral output is direct. Joint supervised squared error is
+normalized by training-set output standard deviations, floored at 0.05 in the
+corresponding units. The controlled experiment does not use an image autoencoder,
+VQ codebook, Transformer, or joint perception/dynamics fine-tuning.
+
+The original encoder uses ReLU and outputs directly in physical units.
+An exploratory repair uses LeakyReLU with slope 0.01 and
+$\hat y=\mu_{\rm train}+\sigma_{\rm train}r_\theta$, retaining width, depth,
+loss, and training budget. The corrected-label study trains both encoder families afresh for each of
+three splits and three seeds (18 encoders). Earlier six-encoder results are
+retained in Appendix~\ref{sec:development}.
+Changing activation and output parameterization together prevents isolating
+their individual causal contributions.
+
+\subsection{Road-relative dynamics}\label{sec:prediction}
+For an arc-length centerline within its valid coordinate chart, slip-free
+kinematics gives
+\begin{align}
+ \dot s&=\frac{v\cos\psi}{1-d\kappa},\label{eq:frenet_s}\\
+ \dot d&=v\sin\psi,\label{eq:frenet_d}\\
+ \dot\psi&=\omega-\kappa\dot s.\label{eq:frenet_psi}
+\end{align}
+The independently predicted curve and legacy map labels only approximate
+these arc-length identities; the original and guarded models are structured
+predictors rather than exact physical coordinate transformations. The
+consistent variants below explicitly address this distinction.
+The implementation adds learned lateral and heading residuals and per-step
+increments in speed and yaw rate. Three multilayer perceptrons, each with two 64-unit ReLU hidden layers, consume
+normalized $d,\psi,v,\omega,\kappa$ and actions. These actuation increments are
+not recovered physical bicycle parameters. The original variant uses Euler
+updates, interpolated curvature from the visual head, and a separate predicted
+centerline for reconstruction.
+
+A cubic Hermite interpolant $P(s)$ uses centered interior tangents, an initial
+road-$x$ tangent, and a final chord tangent. With tangent heading $\theta(s)$,
+the vehicle position is $P(s)+d[-\sin\theta(s),\cos\theta(s)]^{\mathsf T}$ and
+heading is $\theta(s)+\psi$. An ego transform removes initial translation and
+rotation. Outside the 4.5 m preview, the position readout extends its endpoint
+tangent while the independent curvature head holds its last value. These two
+extensions are not generally geometrically consistent.
+
+\paragraph{Numerical safeguards}
+The guarded variant uses $\max(0.2,1-d\kappa)$, wraps heading, and bounds learned
+increments with hyperbolic tangents. Speed and yaw-rate bounds are training-only
+99.5th percentiles of absolute one-frame changes, floored at 0.01 in their
+respective units. Lateral and heading residual limits are 0.1 m and 0.1 rad
+per step. Positive denominator protection extends the numerical update outside
+its valid chart; it does not make such states physically valid. We record states
+with $1-d\kappa\leq0$. Finite increments imply neither bounded states nor
+bounded prediction errors.
+
+\paragraph{Geometric consistency}
+Nominal arc-length knots do not guarantee a unit-speed predicted interpolant.
+Let $q$ be its actual parameter, $g=\|P'(q)\|$, and
+$\kappa_P=\det(P'(q),P''(q))/g^3$. Consistent dynamics requires
+\begin{equation}
+ \dot q=\frac{v\cos\psi}{g(1-d\kappa_P)},\qquad
+ \dot\psi=\omega-\kappa_Pg\dot q.\label{eq:consistent_geometry}
+\end{equation}
+We evaluate this correction with Euler and explicit midpoint integration, using
+the same curve in dynamics and readout. The independent curvature head is
+ignored, $g$ is floored at 0.1, and the other safeguards are retained.
+Tangent extension uses $g=1$ and $\kappa_P=0$ outside the preview.
+Synthetic checks assess readout equivalence, finite-difference derivatives,
+and the coordinate-to-Cartesian velocity identity. Consistency does not imply
+that the predicted curve matches the real road.
+
+\subsection{Controls and training}\label{sec:baselines}
+A calibrated kinematic control learns seven global coefficients for throttle
+gain, drag, effective length, steering gain and bias, drive bias, and yaw-response
+lag. It receives initial speed, yaw rate, and future actions, without road inputs.
+Two Cartesian residual controls have the same architecture; one receives the
+initial road state and frozen visual preview, and the other zeros these inputs.
+Their residual network has two 96-unit ReLU hidden layers and five outputs.
+Its inputs are scaled planar position, sine/cosine of heading, normalized speed
+and yaw rate, two actions, and 32 normalized road-context quantities. Both learn
+residuals to analytic planar kinematics. These implementations are
+not claimed reproductions of DVBF, GOKU-net, or Vid2Param. Constant speed and yaw
+rate provide an additional action-independent diagnostic.
+
+Perception training uses 25 epochs, Adam with initial learning rate $10^{-3}$,
+cosine decay, batch size 64, and frame stride 2. The checkpoint minimizes
+validation normalized supervision loss. Dynamics use 40 epochs, 32-step windows,
+batch size 128, stride 4, and a common physical-output loss. Initial learning
+rates are $10^{-3}$ for neural dynamics and $10^{-2}$ for calibrated kinematics,
+with cosine decay. Gradient norms are clipped at 1 for dynamics and 5 for
+perception. Dynamics checkpoints minimize validation 100-step endpoint error.
+All seeds (0, 1, 2) are retained.
+
+The loss averages squared errors in ego-frame $x,y$, wrapped heading, speed,
+and yaw rate, scaled by 0.5 m, 0.5 m, 0.5 rad, and training standard deviations
+of speed and yaw rate (floored at 0.01). Evaluation errors do not choose
+checkpoints within these runs; choices between modeling rounds are exploratory
+because earlier results had already been inspected.
+
+\subsection{Consistent supervision and query controls}\label{sec:corrected_method}
+The final controlled study regenerates progress, lateral displacement, heading
+error, curvature and local centerline shape from one curve. A periodic cubic
+spline passes through the retained smoothed map points, initially parameterized
+by chord length. Numerical integration of its tangent norm and inversion of the
+arc map yield a true-distance parameter. Current logged position alone is
+projected onto this curve; no future vehicle poses enter that projection.
+Curvature is computed from first and second derivatives, and all preview labels
+use this same curve. Logged speed, causal yaw rate, actions, images and raw
+Cartesian evaluation targets are unchanged. The map and its historical
+preprocessing are retained; this is not an independent new map acquisition.
+
+For the shared-curve model, Eq.~\ref{eq:consistent_geometry} uses the predicted
+Hermite shape and explicit midpoint integration. The coupled encoder instead
+predicts curvature knots and generates both positions and tangents from one
+piecewise circular curve. Interval curvature is the mean of its two neighboring
+knots; exact circular-arc integration gives a unit-speed curve. Its dynamics
+uses the same piecewise curvature and midpoint integration, with tangent
+extension outside the preview. Continuous supervision does not imply exact
+representability by ten 0.5 m-spaced curvature knots. Both families retain the
+same perception and dynamics training budgets.
+
+Two controls use the guarded model's identical architecture and are retrained
+from scratch. The fixed-query control uses origin curvature in both kinematics
+and the neural feature while still progressing along the readout curve; it
+intentionally creates a geometric mismatch away from the origin. The static
+neural-context control retains the correct progress query in kinematics but
+fixes only the neural curvature feature at its origin value. The latter more
+directly isolates the value of progress-dependent neural context.
+
+The bounded Cartesian control retains the original Cartesian network and
+inputs. It uses the same training-derived speed/yaw-rate increment limits,
+wrapped heading and $0.1\tanh(\cdot)$ pose residuals. Cartesian dynamics has two
+planar residual coordinates, whereas Frenet dynamics has one lateral residual;
+these safeguards are comparable, not identical coordinate constraints. Neural
+parameter counts are 13,733 for both Cartesian variants and 14,276 for all three
+query variants. Calibrated kinematics has seven parameters. The independent
+road encoder is shared within each split/seed; the coupled encoder is trained
+separately, so differences between encoder families cannot be attributed solely
+to a dynamics constraint.
+
+\section{Experimental Evaluation}\label{sec:experiments}\label{sec:setup}
+\subsection{Data and source-separated protocol}
+The physical archive contains two recordings with 5801 and 13597 frames at
+approximately 22 Hz, including images, steering/throttle, logged planar pose,
+speed, and a track map. Preprocessing yields 18 and 53 usable segments.
+These segments share acquisition conditions and layout; they are not independent
+sessions. Yaw rate uses at most five past yaw differences.
+
+Direction A evaluates the first source, with 41 training, 11 validation, and one
+purged segment from the second source. Direction B evaluates the second source,
+with 13 training, 4 validation, and one purged segment from the first.
+Validation is the final 20\% of ordered development-source segments; at least
+115 original frames separate training and validation. Evaluation uses 844 and
+1653 overlapping windows with stride 4 and horizon 100 (approximately 4.55 s).
+
+Learned parameters and normalization statistics use training data only. Each
+round freezes its protocol, implementation hashes, and required input checkpoints
+before fitting; evaluation waits for all prescribed runs. Audits check data and
+checkpoint hashes, validation selection, window identity, recomputed metrics,
+and zero initial position error.
+
+Both recordings were previously used in development. Retained track preprocessing
+also includes orientation chosen using the first recording and historically
+explored grid settings. Separation therefore concerns present fitting and
+checkpoint selection, not a prospectively untouched complete pipeline.
+No unseen-track or new-recording generalization claim follows.
+
+
+\paragraph{Operating regimes and identifiability}
+Across retained frames, median speeds are 0.434 and 0.774 m/s in the two records.
+The first has constant throttle 0.566667, whereas the second ranges from
+0.633333 to 0.766667. Source separation therefore also probes changes in operating
+regime. In a model $\dot v=k_a u-k_dv+b$, constant $u=c$ identifies the combination
+$k_ac+b$, not $k_a$ and $b$ separately: replacing them by $k_a+\Delta$ and
+$b-c\Delta$ leaves the update unchanged. We do not interpret fitted coefficients
+as uniquely recovered physical parameters. This limitation does not by itself
+explain all prediction errors.
+
+\subsection{Chronological comparison and sensitivity protocol}
+The primary split uses ordered segments within each source, with approximately
+60/20/20 percent assigned to training, validation and test before purging.
+The retained partitions contain 39 training, 13 validation, 15 assigned test and
+four purged segments; adjacent partitions have at least 115 original frames of
+separation. Fourteen test segments are long enough for the specified context and
+horizon, giving 527 windows. Both source-transfer directions remain mandatory
+comparisons. The guarded full model and pooled chronological $E_{100}$ are fixed
+before fitting; no model family is renamed as the primary method after testing.
+All eight dynamics models are trained for each split and seed (72 fits).
+
+The training throttle values are 0.566667 and 0.633333, while later portions of
+the second source also contain larger values. The chronological split therefore
+is not asserted to be identically distributed. Both records were explored
+previously, so even a frozen follow-up protocol remains retrospective.
+
+Initialization sensitivity uses the saved chronological checkpoints for guarded
+full, bounded Cartesian and calibrated kinematics, without refitting. Independent
+zero-mean Gaussian errors are added separately to $d,\psi,v,\omega$ and jointly.
+The smaller standard deviations are 0.02 m, $2^\circ$, 0.02 m/s and $2^\circ$/s;
+the larger values are 0.05 m, $5^\circ$, 0.05 m/s and $5^\circ$/s. Three common
+noise realizations are shared across models and training seeds. These are fixed
+sensitivity scenarios, not measured sensor distributions. Images, preview,
+actions and the true ego evaluation frame are unchanged. In particular,
+perturbing $\psi$ tests road-relative heading input error, not global-pose
+localization error. Noise realizations are averaged within each training seed
+before reporting seed dispersion; all separate and joint cases are retained.
+
+\subsection{Metrics}
+
+Endpoint error is
+\begin{equation}
+ E_{xy}(k)=\frac1N\sum_{i=1}^{N}\|\hat p_{i,k}-p_{i,k}\|_2.\label{eq:metric_exy}
+\end{equation}
+We report steps 25, 50, and 100, plus mean error over steps 1--100 (ADE), in meters.
+Mean $\pm$ standard deviation summarizes three training seeds, not uncertainty
+across independent recording sessions. Overlapping windows are not independent
+trials for significance testing. The primary metric is 100-step endpoint error.
+
+\subsection{Earlier experiments}
+Conference CartPole, Lunar Lander, and DonkeyCar-simulator results are retained
+with attribution~\cite{piwm_conf}. Their supervision and architectures differ
+from the current road encoder. CarRacing was a development environment, but this
+article has no completed quantitative CarRacing validation of the road-context
+model. Earlier five-fold physical-car results are preserved in
+Appendix~\ref{sec:historical}, under their original information and selection
+conditions; they cannot be pooled with the new source-separated estimates.
+
+\section{Results}\label{sec:results}
+\subsection{Corrected geometry and the primary comparison}\label{sec:corrected_results}
+All numerical values in this section use the corrected labels and unchanged raw
+Cartesian targets. Earlier controlled rounds remain in
+Appendix~\ref{sec:development}, and the historical five-fold study remains in
+Appendix~\ref{sec:historical}; their different protocols are not pooled.
+The road curve has length 9.743901 m instead of the legacy nominal 10.450 m.
+Dense curvature integration and direct curve coordinates differ by less than
+0.000043 m in the geometric check. However, the prescribed sparse circular-arc
+reconstruction has validation coordinate RMSE 0.475 m. Thus correcting the
+continuous labels removes their inconsistent definitions but leaves a material
+sampling/representation approximation. It does not guarantee a better coupled
+predictor.
+
+\begin{table}[t]
+\centering\footnotesize\setlength{\tabcolsep}{3pt}
+\caption{Corrected-label comparison. Mean $\pm$ sample SD across three training seeds; all eight models retained. Errors in meters. Directions A/B hold out the first/second source.}
+\label{tab:corrected}
+\begin{tabular}{lcccc}\toprule
+Model & Chron. $E_{100}$ & Chron. ADE & A $E_{100}$ & B $E_{100}$ \\ \midrule
+Calibrated kinematics & $0.898 \pm 0.006$ & $0.437 \pm 0.004$ & $0.936 \pm 0.005$ & $1.158 \pm 0.006$ \\
+Cartesian, original & $1.094 \pm 0.113$ & $0.420 \pm 0.041$ & $1.353 \pm 0.023$ & $1.626 \pm 0.073$ \\
+Cartesian, bounded & $0.983 \pm 0.125$ & $0.394 \pm 0.056$ & $1.355 \pm 0.028$ & $1.604 \pm 0.139$ \\
+Guarded, dynamic query & $0.359 \pm 0.005$ & $0.200 \pm 0.003$ & $1.038 \pm 0.070$ & $1.327 \pm 0.057$ \\
+Guarded, fixed query & $0.481 \pm 0.011$ & $0.256 \pm 0.003$ & $0.913 \pm 0.050$ & $1.344 \pm 0.085$ \\
+Guarded, static neural & $0.398 \pm 0.017$ & $0.220 \pm 0.009$ & $0.951 \pm 0.104$ & $1.305 \pm 0.072$ \\
+Shared curve, midpoint & $0.366 \pm 0.016$ & $0.202 \pm 0.003$ & $0.991 \pm 0.052$ & $1.234 \pm 0.027$ \\
+Coupled circular arcs & $0.387 \pm 0.007$ & $0.203 \pm 0.006$ & $1.156 \pm 0.040$ & $1.337 \pm 0.086$ \\
+\bottomrule\end{tabular}
+\end{table}
+
+The guarded model's chronological endpoint error is 0.624 m lower than the bounded Cartesian control. The guarded model's chronological endpoint error is 0.539 m lower than the calibrated kinematic control. The same model has source-transfer endpoint errors of 1.038 and 1.327 m. These source-transfer results are retained regardless of the chronological ranking.
+
+\subsection{What the query controls identify}
+Against fixed query, the dynamic-query model has 0.122 m lower mean chronological endpoint error and lower error in 3 of the three paired training seeds. Against static neural context, the dynamic-query model has 0.040 m lower mean chronological endpoint error and lower error in 3 of the three paired training seeds. In source-transfer direction A, however, its mean endpoint error is 0.087 m higher than static neural context. In source-transfer direction B, however, its mean endpoint error is 0.022 m higher than static neural context. These are descriptive comparisons, not independent-session significance tests.
+Fixing both curvature uses changes the geometric recursion as well as the
+neural feature; it cannot alone establish that neural curvature context is
+useful. The static-neural comparison isolates that feature more closely.
+A gain over Cartesian dynamics still combines coordinate representation,
+query, readout and architecture, and should not be attributed to one component.
+
+On the first source within the chronological test, guarded full obtains 0.243 m versus 0.675 m for bounded Cartesian and 0.858 m for calibrated kinematics. On the second source within the chronological test, guarded full obtains 0.403 m versus 1.102 m for bounded Cartesian and 0.913 m for calibrated kinematics. Both source-specific results supplement the pooled metric, whose weights follow the number of overlapping windows.
+
+\subsection{Consistency and initialization sensitivity}
+The shared-curve and coupled-arc models obtain 0.366 and 0.387 m chronological endpoint error, respectively, compared with 0.359 m for the independent-head guarded model. Their maximum seed fractions of full-step states with a nonpositive Frenet denominator are 0.4573\%, 0.0114\%, 0.2011\%, respectively. These fractions exclude midpoint internal stages; finite rollouts do not prove chart validity.
+
+\begin{table}[t]
+\centering\small
+\caption{Chronological initialization sensitivity, joint perturbations. $E_{100}$ in meters; mean and sample SD across training seeds after averaging noise realizations. Individual perturbations and both sources are fully reported in the companion evidence.}
+\label{tab:initialization}
+\begin{tabular}{lccc}\toprule
+Scenario & Kinematic & Bounded Cartesian & Guarded full \\ \midrule
+Clean & $0.898 \pm 0.006$ & $0.983 \pm 0.125$ & $0.359 \pm 0.005$ \\
+Smaller joint & $0.898 \pm 0.006$ & $0.987 \pm 0.129$ & $0.371 \pm 0.005$ \\
+Larger joint & $0.902 \pm 0.006$ & $1.013 \pm 0.129$ & $0.417 \pm 0.004$ \\
+\bottomrule\end{tabular}
+\end{table}
+These perturbations quantify sensitivity of the specified initial-state inputs.
+They neither replace evaluation of a visual state estimator nor establish a
+sensor-noise tolerance or closed-loop safety claim. Nonfinite-window counts,
+full-step chart monitoring and all individual perturbations are retained in the
+companion results. The noise draws and clean predictions are independently
+recomputed from the saved checkpoints by the same audit workflow.
+
+\subsection{Reproducibility and retained evidence}
+Audits verify the raw/prepared/label hashes, train-only normalizers, all validation
+perception losses, validation-minimum checkpoint selection, original-frame
+partition gaps and common evaluation windows. Twenty-four uniformly selected
+windows per each of 72 dynamics checkpoints are recalculated; changing stored
+map buffers leaves the road-model predictions unchanged. This is an internal
+recomputation, not external replication. The unchanged kinematic control also
+reproduces its preceding chronological results. Per-seed curves, all eight
+models, both source-transfer directions and separate initialization scenarios
+remain available in the local evidence package.
+
+\section{Discussion}\label{sec:discussion}
+The experiments distinguish an interpretable state interface from a guarantee
+of physical consistency or predictive accuracy. The implementation makes
+progress, road-relative pose, perceived shape and curvature inspectable.
+Matched safeguards and retrained query controls narrow possible explanations
+for performance, but coordinate choice, residual architecture and reconstruction
+still interact. Standard Frenet equations, arc-length reparameterization and
+circular-arc integration are established mathematics; the proposed contribution
+is their specific connection to a finite visual road preview and the evidence
+for its use in supplied-action prediction.
+
+Correcting the geometric labels is scientifically necessary for interpreting
+consistency comparisons. It does not make a sparse curvature representation
+exact. The integration diagnostic exposes a separate resolution limit, while
+shared-curve and coupled-encoder models expose different learning constraints.
+Their complete rankings should inform model choice rather than treating a more
+constrained representation as automatically better. The neural query comparison must also be read across splits: an advantage in
+the chronological setting does not establish an advantage under source/regime
+transfer. The fixed guarded family remains the primary comparison; test results
+do not select a replacement family.
+
+The principal limitation is two repeatedly used recordings on one track.
+Training seeds and overlapping windows do not supply independent environments.
+Freezing each follow-up before its fits limits within-round selection but does
+not make the overall development process prospective. Source-transfer results
+and chronological results answer different questions; neither should be omitted
+because it is less favorable. This study does not establish a causal physical
+effect of road markings on motion given a complete vehicle state and actions.
+Road context may also encode correlations with operating conditions or driving
+behavior that the present records cannot disentangle.
+
+Initial road-relative state remains privileged, road labels use a retained map,
+and future recorded actions are supplied. Initialization perturbations test
+specified errors without a real state estimator. No closed-loop controller,
+new track or fresh acquisition validates deployment. Numerical guards can
+produce finite states outside the valid coordinate chart, and the midpoint
+internal stages are not fully covered by the reported chart monitor. No safety,
+general bounded-error or camera-only autonomy guarantee follows. Conference
+weak-supervision results concern a different encoder and are not evidence for
+weakly supervised road learning in this extension.
+
+\section{Conclusion}\label{sec:conclusion}
+We studied a finite visual road-context interface for physically interpretable,
+action-conditioned vehicle prediction. The corrected-label comparison retains
+a calibrated physical control, bounded and unbounded Cartesian controls,
+retrained query ablations and two geometrically coupled alternatives.
+The fixed guarded model yields 0.359 m chronological endpoint error; the bounded Cartesian and calibrated controls yield 0.983 and 0.898 m. Source-transfer comparisons, geometric approximation checks and initialization
+perturbations delimit these results. The evidence supports a concrete,
+inspectable representation and its retrospective empirical assessment, with
+independent generalization and deployment left open.
+
+\section*{Declaration of Competing Interest}
+%% ==============================================================
+
+%% TODO(authors): confirm before submission and adjust if any author has a
+%% competing interest to declare.
+[AUTHOR CONFIRMATION REQUIRED: competing-interest declaration.]
+
+%% ==============================================================
+\section*{CRediT Authorship Contribution Statement}
+%% ==============================================================
+
+%% TODO(authors): fill in per-author CRediT roles once the author list is fixed.
+%% Example: \textbf{Jane Doe}: Conceptualization, Methodology, Software,
+%% Investigation, Writing --- original draft.
+[CRediT ROLES --- TO BE COMPLETED BEFORE SUBMISSION.]
+
+%% ==============================================================
+\section*{Data Availability}
+%% ==============================================================
+
+%% TODO(authors): replace with the archived DOI / repository URL before
+%% submission, or state the applicable restriction.
+[AUTHOR CONFIRMATION REQUIRED: data/code release location, permissions, and access restrictions.]
+
+%% ==============================================================
+\section*{Acknowledgements}
+%% ==============================================================
+
+The authors thank Liam (Cade) McGlothlin and Vedansh Maheshwari for their help in
+exploring interpretable world models.
+This material is based upon work supported by the U.S.\ National Science Foundation
+under Grant Numbers CNS~2513076 and CCF~2403616.
+Any opinions, findings, and conclusions expressed in this material are those of the
+authors and do not necessarily reflect the views of the NSF.
+
+
+%% ==============================================================
+\section*{Declaration of Generative AI Use}
+[AUTHOR REVIEW REQUIRED BEFORE SUBMISSION.] GPT-6 (Codex) assisted with code
+inspection, experimental implementation, analysis, and manuscript revision.
+The final disclosure requires author verification of its scope and compliance
+with the journal policy. This draft does not assert that the authors have
+already verified or approved all assisted outputs.
+
+\appendix
+
+\section{Earlier Controlled Studies}\label{sec:development}
+\subsection{Initial controlled comparison}\label{sec:donkeyreal_results}
+Table~\ref{tab:controlled} shows lower mean Frenet endpoint error than the
+road-conditioned Cartesian residual control in both directions, but calibrated
+kinematics is better in both. These findings concern the specified implementations
+and budgets, rather than all possible models in either coordinate system.
+\begin{table}[t]
+\centering
+\caption{Initial retrospective comparison. Errors in m; mean $\pm$ sample SD over three seeds. A and B evaluate the first and second original recordings.}
+\label{tab:controlled}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lrrrr}
+\toprule
+Model & A: $E_{100}$ & A: ADE & B: $E_{100}$ & B: ADE \\
+\midrule
+Calibrated kinematics & $0.936 \pm 0.005$ & $0.455 \pm 0.002$ & $1.158 \pm 0.006$ & $0.595 \pm 0.002$ \\
+Cartesian, no road & $1.230 \pm 0.128$ & $0.654 \pm 0.082$ & $1.466 \pm 0.156$ & $0.720 \pm 0.049$ \\
+Cartesian, road & $1.344 \pm 0.223$ & $0.679 \pm 0.063$ & $1.653 \pm 0.035$ & $0.692 \pm 0.014$ \\
+Frenet & $1.086 \pm 0.150$ & $0.608 \pm 0.112$ & $1.463 \pm 0.037$ & $0.688 \pm 0.022$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Replacing both curvature and shape by a straight road raises Frenet endpoint
+error to $2.129\pm0.546$ and $2.415\pm0.071$ m. Setting curvature alone to zero
+while keeping shape gives $0.994\pm0.126$ and $1.517\pm0.069$ m. The joint
+intervention therefore does not isolate curvature-dependent dynamics.
+Inference-time interventions also introduce distribution shift; separately
+trained ablations provide a complementary comparison.
+
+\subsection{Numerical stability and retrained ablations}
+Two original Frenet runs deteriorate after their validation-optimal epochs:
+final validation errors reach 99.875 and 21.681 m, with maximum pre-clipping
+gradient norms above $10^{12}$ and $10^{13}$. Selected checkpoints reproduce the
+initial comparison exactly in the diagnostic rerun. Guarded updates avoid these
+extreme failures in the same runs, but can still leave the valid Frenet chart.
+
+Table~\ref{tab:guards} reports models refit with fixed perception. Shape-only
+sets curvature to zero throughout fitting and prediction. No-road additionally
+replaces shape by a straight line and zeros initial road-relative displacement
+and heading; it does not isolate shape alone. The oracle receives true curvature
+and shape during fitting and evaluation; it is not a theoretical upper bound.
+\begin{table}[t]
+\centering
+\caption{Exploratory numerical safeguards and retrained ablations using the original frozen encoders.}
+\label{tab:guards}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lrrrr}
+\toprule
+Model & A: $E_{100}$ & A: ADE & B: $E_{100}$ & B: ADE \\
+\midrule
+Guarded, full & $1.022 \pm 0.154$ & $0.473 \pm 0.062$ & $1.432 \pm 0.019$ & $0.672 \pm 0.025$ \\
+Guarded, shape only & $0.846 \pm 0.048$ & $0.400 \pm 0.046$ & $1.471 \pm 0.062$ & $0.688 \pm 0.025$ \\
+Guarded, no road & $1.029 \pm 0.078$ & $0.492 \pm 0.012$ & $1.579 \pm 0.161$ & $0.675 \pm 0.058$ \\
+Guarded, oracle & $0.933 \pm 0.068$ & $0.430 \pm 0.035$ & $1.285 \pm 0.039$ & $0.618 \pm 0.020$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Shape-only improves on the full model in A but worsens it in B. Neither the
+safeguards nor the oracle establishes a consistent advantage over calibrated
+kinematics, so the remaining gap cannot be attributed solely to perception.
+
+\subsection{Geometric consistency and integration}
+A validation-only audit finds that predicted curves are not generally unit-speed
+in their nominal parameter. For one encoder, 80.1\% of sampled locations have
+$|g-1|>0.2$. Independent and shape-derived curvatures also disagree. Even the
+coarse oracle interpolant is not exactly unit-speed. Synthetic checks verify
+the coordinate velocity identity in Eq.~\eqref{eq:consistent_geometry}.
+On a synthetic circle, zero-residual 100-step endpoint error falls from
+0.001293 m with Euler to 0.000119 m with midpoint integration. This checks the
+numerical implementation, not accuracy on recorded driving.
+
+Table~\ref{tab:geometry} evaluates consistent dynamics with the original encoders.
+The body midpoint control uses the same network structure and integrator, but
+clears road inputs. Geometry helps relative to this control in B; A has the
+opposite ordering. Calibrated kinematics still gives lower mean endpoint error
+in both directions.
+\begin{table}[t]
+\centering
+\caption{Exploratory geometry and integration controls with the original encoders.}
+\label{tab:geometry}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lrrrr}
+\toprule
+Model & A: $E_{100}$ & A: ADE & B: $E_{100}$ & B: ADE \\
+\midrule
+Consistent, Euler & $1.141 \pm 0.051$ & $0.537 \pm 0.035$ & $1.314 \pm 0.034$ & $0.611 \pm 0.029$ \\
+Consistent, midpoint & $1.267 \pm 0.361$ & $0.571 \pm 0.138$ & $1.325 \pm 0.042$ & $0.609 \pm 0.035$ \\
+Body, midpoint & $1.009 \pm 0.056$ & $0.486 \pm 0.078$ & $1.793 \pm 0.221$ & $0.775 \pm 0.069$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Visual conditioning and matched dynamics}
+Training and validation logs identify one encoder with nearly constant outputs.
+Its best normalized validation loss is 0.8384, versus 0.1220 and 0.1280 for the
+other seeds in that direction. This diagnoses representation collapse, not its
+precise optimization mechanism. Uniform conditioning repair improves validation
+loss in five of six runs; one changes from 0.1220 to 0.1371. The collapsed run
+improves to 0.2953 with nonconstant outputs. Validation improvements alone do
+not demonstrate improved trajectory generalization.
+\begin{table}[t]
+\centering
+\caption{Matched dynamics with six uniformly retrained conditioned encoders. All dynamics are refit from scratch; all variants and seeds are retained.}
+\label{tab:conditioned}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lrrrr}
+\toprule
+Model & A: $E_{100}$ & A: ADE & B: $E_{100}$ & B: ADE \\
+\midrule
+Guarded, full & $0.951 \pm 0.089$ & $0.435 \pm 0.035$ & $1.387 \pm 0.038$ & $0.672 \pm 0.010$ \\
+Guarded, shape only & $0.870 \pm 0.108$ & $0.375 \pm 0.058$ & $1.394 \pm 0.026$ & $0.663 \pm 0.022$ \\
+Consistent, midpoint & $1.020 \pm 0.088$ & $0.469 \pm 0.046$ & $1.300 \pm 0.068$ & $0.616 \pm 0.044$ \\
+Cartesian, road & $1.402 \pm 0.113$ & $0.667 \pm 0.041$ & $1.584 \pm 0.040$ & $0.680 \pm 0.029$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+Table~\ref{tab:conditioned} uses the same previously examined sources. The
+consistent model ignores the independent curvature head, while shape-only clears
+that head during dynamics. Neither ablation isolates curvature supervision of
+the jointly trained encoder. The kinematic and no-road Cartesian references in
+Table~\ref{tab:controlled} are unaffected by encoder changes.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{fig_conditioned_comparison.pdf}
+\caption{Complete conditioned-dynamics comparison and fixed controls. Lines are
+means over three training seeds; shading is sample standard deviation across
+seeds, not a confidence interval over recording sessions. All curves use the
+same source-specific windows, privileged initialization, and recorded actions.
+Both sources had been inspected in earlier development.}
+\label{fig:conditioned_comparison}
+\end{figure}
+
+\subsection{Purged temporal prediction within both sources}\label{sec:temporal}
+To distinguish source/regime transfer from forecasting within recorded operating
+conditions, we add an exploratory chronological split separately within each
+source. The first approximately 60\% of ordered segments train the models,
+the next 20\% select checkpoints, and the last 20\% evaluate them. Boundary
+segments are purged to leave at least 115 original frames between adjacent
+partitions. This produces 9+30 training segments, 3+10 validation segments,
+4+11 evaluation segments, and 2+2 purged segments.
+All encoders and six dynamics variants are trained from scratch using the same
+25/40-epoch budgets. The guarded full model and pooled-window endpoint metric
+are fixed before fitting; no family is selected retrospectively as the winner.
+
+This experiment was designed after inspecting the earlier studies and the
+recorded operating ranges. It does not provide fresh independent confirmation,
+and it does not replace the source-held-out stress tests. The narrower question
+is prediction on later portions of the same sources, with both sources represented
+during training. Training throttle nevertheless contains only 0.566667 and
+0.633333, whereas the second full record reaches 0.766667. This split is not
+asserted to be identically distributed or to cover every later operating condition. Table~\ref{tab:temporal} reports the pooled primary
+metric and both source-specific endpoint errors.
+\begin{table}[t]
+\centering
+\caption{Exploratory chronological holdout with both sources represented during training; later operating shifts may remain. Pooled-window E100 is primary; the last two columns expose the original sources separately. Errors in m, mean and sample SD over three seeds.}
+\label{tab:temporal}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lrrrr}
+\toprule
+Model & Pooled $E_{100}$ & Pooled ADE & Rec. 1 $E_{100}$ & Rec. 2 $E_{100}$ \\
+\midrule
+Calibrated kinematics & $0.898 \pm 0.006$ & $0.437 \pm 0.004$ & $0.858 \pm 0.006$ & $0.913 \pm 0.005$ \\
+Cartesian, no road & $0.930 \pm 0.335$ & $0.367 \pm 0.081$ & $0.675 \pm 0.355$ & $1.029 \pm 0.329$ \\
+Cartesian, road & $1.095 \pm 0.212$ & $0.424 \pm 0.090$ & $0.793 \pm 0.310$ & $1.211 \pm 0.175$ \\
+Guarded, full & $0.343 \pm 0.010$ & $0.197 \pm 0.005$ & $0.208 \pm 0.028$ & $0.395 \pm 0.004$ \\
+Guarded, shape only & $0.412 \pm 0.018$ & $0.246 \pm 0.015$ & $0.260 \pm 0.019$ & $0.471 \pm 0.026$ \\
+Consistent, midpoint & $0.372 \pm 0.028$ & $0.208 \pm 0.012$ & $0.301 \pm 0.042$ & $0.399 \pm 0.023$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+The prespecified guarded full model gives a pooled endpoint error of 0.343 m, compared with 0.898 m for calibrated kinematics and 1.095 m for the road-conditioned Cartesian control. These values must be interpreted together with the per-source results and the cross-source stress tests, not as evidence for unseen-track generalization.
+
+\subsection{A single unit-speed road representation}\label{sec:coupled}
+The preceding consistency audit motivates an exploratory encoder whose curvature
+and position describe one curve by construction. Ten predicted curvature knots
+replace the independent curvature and shape heads. For the nine intervals of
+length $\ell=0.5$ m, let $\bar\kappa_j=(\hat\kappa_j+\hat\kappa_{j+1})/2$ and
+$\theta_j=\sum_{i<j}\bar\kappa_i\ell$. At distance $u\in[0,\ell]$ in interval $j$,
+\begin{align}
+ C(q_j+u)&=C(q_j)+u\,\operatorname{sinc}(\bar\kappa_j u/2)
+ \begin{bmatrix}\cos(\theta_j+\bar\kappa_j u/2)\\
+ \sin(\theta_j+\bar\kappa_j u/2)\end{bmatrix},\\
+ \theta(q_j+u)&=\theta_j+\bar\kappa_j u,
+\end{align}
+where $\operatorname{sinc}(x)=\sin(x)/x$, extended continuously at zero.
+Position and tangent are continuous; curvature can jump at interval boundaries.
+The curve has unit parameter speed, and the same interval curvature drives
+midpoint Frenet updates and position readout. Outside the preview, tangent
+extension has zero curvature. This is a consistent implementation of standard
+curve geometry, not a new Frenet identity or a stability guarantee.
+
+The encoder retains the conditioned CNN backbone and is jointly supervised by
+legacy curvature and shape targets; shape gradients propagate through the arc
+integral. All three seeds are refit for 25 epochs. Four dynamics variants are
+refit for 40 epochs on exactly the temporal split in Section~\ref{sec:temporal}.
+The full coupled model and pooled $E_{100}$ are fixed before fitting. The
+independent-encoder control uses the preceding frozen CNN's curvature output
+with the same arc decoder and dynamics. The shape-only variant removes
+curvature from the dynamics but retains the curved readout; it does not remove
+all curvature information. Cartesian dynamics receives the same coupled preview.
+\begin{table}[t]
+\centering
+\caption{Exploratory coupled representation on the unchanged chronological split. Mean and sample SD over all three seeds; all variants retained.}
+\label{tab:coupled}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lrrrr}
+\toprule
+Model & Pooled $E_{100}$ & Pooled ADE & Rec. 1 $E_{100}$ & Rec. 2 $E_{100}$ \\
+\midrule
+Coupled arc, full & $0.400 \pm 0.005$ & $0.217 \pm 0.001$ & $0.260 \pm 0.008$ & $0.454 \pm 0.005$ \\
+Coupled arc, shape only & $0.454 \pm 0.042$ & $0.259 \pm 0.026$ & $0.260 \pm 0.040$ & $0.529 \pm 0.053$ \\
+Arc, independent encoder & $0.468 \pm 0.022$ & $0.235 \pm 0.009$ & $0.314 \pm 0.021$ & $0.528 \pm 0.023$ \\
+Cartesian, coupled road & $1.080 \pm 0.021$ & $0.414 \pm 0.022$ & $0.722 \pm 0.051$ & $1.218 \pm 0.035$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+The full coupled model has pooled endpoint error 0.400 m, compared with 0.468 m for the independent-encoder arc control and 1.080 m for Cartesian dynamics using the coupled preview. The unchanged calibrated-kinematic reference is 0.898 m. These comparisons jointly expose coupling, geometry, and model-family effects.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{fig_temporal_comparison.pdf}
+\caption{Chronological-holdout errors for every prescribed variant. The panels
+separate the independent-head and coupled-road suites; calibrated kinematics
+is repeated as a common reference. Means and shading summarize three seeds
+(sample standard deviation), not independent recording uncertainty.}
+\label{fig:temporal_comparison}
+\end{figure}
+
+\subsection{Compatibility of the geometric supervision}
+The persisted centerline is smoothed after resampling and is not reparameterized
+by arc length afterward. Its nominal grid length is 10.450 m,
+whereas the smoothed polygon length is 9.743 m. At the native 0.05 m grid,
+the median absolute deviation of parameter speed from one is 0.0512.
+Stored curvature is additionally smoothed. Thus these direct map-derived labels
+are not exact, mutually consistent geometric ground truth.
+
+On the temporal validation windows, integrating the stored curvature with the
+piecewise-arc decoder differs from the stored shape by 0.207 m
+coordinate RMSE. This difference combines map parameterization, separate
+curvature smoothing, and coarse interval approximation; it does not isolate one
+cause. Joint supervision of an exact unit-speed representation therefore
+introduces target mismatch. No test-window information is used in this audit,
+and the existing targets and complete experimental results are retained.
+This limits conclusions about the best attainable accuracy of geometrically
+consistent learning from corrected labels.
+For the fixed guarded full model, seed-averaged endpoint error improves on calibrated kinematics and both Cartesian controls in all 14 eligible temporal test segments. Only 14 of the 15 assigned segments are long enough for the prescribed 15-frame context and 100-step horizon, yielding 527 windows. Full dynamics improves on shape-only in 10 of those segments. This is descriptive paired evidence: overlapping windows and segments from two recordings do not provide 14 independent acquisition sessions.
+The maximum fraction of monitored full-step states with an invalid Frenet denominator in the guarded full model is 0.0569\%. Finite rollouts therefore do not establish chart validity. Midpoint internal stages are not included in this monitoring.
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{fig_conference_environments.pdf}
+\caption{Original conference environments: CartPole, Lunar Lander and the
+DonkeyCar simulator. Frames are extracted from the ground-truth rows of the
+conference qualitative figures~\cite{piwm_conf}; the simulated driving scene
+is distinct from the physical platform evaluated in the present study.}
+\label{fig:conf_environments}
+\end{figure}
+\subsection{Retained Conference Benchmark Results}\label{sec:conf_results}
+
+We restore the original conference results~\cite{piwm_conf} in
+Figures~\ref{fig:conf_cartpole}--\ref{fig:conf_rollouts}. These are inherited
+experiments, not additional runs of PIWM-Frenet. They compare intrinsic and
+extrinsic encoders with continuous or discrete latents over 30 prediction steps
+and supervision-noise levels $\delta\in\{0,5\%,10\%\}$. The conference protocol
+uses five-fold cross-validation. State RMSE in these benchmarks is distinct from
+the meter-valued position error of the physical-car evaluation.
+
+\paragraph{Prediction and architectural choice}
+Figures~\ref{fig:conf_cartpole}, \ref{fig:conf_lunar} and
+\ref{fig:conf_donkey} retain all six panels for each environment. Extrinsic
+PIWM with discrete latents gives the lowest long-horizon error among the
+extrinsic variants shown. The intrinsic setting has a different ranking:
+continuous PIWM generally outperforms the discrete variant. Thus the conference
+results support choosing the latent parameterization together with the encoder
+architecture, rather than a universal advantage for quantization. The driving
+encoder comparison in Table~\ref{tab:kappa_source} revisits this choice for the
+new road-perception task.
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=\linewidth]{fig_conference_cartpole.pdf}
+\caption{Conference CartPole results~\cite{piwm_conf}. State RMSE over 30 steps
+for (a) extrinsic and (b) intrinsic methods, under three supervision-noise
+levels. Curves and shaded regions are the original embedded plot images;
+labels and layout have been reset. Panel-specific vertical limits are retained.
+The archived figure does not specify the statistical meaning of its shading.}
+\label{fig:conf_cartpole}
+\end{figure}
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=\linewidth]{fig_conference_lunar.pdf}
+\caption{Conference Lunar Lander results~\cite{piwm_conf}. The layout and
+method groups follow Figure~\ref{fig:conf_cartpole}. Original curves and shaded
+regions are preserved; all panels retain the source RMSE range $[0,2]$.}
+\label{fig:conf_lunar}
+\end{figure}
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=\linewidth]{fig_conference_donkey.pdf}
+\caption{Conference DonkeyCar-simulator results~\cite{piwm_conf}. The layout
+follows Figure~\ref{fig:conf_cartpole}. Original curves and shaded regions are
+preserved, including the source vertical limit of 2; curves beyond that limit
+are clipped as in the original. These are 30-step state-RMSE results and must
+not be read as the 100-step position errors of the physical car.}
+\label{fig:conf_donkey}
+\end{figure}
+
+\paragraph{Parameter estimates and visual rollouts}
+Figure~\ref{fig:conf_parameters} restores the parameter comparison for CartPole
+and Lunar Lander. The reference lines make both agreement and departures from
+the known parameters visible as supervision noise changes. We omit the original
+DonkeyCar wheelbase panel from this recovery comparison because it has no
+known-parameter reference. Figure~\ref{fig:conf_rollouts} retains all five
+comparison rows from the original visual rollout example, with three
+display columns selected for legibility. These examples illustrate visual
+behavior and do not replace the quantitative comparisons above. The original controller diagnostic is also
+retained in Appendix~\ref{sec:conf_control}.
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=\linewidth]{fig_conference_parameters.pdf}
+\caption{Conference parameter estimates for the two controlled
+benchmarks~\cite{piwm_conf}. Each panel retains the original colored intervals,
+center marks and yellow ground-truth reference. Rows correspond to
+$\delta=0,5\%,10\%$, from top to bottom. Parameter names and scales follow the
+source figure; the source does not specify the interval statistic.}
+\label{fig:conf_parameters}
+\end{figure}
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=\linewidth]{fig_conference_rollouts.pdf}
+\caption{Conference visual rollouts at $\delta=5\%$~\cite{piwm_conf}.
+Ground truth and the four original model rows are shown at $k=5,15,30$ for the
+DonkeyCar simulator and Lunar Lander. Frames are extracted without retouching;
+the intermediate display columns and the slide footer have been omitted.}
+\label{fig:conf_rollouts}
+\end{figure}
+\FloatBarrier
+
+
+
+\section{Historical Physical-Car Development Results}\label{sec:historical}
+These tables and figures preserve earlier five-fold development results.
+The 71 segments come from the same two recordings. Displayed evaluation windows
+also selected dynamics checkpoints, so these estimates are optimistic as measures
+of generalization. The original Vid2Param visual encoder was shared across folds;
+DVBF and GOKU-net were reduced to dynamics-only variants. Budgets and information
+pathways differed. These are descriptive results under the original protocol,
+not a clean ranking of published methods.
+
+The 0.463 m result uses surveyed-map position reconstruction and privileged
+initialization. The 0.516 m row uses perceived-shape readout with the original
+selection and initialization conditions. Differences from the source-separated
+study also involve splits, losses, horizons, and readout implementation; they
+are not a controlled estimate of one isolated source of optimism.
+\begin{table}[t]
+\centering
+\caption{Historical five-fold development errors (m). Displayed windows also selected checkpoints. Frenet uses map-assisted readout except in the map-free row; all rows use privileged initialization. Baseline names refer to local reduced implementations. These are not independent test estimates.}
+\label{tab:donkey_main}
+\footnotesize
+\setlength{\tabcolsep}{3.4pt}
+\begin{tabular}{lrrr}
+\toprule
+Model & $E_{xy}(25)$ & $E_{xy}(50)$ & $E_{xy}(100)$ \\
+\midrule
+Vid2Param~\cite{asenov2019vid2param}   & $\mathbf{0.036 \pm 0.008}$ & $\mathbf{0.107 \pm 0.008}$ & $0.703 \pm 0.142$ \\
+GOKU-net~\cite{linial_generative_2021}  & $0.046 \pm 0.012$ & $0.131 \pm 0.013$ & $0.725 \pm 0.107$ \\
+DVBF~\cite{karl2016deep}               & $0.061 \pm 0.011$ & $0.173 \pm 0.031$ & $0.837 \pm 0.131$ \\
+SINDYc~\cite{BRUNTON2016710}           & \multicolumn{3}{c}{diverges in all $2483$ windows of all five folds} \\
+\midrule
+\textbf{PIWM-Frenet (ours, perceived $\kappa$)} & $0.141 \pm 0.009$ & $0.245 \pm 0.021$ & $\mathbf{0.463 \pm 0.045}$ \\
+\emph{PIWM-Frenet (map-free)} & \emph{$0.146 \pm 0.012$} & \emph{$0.258 \pm 0.023$} & \emph{$0.516 \pm 0.056$} \\
+\bottomrule
+\end{tabular}
+\end{table}
+\begin{table}[t]
+\centering
+\caption{Historical curvature-source substitutions using the original dynamics and evaluation protocol. Curvature RMSE is in inverse meters; endpoint error is in meters. Camera refers to the curvature input only; readout and initialization retain the original privileged information. Limited sensitivity here does not establish absence of error propagation.}
+\label{tab:kappa_source}
+\footnotesize
+\setlength{\tabcolsep}{4.5pt}
+\begin{tabular}{llrr}
+\toprule
+Source of $\kappa$ & Input & $\mathrm{RMSE}_\kappa$ & $E_{xy}(100)$ \\
+\midrule
+Known track map            & map $+$ pose  & ---   & $0.505 \pm 0.043$ \\
+Ground-truth profile       & true $\kappa$ & ---   & $0.466 \pm 0.046$ \\
+\midrule
+Extrinsic autoencoder      & camera & 0.193 & $\mathbf{0.454 \pm 0.048}$ \\
+LSTM                       & camera & 0.898 & $0.456 \pm 0.089$ \\
+Intrinsic autoencoder      & camera & 0.136 & $0.460 \pm 0.045$ \\
+CNN, frozen backbone       & camera & 0.247 & $0.461 \pm 0.053$ \\
+CNN, warm-started backbone & camera & 0.148 & $0.462 \pm 0.052$ \\
+\textbf{CNN, from scratch} & \textbf{camera} & \textbf{0.154} & $\mathbf{0.463 \pm 0.045}$ \\
+VQ\,$+$\,Transformer       & camera & 0.219 & $0.463 \pm 0.051$ \\
+Transformer                & camera & \textbf{0.122} & $0.471 \pm 0.047$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+\begin{table}[t]
+\centering
+\caption{Historical perturbation of dynamics supervision, mean and standard deviation over five development folds. Road-encoder labels are not perturbed, so this does not establish weakly supervised visual road learning. The Gaussian row is a matched-magnitude diagnostic, not evidence about all noise distributions.}
+\label{tab:delta}
+\small
+\begin{tabular}{lrrr}
+\toprule
+Model & $\delta = 0\%$ & $\delta = 5\%$ & $\delta = 10\%$ \\
+\midrule
+\textbf{PIWM-Frenet (ours)}     & $0.463 \pm 0.045$ & $0.452 \pm 0.035$ & $\mathbf{0.319 \pm 0.044}$ \\
+\emph{PIWM-Frenet (map-free)}   & $0.516 \pm 0.056$ & $0.506 \pm 0.049$ & $0.390 \pm 0.036$ \\
+\midrule
+Vid2Param                       & $0.703 \pm 0.142$ & $0.919 \pm 0.189$ & $0.938 \pm 0.211$ \\
+GOKU-net                        & $0.725 \pm 0.107$ & $0.896 \pm 0.152$ & $0.864 \pm 0.142$ \\
+DVBF                            & $0.837 \pm 0.131$ & $1.067 \pm 0.188$ & $1.075 \pm 0.177$ \\
+\midrule
+\multicolumn{4}{l}{\emph{matched-magnitude Gaussian control, ours at $\delta = 10\%$:}
+$0.313 \pm 0.041$} \\
+\bottomrule
+\end{tabular}
+\end{table}
+\begin{table}[t]
+\centering
+\caption{Historical initial-state perturbations with ten draws per window. Values are preserved from the original aggregation. The clean column differs slightly from the main historical table and should not be treated as an exact reproduction. Noise is relative to the original state-normalization scales.}
+\label{tab:noise}
+\small
+\begin{tabular}{lrrrrr}
+\toprule
+Model & $\sigma = 0$ & $0.25$ & $0.5$ & $1.0$ & $1.5$ \\
+\midrule
+\textbf{PIWM-Frenet (ours)} & $\mathbf{0.462}$ & $\mathbf{0.485}$ & $\mathbf{0.540}$ & $\mathbf{0.685}$ & $\mathbf{0.823}$ \\
+Vid2Param                   & $0.699$ & $0.726$ & $0.788$ & $0.977$ & $1.199$ \\
+GOKU-net                    & $0.724$ & $0.768$ & $0.856$ & $1.097$ & $1.503$ \\
+DVBF                        & $0.840$ & $0.876$ & $0.974$ & $1.267$ & $1.681$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\linewidth]{fig_main_cv.pdf}
+    \caption{Historical five-fold development curves with ground-truth initialization and checkpoint selection on the displayed windows. The principal Frenet curve uses map-assisted reconstruction. SINDYc is omitted after divergence.}
+\label{fig:donkey_main}
+\end{figure}
+\begin{figure}[t]
+    \centering
+    %% all result figures are authored at \textwidth (see src/paper_style.py), so
+    %% they must be included at \linewidth for declared pt to equal rendered pt
+    \includegraphics[width=\linewidth]{fig_delta_cv.pdf}
+    \caption{Historical dynamics-supervision perturbation curves. Solid curves average five development folds; shading spans their range. The repeated dashed reference uses clean-label Vid2Param. This is not noisy road-encoder supervision.}
+\label{fig:delta}
+\end{figure}
+These results motivated follow-up studies. Small effects from curvature
+replacement and gains under some noise conditions do not identify a unique
+causal mechanism; they should be read alongside the controlled main-text results.
+
+\section{Weak Supervision Noise Model}\label{sec:interp_loss_def}
+%% ==============================================================
+
+The weak supervision in retained conference benchmark experiments follows the noise model from
+the conference paper.
+For the $i$-th state component with valid range size $\mathcal{X}_i$, we generate a
+randomly shifted center $\tilde{\mu}_i = x_i + \Delta_i$,
+$\Delta_i \sim \mathrm{Unif}[-\frac{1}{2}\delta|\mathcal{X}_i|,
+\frac{1}{2}\delta|\mathcal{X}_i|]$, and draw the supervisory distribution as
+$p_i(x) = \mathrm{Unif}[\tilde{\mu}_i - \frac{1}{2}\delta|\mathcal{X}_i|,\;
+\tilde{\mu}_i + \frac{1}{2}\delta|\mathcal{X}_i|]$.
+At each timestep, $L = 50$ samples are drawn to form the proxy supervision set
+$\Xi_t$.
+
+The physical-car historical study in Table~\ref{tab:delta} perturbs dynamics
+state supervision and initialization. It does not perturb the image-to-curvature
+or image-to-shape training labels. The new controlled studies use direct map-derived
+labels; their road preview is inferred from images, while initial road-relative
+state remains privileged.
+
+\section{Conference Controller Diagnostic}\label{sec:conf_control}
+The conference study~\cite{piwm_conf} passed reconstructed observations through
+the original fixed controller to assess task-relevant visual information.
+Table~\ref{tab:conf_control} reproduces the archived results, separately from
+trajectory-prediction error. The continuous intrinsic variant gives the best
+controller agreement in these examples; the strongest prediction variant need
+not have the strongest reconstruction-based control metric.
+
+\begin{table}[htbp]
+\centering
+\caption{Conference controller results on reconstructed observations, reproduced
+from~\cite{piwm_conf}. Entries retain the source's reported $\pm$ quantities;
+the archived table does not define their dispersion statistic. Accuracy entries
+are percentages. These results do not evaluate the new Frenet model.}
+\label{tab:conf_control}
+\small
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{@{}llccc@{}}
+\toprule
+Architecture & Latent & $\delta=0$ & $\delta=5\%$ & $\delta=10\%$ \\
+\midrule
+\multicolumn{5}{l}{\textit{DonkeyCar simulator: action RMSE $\downarrow$}}\\[2pt]
+Intrinsic & Continuous & $0.12\pm0.04$ & $0.13\pm0.04$ & $0.15\pm0.05$\\
+Intrinsic & Discrete   & $0.21\pm0.15$ & $0.29\pm0.16$ & $0.32\pm0.20$\\
+Extrinsic & Continuous & $0.15\pm0.05$ & $0.16\pm0.05$ & $0.22\pm0.06$\\
+Extrinsic & Discrete   & $0.15\pm0.04$ & $0.17\pm0.05$ & $0.19\pm0.05$\\
+\midrule
+\multicolumn{5}{l}{\textit{Lunar Lander: action accuracy (\%) $\uparrow$}}\\[2pt]
+Intrinsic & Continuous & $93.0\pm1.8$ & $90.5\pm2.0$ & $87.1\pm2.2$\\
+Intrinsic & Discrete   & $85.5\pm2.5$ & $82.1\pm2.8$ & $78.3\pm3.1$\\
+Extrinsic & Continuous & $86.2\pm2.4$ & $83.5\pm2.6$ & $80.0\pm2.9$\\
+Extrinsic & Discrete   & $91.5\pm2.1$ & $88.6\pm2.3$ & $84.5\pm2.5$\\
+\midrule
+\multicolumn{5}{l}{\textit{CartPole: action accuracy (\%) $\uparrow$}}\\[2pt]
+Intrinsic & Continuous & $98.0\pm1.0$ & $96.5\pm1.2$ & $94.0\pm1.5$\\
+Intrinsic & Discrete   & $95.0\pm1.6$ & $91.5\pm2.0$ & $87.2\pm2.5$\\
+Extrinsic & Continuous & $95.5\pm1.5$ & $92.0\pm1.8$ & $88.0\pm2.2$\\
+Extrinsic & Discrete   & $97.2\pm1.1$ & $95.0\pm1.4$ & $92.5\pm1.8$\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\bibliographystyle{elsarticle-num}
+\bibliography{sample-base}
+
+\end{document}

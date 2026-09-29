@@ -1,0 +1,533 @@
+{
+  "resultsx2_Image22.jpg": {
+    "source": "imgs/resultsx2.pdf",
+    "object": "Image22.jpg",
+    "size": [
+      786,
+      576
+    ],
+    "sha256": "db551001ada864afac44fd629c62874d205ec3d31cbfcd126ae4cc633bcc24f3"
+  },
+  "resultsx2_Image23.jpg": {
+    "source": "imgs/resultsx2.pdf",
+    "object": "Image23.jpg",
+    "size": [
+      781,
+      577
+    ],
+    "sha256": "cc16920fb3df9d26b4b36e090d9844c038c3720f3ff330324963edf94d928665"
+  },
+  "resultsx2_Image24.jpg": {
+    "source": "imgs/resultsx2.pdf",
+    "object": "Image24.jpg",
+    "size": [
+      776,
+      579
+    ],
+    "sha256": "506f8579132ae6900f49691df594a4d9deed9007cc8cc03a8e3dd02c59a2a50c"
+  },
+  "resultsx2_Image25.jpg": {
+    "source": "imgs/resultsx2.pdf",
+    "object": "Image25.jpg",
+    "size": [
+      784,
+      574
+    ],
+    "sha256": "ce829924137f4bec952bf08ec8646c2eec8856019eee4972191faa5b3dbc8145"
+  },
+  "resultsx2_Image26.jpg": {
+    "source": "imgs/resultsx2.pdf",
+    "object": "Image26.jpg",
+    "size": [
+      777,
+      576
+    ],
+    "sha256": "f1135efc1125ff7cd0094dc2026c9a3f07bf04d54b0e0e534d7feab78a473425"
+  },
+  "resultsx2_Image27.jpg": {
+    "source": "imgs/resultsx2.pdf",
+    "object": "Image27.jpg",
+    "size": [
+      777,
+      577
+    ],
+    "sha256": "b921d387739982da698176a9353d600412378ac0b556b8e59c97a6261f64390f"
+  },
+  "resultsx2_Image28.jpg": {
+    "source": "imgs/resultsx2.pdf",
+    "object": "Image28.jpg",
+    "size": [
+      780,
+      574
+    ],
+    "sha256": "462df93a3f0c791e502f7a7953e62f74ff924b39b417ceca49f9471ce98a059d"
+  },
+  "resultsx2_Image29.jpg": {
+    "source": "imgs/resultsx2.pdf",
+    "object": "Image29.jpg",
+    "size": [
+      778,
+      578
+    ],
+    "sha256": "48ac1d6f827febd4ed23704787cbaa538548681fa52ded451a69c8012fb42350"
+  },
+  "resultsx2_Image30.jpg": {
+    "source": "imgs/resultsx2.pdf",
+    "object": "Image30.jpg",
+    "size": [
+      1562,
+      1147
+    ],
+    "sha256": "82a6aa070f0421006db74fe143a6e384c7ff50d149924e760d11ed84343aaa78"
+  },
+  "resultsx2_Image31.jpg": {
+    "source": "imgs/resultsx2.pdf",
+    "object": "Image31.jpg",
+    "size": [
+      1789,
+      957
+    ],
+    "sha256": "d992123226954efed9e014dc6b4d9e6efe8752980b4aaaa8781b2860eb72ecac"
+  },
+  "resultsx2_Image32.jpg": {
+    "source": "imgs/resultsx2.pdf",
+    "object": "Image32.jpg",
+    "size": [
+      1789,
+      954
+    ],
+    "sha256": "08ef7c65a1348d84053d24fc744fb265a3b8363c264be9056fb30d092700df2a"
+  },
+  "resultsx2_Image33.jpg": {
+    "source": "imgs/resultsx2.pdf",
+    "object": "Image33.jpg",
+    "size": [
+      1779,
+      952
+    ],
+    "sha256": "20ef4c3ad6b439a79467779518f45ef2107c1e806c743924a1f67e2da4a3e627"
+  },
+  "cartresults_Image23.jpg": {
+    "source": "imgs/cartresults.pdf",
+    "object": "Image23.jpg",
+    "size": [
+      1068,
+      787
+    ],
+    "sha256": "0545093e0502b41e1a071bc053062e6ee9d2c2f508640902520b0facffb8757c"
+  },
+  "cartresults_Image24.jpg": {
+    "source": "imgs/cartresults.pdf",
+    "object": "Image24.jpg",
+    "size": [
+      1067,
+      777
+    ],
+    "sha256": "3774e50ef05dae5b70d660e6053c84f82887f0937569c364a1944a86dc998d34"
+  },
+  "cartresults_Image25.jpg": {
+    "source": "imgs/cartresults.pdf",
+    "object": "Image25.jpg",
+    "size": [
+      819,
+      603
+    ],
+    "sha256": "27f030c4e5f208fbb60c6667c48b22ec2b49a92f7e07a2b83fcc303422f1b25b"
+  },
+  "cartresults_Image26.jpg": {
+    "source": "imgs/cartresults.pdf",
+    "object": "Image26.jpg",
+    "size": [
+      832,
+      596
+    ],
+    "sha256": "933439b4abcf8ed80629ac75c2b367169d518fb96f190b51e2b3ec351518674d"
+  },
+  "cartresults_Image27.jpg": {
+    "source": "imgs/cartresults.pdf",
+    "object": "Image27.jpg",
+    "size": [
+      825,
+      603
+    ],
+    "sha256": "566160ce1fa9adb58817c7a2e4fc98483ff8123e6c23bc64399f2775c179a4dc"
+  },
+  "cartresults_Image28.jpg": {
+    "source": "imgs/cartresults.pdf",
+    "object": "Image28.jpg",
+    "size": [
+      823,
+      605
+    ],
+    "sha256": "f84f3fd26faae2d9088ea0f543ee8a0e2f706e80eb8c51060edd527811f978cc"
+  },
+  "allpara_Image15.jpg": {
+    "source": "imgs/allpara.pdf",
+    "object": "Image15.jpg",
+    "size": [
+      647,
+      473
+    ],
+    "sha256": "2054f7a0a65efac02c22cd27abe99ab441de55900975800fd02ec1389e99b5fb"
+  },
+  "allpara_Image16.jpg": {
+    "source": "imgs/allpara.pdf",
+    "object": "Image16.jpg",
+    "size": [
+      652,
+      476
+    ],
+    "sha256": "fa3b56e07b7dc3261c90cacb0679fb14b772d9bb0919775b3544f84e0aaa56d9"
+  },
+  "allpara_Image17.jpg": {
+    "source": "imgs/allpara.pdf",
+    "object": "Image17.jpg",
+    "size": [
+      660,
+      474
+    ],
+    "sha256": "681057ab31e0c098bd01771fe6b7eefe74e5d668a3eba77d448ab3446a886ca0"
+  },
+  "allpara_Image18.jpg": {
+    "source": "imgs/allpara.pdf",
+    "object": "Image18.jpg",
+    "size": [
+      646,
+      475
+    ],
+    "sha256": "84d713da5c7ba4810399e4f20a3ab471d5e15e39fc35bdbc0b7f08c107bcb634"
+  },
+  "allpara_Image19.jpg": {
+    "source": "imgs/allpara.pdf",
+    "object": "Image19.jpg",
+    "size": [
+      649,
+      474
+    ],
+    "sha256": "8be6903ceb1b8e4a53e3dd524eec65e385fa618c7f9e7f0addbdd3202ada45be"
+  },
+  "allpara_Image20.jpg": {
+    "source": "imgs/allpara.pdf",
+    "object": "Image20.jpg",
+    "size": [
+      663,
+      472
+    ],
+    "sha256": "fd8823a2fb02ce89753794c48e0b8f661d12f6b861d1b6a45a84b8728f486f53"
+  },
+  "allpara_Image21.jpg": {
+    "source": "imgs/allpara.pdf",
+    "object": "Image21.jpg",
+    "size": [
+      659,
+      478
+    ],
+    "sha256": "371d6c7983e4fc5e2c3248d4922d33ddde06ec95085dc9cc848d9229594753a9"
+  },
+  "pred_Image22.jpg": {
+    "source": "imgs/pred.pdf",
+    "object": "Image22.jpg",
+    "size": [
+      1904,
+      790
+    ],
+    "sha256": "9c857be7dca20fe5b3addb3b5b0aa4d6ee4b6e752710efcd27f3a33e5db09c25"
+  },
+  "cartviz_Image22.jpg": {
+    "source": "imgs/cartviz.pdf",
+    "object": "Image22.jpg",
+    "size": [
+      1904,
+      790
+    ],
+    "sha256": "9c857be7dca20fe5b3addb3b5b0aa4d6ee4b6e752710efcd27f3a33e5db09c25"
+  },
+  "cartviz_Image23.jpg": {
+    "source": "imgs/cartviz.pdf",
+    "object": "Image23.jpg",
+    "size": [
+      150,
+      100
+    ],
+    "sha256": "7e74980418a7408d9003d33f9aaa86f7f361728af64d9b621af98efb1e7fda89"
+  },
+  "cartviz_Image24.jpg": {
+    "source": "imgs/cartviz.pdf",
+    "object": "Image24.jpg",
+    "size": [
+      150,
+      100
+    ],
+    "sha256": "f4ac337387b1685f9858158eb49bee732d4bb8d6af17821a22806e4def8f1187"
+  },
+  "cartviz_Image25.jpg": {
+    "source": "imgs/cartviz.pdf",
+    "object": "Image25.jpg",
+    "size": [
+      150,
+      100
+    ],
+    "sha256": "5b12140b5b7a652237462cfdc657b44d3f51c8dfe17e319f047cffbdc933193c"
+  },
+  "cartviz_Image26.jpg": {
+    "source": "imgs/cartviz.pdf",
+    "object": "Image26.jpg",
+    "size": [
+      150,
+      100
+    ],
+    "sha256": "f21a2b820e1c875caf616e9aff6a7a9f014052df861e71415ca91ec11a582c9b"
+  },
+  "cartviz_Image27.jpg": {
+    "source": "imgs/cartviz.pdf",
+    "object": "Image27.jpg",
+    "size": [
+      150,
+      100
+    ],
+    "sha256": "2890c089146799868ff1031c2e0fb6a074098b59f8fb34401000ef96ad42fce5"
+  },
+  "cartviz_Image28.jpg": {
+    "source": "imgs/cartviz.pdf",
+    "object": "Image28.jpg",
+    "size": [
+      150,
+      100
+    ],
+    "sha256": "1ba65dee9143ff04870dd77dae35a7ed95f3f0ec2d89f3d8f273a8ba838da866"
+  },
+  "cartviz_Image29.jpg": {
+    "source": "imgs/cartviz.pdf",
+    "object": "Image29.jpg",
+    "size": [
+      150,
+      100
+    ],
+    "sha256": "cd0a7be79e452637f09e171922892552152ce64d71acb022703241d6cb70f03a"
+  },
+  "cartviz_Image30.jpg": {
+    "source": "imgs/cartviz.pdf",
+    "object": "Image30.jpg",
+    "size": [
+      150,
+      100
+    ],
+    "sha256": "4b36443b87952b08dc9d003c09df38d2c42a83a9b632ef6703ddc3fdfcb0644b"
+  },
+  "cartviz_Image31.jpg": {
+    "source": "imgs/cartviz.pdf",
+    "object": "Image31.jpg",
+    "size": [
+      150,
+      100
+    ],
+    "sha256": "d8ae2f9c5f7c24d9a818adb91882591dbbea11d99bf3ac0517b2fee032376921"
+  },
+  "cartviz_Image32.jpg": {
+    "source": "imgs/cartviz.pdf",
+    "object": "Image32.jpg",
+    "size": [
+      150,
+      100
+    ],
+    "sha256": "34e0cb0f90e8b2200cb971878325de8308891bcd8e9177649bbb0acb435f8d23"
+  },
+  "cartviz_Image33.jpg": {
+    "source": "imgs/cartviz.pdf",
+    "object": "Image33.jpg",
+    "size": [
+      150,
+      100
+    ],
+    "sha256": "221ed93b51f653cb474a43d36b154b00c788ca83ca24b65110da962fdef8c42e"
+  },
+  "cartviz_Image34.jpg": {
+    "source": "imgs/cartviz.pdf",
+    "object": "Image34.jpg",
+    "size": [
+      150,
+      100
+    ],
+    "sha256": "8f35db5fe9eefcc14cde14d3e3f9f3b97afa54fa8847e307fc0202a1b86eb051"
+  },
+  "cartviz_Image35.jpg": {
+    "source": "imgs/cartviz.pdf",
+    "object": "Image35.jpg",
+    "size": [
+      150,
+      100
+    ],
+    "sha256": "d917df5a88dd6b81d6f3fa023a0d015ba6ad4a9394b352b8456c5059403bd5e0"
+  },
+  "cartviz_Image36.jpg": {
+    "source": "imgs/cartviz.pdf",
+    "object": "Image36.jpg",
+    "size": [
+      150,
+      100
+    ],
+    "sha256": "0bf4105b0216484b929ed4efab2e64afc939a5f3a72e4aed0fb2165086017109"
+  },
+  "cartviz_Image37.jpg": {
+    "source": "imgs/cartviz.pdf",
+    "object": "Image37.jpg",
+    "size": [
+      150,
+      100
+    ],
+    "sha256": "89480c41a00fe8d36f63c6bfd4fd49d21220e4704bf470cb0cf7925bb0f5464c"
+  },
+  "cartviz_Image38.jpg": {
+    "source": "imgs/cartviz.pdf",
+    "object": "Image38.jpg",
+    "size": [
+      150,
+      100
+    ],
+    "sha256": "221ed93b51f653cb474a43d36b154b00c788ca83ca24b65110da962fdef8c42e"
+  },
+  "cartviz_Image39.jpg": {
+    "source": "imgs/cartviz.pdf",
+    "object": "Image39.jpg",
+    "size": [
+      150,
+      100
+    ],
+    "sha256": "abe0ec8f0ceced8c6454db8ce3250bed19eedbf6f0761ba5d52cb78f2171580b"
+  },
+  "cartviz_Image40.jpg": {
+    "source": "imgs/cartviz.pdf",
+    "object": "Image40.jpg",
+    "size": [
+      150,
+      100
+    ],
+    "sha256": "175650a63a78678afef6e0f6450a77ce415224eb724315057f55a1dcff9921c9"
+  },
+  "cartviz_Image41.jpg": {
+    "source": "imgs/cartviz.pdf",
+    "object": "Image41.jpg",
+    "size": [
+      150,
+      100
+    ],
+    "sha256": "8f35db5fe9eefcc14cde14d3e3f9f3b97afa54fa8847e307fc0202a1b86eb051"
+  },
+  "cartviz_Image42.jpg": {
+    "source": "imgs/cartviz.pdf",
+    "object": "Image42.jpg",
+    "size": [
+      150,
+      100
+    ],
+    "sha256": "221ed93b51f653cb474a43d36b154b00c788ca83ca24b65110da962fdef8c42e"
+  },
+  "cartviz_Image43.jpg": {
+    "source": "imgs/cartviz.pdf",
+    "object": "Image43.jpg",
+    "size": [
+      150,
+      100
+    ],
+    "sha256": "10123418e813bf3e3d9c5782c4de7194482c1446ab10a36464d00190ac2bf765"
+  },
+  "cartviz_Image44.jpg": {
+    "source": "imgs/cartviz.pdf",
+    "object": "Image44.jpg",
+    "size": [
+      150,
+      100
+    ],
+    "sha256": "34e0cb0f90e8b2200cb971878325de8308891bcd8e9177649bbb0acb435f8d23"
+  },
+  "cartviz_Image45.jpg": {
+    "source": "imgs/cartviz.pdf",
+    "object": "Image45.jpg",
+    "size": [
+      150,
+      100
+    ],
+    "sha256": "414c5a848f60d1b7da49642f5c16b6de2ae33e7860245ced327e8f38cf24b73c"
+  },
+  "cartviz_Image46.jpg": {
+    "source": "imgs/cartviz.pdf",
+    "object": "Image46.jpg",
+    "size": [
+      150,
+      100
+    ],
+    "sha256": "175650a63a78678afef6e0f6450a77ce415224eb724315057f55a1dcff9921c9"
+  },
+  "cartviz_Image47.jpg": {
+    "source": "imgs/cartviz.pdf",
+    "object": "Image47.jpg",
+    "size": [
+      150,
+      100
+    ],
+    "sha256": "4e8e00fae507ded0d71ceecc0d2accbbe109e0b4f6cc42553f06318c9259ab3f"
+  },
+  "cartviz_Image48.jpg": {
+    "source": "imgs/cartviz.pdf",
+    "object": "Image48.jpg",
+    "size": [
+      150,
+      100
+    ],
+    "sha256": "df8daf101123ceb30bf9754cefed6e02af58084ff6d2af12669a6168d987ed57"
+  },
+  "cartviz_Image49.jpg": {
+    "source": "imgs/cartviz.pdf",
+    "object": "Image49.jpg",
+    "size": [
+      150,
+      100
+    ],
+    "sha256": "df8daf101123ceb30bf9754cefed6e02af58084ff6d2af12669a6168d987ed57"
+  },
+  "cartviz_Image50.jpg": {
+    "source": "imgs/cartviz.pdf",
+    "object": "Image50.jpg",
+    "size": [
+      150,
+      100
+    ],
+    "sha256": "31283c7ca7af4ab6dbfa26df65a065e810a9a1efe39b1341242c687d2d0bc318"
+  },
+  "cartviz_Image51.jpg": {
+    "source": "imgs/cartviz.pdf",
+    "object": "Image51.jpg",
+    "size": [
+      150,
+      100
+    ],
+    "sha256": "abe0ec8f0ceced8c6454db8ce3250bed19eedbf6f0761ba5d52cb78f2171580b"
+  },
+  "cartviz_Image52.jpg": {
+    "source": "imgs/cartviz.pdf",
+    "object": "Image52.jpg",
+    "size": [
+      150,
+      100
+    ],
+    "sha256": "64a24eed9519cbbcfc8f5525859154609ef42089d9f88433a2af0c559745d293"
+  },
+  "cartviz_Image53.jpg": {
+    "source": "imgs/cartviz.pdf",
+    "object": "Image53.jpg",
+    "size": [
+      150,
+      100
+    ],
+    "sha256": "31283c7ca7af4ab6dbfa26df65a065e810a9a1efe39b1341242c687d2d0bc318"
+  },
+  "cartviz_Image54.jpg": {
+    "source": "imgs/cartviz.pdf",
+    "object": "Image54.jpg",
+    "size": [
+      150,
+      100
+    ],
+    "sha256": "cd0a7be79e452637f09e171922892552152ce64d71acb022703241d6cb70f03a"
+  }
+}

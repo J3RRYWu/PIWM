@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "checks": [
+    "temporal boundary gaps",
+    "six model interfaces",
+    "finite 32-step forward/backward on training-only windows"
+  ],
+  "no_test_loaded": true
+}

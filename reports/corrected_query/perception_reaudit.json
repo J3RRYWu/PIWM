@@ -1,0 +1,133 @@
+{
+  "status": "PASS",
+  "scope": "All training means/scales/context statistics and 18 validation perception losses recalculated; no refitting.",
+  "results": {
+    "temporal/seed0/independent": {
+      "validation_loss": 0.044758344833138966,
+      "epoch": 25,
+      "curvature_std": 1.0857912302017212,
+      "parameters": 1760283,
+      "checkpoint_sha256": "f9a7a887ac0c027fccf86dbab7ba9538a5cf14b0ae185ef0b0281371bdedad98"
+    },
+    "temporal/seed0/coupled": {
+      "validation_loss": 0.07242843161087545,
+      "epoch": 20,
+      "curvature_std": 1.1228463649749756,
+      "parameters": 1755143,
+      "checkpoint_sha256": "b0a3fa3e0cc035fcda27cba03cb0c818f5c497c9d261617bce0843a0420faef3"
+    },
+    "temporal/seed1/independent": {
+      "validation_loss": 0.039639903763497554,
+      "epoch": 22,
+      "curvature_std": 1.0858640670776367,
+      "parameters": 1760283,
+      "checkpoint_sha256": "b357a156c08785a08fd9e1be5153ec9c3cf78c3e5302e136f0b705b65bffa55b"
+    },
+    "temporal/seed1/coupled": {
+      "validation_loss": 0.09131767014686788,
+      "epoch": 23,
+      "curvature_std": 1.1047179698944092,
+      "parameters": 1755143,
+      "checkpoint_sha256": "fbacecb6f042c3cf031303c4e7dd1041b345b5264ede92870effec282b885df0"
+    },
+    "temporal/seed2/independent": {
+      "validation_loss": 0.05003111730463881,
+      "epoch": 22,
+      "curvature_std": 1.07384192943573,
+      "parameters": 1760283,
+      "checkpoint_sha256": "553c508b0df965bd1c1412e0d950851cec8573c3baa43912f8176f154c757967"
+    },
+    "temporal/seed2/coupled": {
+      "validation_loss": 0.0757091870105464,
+      "epoch": 21,
+      "curvature_std": 1.1079498529434204,
+      "parameters": 1755143,
+      "checkpoint_sha256": "1e7a256a53c1bede1a547ac5d0dd644ff39a3a6021491b7d0bd61adc01a9b535"
+    },
+    "outer0/seed0/independent": {
+      "validation_loss": 0.09549876162854731,
+      "epoch": 19,
+      "curvature_std": 1.0382272005081177,
+      "parameters": 1760283,
+      "checkpoint_sha256": "68ea85c2bcc6b2215b63a74467610f6d3e2810a56482da863bc97a55cf7b5137"
+    },
+    "outer0/seed0/coupled": {
+      "validation_loss": 0.13222810343301872,
+      "epoch": 17,
+      "curvature_std": 1.080801010131836,
+      "parameters": 1755143,
+      "checkpoint_sha256": "dd85cadb998b1bb0a66f1728fc52542aaccaccb5ca051425ba374472831291b2"
+    },
+    "outer0/seed1/independent": {
+      "validation_loss": 0.1857803666480407,
+      "epoch": 24,
+      "curvature_std": 0.9994785189628601,
+      "parameters": 1760283,
+      "checkpoint_sha256": "190dc1a042d69b6f6045e066dab7d2ef55ba785157d9270ca8107947eb74d6fd"
+    },
+    "outer0/seed1/coupled": {
+      "validation_loss": 0.14378874545010215,
+      "epoch": 19,
+      "curvature_std": 1.0431921482086182,
+      "parameters": 1755143,
+      "checkpoint_sha256": "d88028e42998aba980004532ea50d5245b8bf9e9bd5c78850d0c8519cc688eeb"
+    },
+    "outer0/seed2/independent": {
+      "validation_loss": 0.1856411262118427,
+      "epoch": 25,
+      "curvature_std": 0.9267429113388062,
+      "parameters": 1760283,
+      "checkpoint_sha256": "b03e8d80accb4c17e9ac085842b118748db3bea414bb7a567b8302464051855b"
+    },
+    "outer0/seed2/coupled": {
+      "validation_loss": 0.14791982432662235,
+      "epoch": 24,
+      "curvature_std": 1.0694180727005005,
+      "parameters": 1755143,
+      "checkpoint_sha256": "1ee7112b1eb5b9b6fb200094800800178a800767cf435e9aba163a96af155338"
+    },
+    "outer1/seed0/independent": {
+      "validation_loss": 0.027811443448309006,
+      "epoch": 25,
+      "curvature_std": 1.092710256576538,
+      "parameters": 1760283,
+      "checkpoint_sha256": "813432bfb0c4887830d8f7b875414bd31d8a07c9b4926861c9d9a654e4982831"
+    },
+    "outer1/seed0/coupled": {
+      "validation_loss": 0.06695806634862249,
+      "epoch": 23,
+      "curvature_std": 1.0946506261825562,
+      "parameters": 1755143,
+      "checkpoint_sha256": "9c296f270aa7ca29e07112c34ac46eafab83bd0184e0ee7d583a6eabd12fd0ef"
+    },
+    "outer1/seed1/independent": {
+      "validation_loss": 0.17079418316120054,
+      "epoch": 25,
+      "curvature_std": 0.8607312440872192,
+      "parameters": 1760283,
+      "checkpoint_sha256": "3efc532965d9365624694589533f9aebd89fbf0e68e379b88f79889bb97e5481"
+    },
+    "outer1/seed1/coupled": {
+      "validation_loss": 0.08713600669449907,
+      "epoch": 25,
+      "curvature_std": 1.0449891090393066,
+      "parameters": 1755143,
+      "checkpoint_sha256": "f589535f99babf26e8cf440d79cc8884c010fbc233b58fba768bf1d467d10456"
+    },
+    "outer1/seed2/independent": {
+      "validation_loss": 0.01781565855007346,
+      "epoch": 19,
+      "curvature_std": 1.092661738395691,
+      "parameters": 1760283,
+      "checkpoint_sha256": "8fa99aa0a528efb7e32cd7a4f183de2a2656700563aa56b1328edfb82db9c302"
+    },
+    "outer1/seed2/coupled": {
+      "validation_loss": 0.04566701634870312,
+      "epoch": 23,
+      "curvature_std": 1.1399723291397095,
+      "parameters": 1755143,
+      "checkpoint_sha256": "b51183c827d90b01dbe5d7568d8e651b2f2f0c5e7546e1fd3be163ca6b0edcfe"
+    }
+  },
+  "script_sha256": "c4232f9d49866a36ab3af6670f166a863dddd64e6613f61661b95416b4637c20"
+}

@@ -1,0 +1,18 @@
+[
+  {
+    "file": "traj1_64x64.npz",
+    "fps": 22.0,
+    "timestamp_dtype": "float32",
+    "first_timestamp": "0.0",
+    "last_timestamp": "263.63635",
+    "median_positive_dt": 0.0454559326171875
+  },
+  {
+    "file": "traj2_64x64.npz",
+    "fps": 22.0,
+    "timestamp_dtype": "float32",
+    "first_timestamp": "0.0",
+    "last_timestamp": "618.0",
+    "median_positive_dt": 0.0454559326171875
+  }
+]

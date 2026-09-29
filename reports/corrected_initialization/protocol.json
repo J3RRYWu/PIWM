@@ -1,0 +1,100 @@
+{
+  "status": "Exploratory sensitivity scenarios fixed before corrected-query test evaluation; no measured sensor model or fresh independent data.",
+  "parent_sha256": "40bb370a06aa256b55266dccb7b96aeaa08f691f4281a833bc9bb21fbe2758df",
+  "script_sha256": "97798678fc22a305906d222dfebd7be6212311946f138f63beb64951910035d7",
+  "fold": "temporal",
+  "models": [
+    "kinematic",
+    "cartesian_guarded",
+    "guarded_full"
+  ],
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "noise_seeds": [
+    92801,
+    92802,
+    92803
+  ],
+  "scenarios": {
+    "clean": [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "small_d": [
+      0.02,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "small_psi": [
+      0.0,
+      0.03490658503988659,
+      0.0,
+      0.0
+    ],
+    "small_v": [
+      0.0,
+      0.0,
+      0.02,
+      0.0
+    ],
+    "small_omega": [
+      0.0,
+      0.0,
+      0.0,
+      0.03490658503988659
+    ],
+    "small_joint": [
+      0.02,
+      0.03490658503988659,
+      0.02,
+      0.03490658503988659
+    ],
+    "larger_d": [
+      0.05,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "larger_psi": [
+      0.0,
+      0.08726646259971647,
+      0.0,
+      0.0
+    ],
+    "larger_v": [
+      0.0,
+      0.0,
+      0.05,
+      0.0
+    ],
+    "larger_omega": [
+      0.0,
+      0.0,
+      0.0,
+      0.08726646259971647
+    ],
+    "larger_joint": [
+      0.05,
+      0.08726646259971647,
+      0.05,
+      0.08726646259971647
+    ]
+  },
+  "units": [
+    "m",
+    "radian",
+    "m/s",
+    "radian/s"
+  ],
+  "distribution": "Independent zero-mean Gaussian initial d/psi/v/omega error; one shared standard-normal array per noise seed across models, training seeds and scenarios; no clipping. Images, preview, future actions, targets and ego reference unchanged.",
+  "semantics": "psi is road-relative heading estimation error. This does not rotate the true ego evaluation frame or simulate global-pose localization error. It changes the road-relative input and the models own anchored readout consistently.",
+  "scope": "Only the frozen temporal split. Report both sources. No retraining, checkpoint reselection, family selection or inferred physical sensor tolerance.",
+  "statistics": "Average 3 noise realizations within each training seed, then mean and sample SD across 3 training seeds. Neither windows nor noise realizations are independent driving sessions.",
+  "diagnostics": "Nonfinite windows, endpoint error >2 m (descriptive threshold, not safety failure), and full-step Frenet denominator <=0 where available."
+}

@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "fits": 27,
+  "training_validation_diagnostic_rows": 72,
+  "test_diagnostic_rows": 36,
+  "manuscript_sha256": "69491cbf6c9edaf08437abe33ed29fd805f7bfa7a6154508fad38614eb24a4f2",
+  "manuscript_pages": 40,
+  "overall_simulated": 3,
+  "protocol_sha256": "507d0e7b55b9bff7a192f9e633d50fd841a3c95fe45a834157535f491f5d7c1a",
+  "postprocessing_sources": {
+    "scripts\\finalize_branch_evidence.py": "ddd501dc6d58ca1b377162a9761f6db8a0cd1adcd62c361ef1aafba15630fc7d",
+    "scripts\\revise_branch_manuscript.py": "3738a6f2546101bbab0640dfecbc66f504cca81fc7b2cd9bdb96c7d18534a953",
+    "scripts\\render_branch_manuscript.py": "a298741b76d1ada1b059c78e04a4a073191554ed8fd4c5c25c03fb582ca2c2fa",
+    "scripts\\summarize_curvature_branches.py": "4bb29ef29b844cbd7376eb370149b6ae7d43549f460178b1f7b63071c60598ef"
+  }
+}

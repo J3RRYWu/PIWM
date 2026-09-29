@@ -1,0 +1,103 @@
+{
+  "status": "PASS",
+  "checks": {
+    "outer0/seed0/guarded_full": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 5.364418029785156e-07
+    },
+    "outer0/seed0/guarded_shape": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 2.980232238769531e-07
+    },
+    "outer0/seed0/geometry_midpoint": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 4.887580871582031e-06
+    },
+    "outer0/seed0/cartesian_road": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 0.0
+    },
+    "outer0/seed1/guarded_full": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 5.960464477539062e-07
+    },
+    "outer0/seed1/guarded_shape": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 2.384185791015625e-07
+    },
+    "outer0/seed1/geometry_midpoint": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 3.8743019104003906e-07
+    },
+    "outer0/seed1/cartesian_road": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 0.0
+    },
+    "outer0/seed2/guarded_full": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 8.344650268554688e-07
+    },
+    "outer0/seed2/guarded_shape": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 2.980232238769531e-07
+    },
+    "outer0/seed2/geometry_midpoint": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 1.0728836059570312e-06
+    },
+    "outer0/seed2/cartesian_road": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 0.0
+    },
+    "outer1/seed0/guarded_full": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 1.1920928955078125e-06
+    },
+    "outer1/seed0/guarded_shape": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 9.5367431640625e-07
+    },
+    "outer1/seed0/geometry_midpoint": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 0.00015735626220703125
+    },
+    "outer1/seed0/cartesian_road": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 0.0
+    },
+    "outer1/seed1/guarded_full": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 4.76837158203125e-07
+    },
+    "outer1/seed1/guarded_shape": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 9.5367431640625e-07
+    },
+    "outer1/seed1/geometry_midpoint": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 3.4570693969726562e-06
+    },
+    "outer1/seed1/cartesian_road": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 0.0
+    },
+    "outer1/seed2/guarded_full": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 4.76837158203125e-07
+    },
+    "outer1/seed2/guarded_shape": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 4.76837158203125e-07
+    },
+    "outer1/seed2/geometry_midpoint": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 3.5762786865234375e-07
+    },
+    "outer1/seed2/cartesian_road": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 0.0
+    }
+  },
+  "scope": "24 evenly spaced windows per checkpoint; not a full independent rerun",
+  "script_sha256": "3962b14e49a3d55442e207ace0e36469c066035c007e60c6d6b8e8dc28ee2e2c"
+}

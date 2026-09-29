@@ -1,0 +1,62 @@
+{
+  "temporal": {
+    "throttle_reference": 0.6130562959908921,
+    "throttle_min": 0.5666670203208923,
+    "throttle_max": 0.6333330273628235,
+    "longitudinal_design_rank": 4,
+    "longitudinal_singular_values": [
+      130.79480562463894,
+      26.847200520487956,
+      2.85255777699789,
+      1.5362869977384617
+    ],
+    "yaw_design_rank": 4,
+    "yaw_singular_values": [
+      116.2242302879212,
+      67.19266723796433,
+      29.500331381126827,
+      3.2993694848642976
+    ],
+    "interpretation": "Training-input excitation diagnostic only; full rank does not prove nonlinear dynamic identifiability. Constant throttle makes drive gain unidentifiable."
+  },
+  "outer0": {
+    "throttle_reference": 0.6338498137008034,
+    "throttle_min": 0.6333330273628235,
+    "throttle_max": 0.6499999761581421,
+    "longitudinal_design_rank": 4,
+    "longitudinal_singular_values": [
+      140.98515116648343,
+      18.445146356751618,
+      1.596150434503204,
+      0.2778237109842027
+    ],
+    "yaw_design_rank": 4,
+    "yaw_singular_values": [
+      128.55850775279407,
+      74.8806930721974,
+      32.77390671287761,
+      3.694909920660457
+    ],
+    "interpretation": "Training-input excitation diagnostic only; full rank does not prove nonlinear dynamic identifiability. Constant throttle makes drive gain unidentifiable."
+  },
+  "outer1": {
+    "throttle_reference": 0.5666670203208923,
+    "throttle_min": 0.5666670203208923,
+    "throttle_max": 0.5666670203208923,
+    "longitudinal_design_rank": 3,
+    "longitudinal_singular_values": [
+      70.3225646446721,
+      6.683215515867437,
+      0.4699223805569791,
+      0.0
+    ],
+    "yaw_design_rank": 4,
+    "yaw_singular_values": [
+      50.14591592058985,
+      25.846877659921777,
+      10.496148992315756,
+      1.2972553543357062
+    ],
+    "interpretation": "Training-input excitation diagnostic only; full rank does not prove nonlinear dynamic identifiability. Constant throttle makes drive gain unidentifiable."
+  }
+}

@@ -1,0 +1,95 @@
+{
+  "status": "PASS",
+  "scope": "Map discretization and raw frame partitions; no test performance.",
+  "protocol_sha256": "40bb370a06aa256b55266dccb7b96aeaa08f691f4281a833bc9bb21fbe2758df",
+  "map_integration_convergence": {
+    "0.5": {
+      "coordinate_RMSE_m": 0.5634758395976858,
+      "endpoint_median_m": 0.9486471864424777
+    },
+    "0.25": {
+      "coordinate_RMSE_m": 0.1903931131670773,
+      "endpoint_median_m": 0.3065824509179723
+    },
+    "0.1": {
+      "coordinate_RMSE_m": 0.09288972648666924,
+      "endpoint_median_m": 0.14181985709482747
+    },
+    "0.05": {
+      "coordinate_RMSE_m": 0.007473346868238749,
+      "endpoint_median_m": 0.009093340052169531
+    },
+    "0.01": {
+      "coordinate_RMSE_m": 0.0003896612076091658,
+      "endpoint_median_m": 0.0006775334624195127
+    }
+  },
+  "partitions": {
+    "temporal": {
+      "traj1_64x64": {
+        "counts": {
+          "train": 9,
+          "validation": 3,
+          "test": 4
+        },
+        "gaps_frames": {
+          "train_validation": 446,
+          "validation_test": 453
+        }
+      },
+      "traj2_64x64": {
+        "counts": {
+          "train": 30,
+          "validation": 10,
+          "test": 11
+        },
+        "gaps_frames": {
+          "train_validation": 264,
+          "validation_test": 488
+        }
+      }
+    },
+    "outer0": {
+      "traj1_64x64": {
+        "counts": {
+          "train": 0,
+          "validation": 0,
+          "test": 18
+        },
+        "gaps_frames": {}
+      },
+      "traj2_64x64": {
+        "counts": {
+          "train": 41,
+          "validation": 11,
+          "test": 0
+        },
+        "gaps_frames": {
+          "train_validation": 488
+        }
+      }
+    },
+    "outer1": {
+      "traj1_64x64": {
+        "counts": {
+          "train": 13,
+          "validation": 4,
+          "test": 0
+        },
+        "gaps_frames": {
+          "train_validation": 453
+        }
+      },
+      "traj2_64x64": {
+        "counts": {
+          "train": 0,
+          "validation": 0,
+          "test": 53
+        },
+        "gaps_frames": {}
+      }
+    }
+  },
+  "interpretation": "Continuous labels are geometrically consistent; ten pointwise curvature knots cannot accurately reproduce the sharp continuously varying curve. Coarse decoder mismatch remains. No smoothing, knot count or training change was selected from these diagnostics.",
+  "script_sha256": "c4232f9d49866a36ab3af6670f166a863dddd64e6613f61661b95416b4637c20"
+}

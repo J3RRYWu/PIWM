@@ -1,0 +1,65 @@
+{
+  "temporal": {
+    "velocity_consistency": {
+      "1": {
+        "interval_seconds": 0.045454545454545456,
+        "velocity_vector_RMSE": 0.27713940977707663,
+        "median_vector_difference": 0.23225191280337287
+      },
+      "5": {
+        "interval_seconds": 0.2272727272727273,
+        "velocity_vector_RMSE": 0.0939277669793091,
+        "median_vector_difference": 0.07877759787159924
+      },
+      "11": {
+        "interval_seconds": 0.5,
+        "velocity_vector_RMSE": 0.07130956583514908,
+        "median_vector_difference": 0.053630196927028334
+      }
+    },
+    "future_truth_kinematic_reconstruction_E100": 0.10278060287237167,
+    "interpretation": "Training only; future true heading/speed diagnostic is NOT a prediction baseline. Differences may reflect noise, timing, speed definition or lateral motion; not proof of sideslip."
+  },
+  "outer0": {
+    "velocity_consistency": {
+      "1": {
+        "interval_seconds": 0.045454545454545456,
+        "velocity_vector_RMSE": 0.30758014067470885,
+        "median_vector_difference": 0.27491794706983835
+      },
+      "5": {
+        "interval_seconds": 0.2272727272727273,
+        "velocity_vector_RMSE": 0.10615721507441181,
+        "median_vector_difference": 0.0963055489090232
+      },
+      "11": {
+        "interval_seconds": 0.5,
+        "velocity_vector_RMSE": 0.08137971891550942,
+        "median_vector_difference": 0.07537315357349089
+      }
+    },
+    "future_truth_kinematic_reconstruction_E100": 0.13437552750110626,
+    "interpretation": "Training only; future true heading/speed diagnostic is NOT a prediction baseline. Differences may reflect noise, timing, speed definition or lateral motion; not proof of sideslip."
+  },
+  "outer1": {
+    "velocity_consistency": {
+      "1": {
+        "interval_seconds": 0.045454545454545456,
+        "velocity_vector_RMSE": 0.169522783699813,
+        "median_vector_difference": 0.14807731567024934
+      },
+      "5": {
+        "interval_seconds": 0.2272727272727273,
+        "velocity_vector_RMSE": 0.04095559274941201,
+        "median_vector_difference": 0.03481520404208001
+      },
+      "11": {
+        "interval_seconds": 0.5,
+        "velocity_vector_RMSE": 0.026602554116695664,
+        "median_vector_difference": 0.02295512741063392
+      }
+    },
+    "future_truth_kinematic_reconstruction_E100": 0.04375544935464859,
+    "interpretation": "Training only; future true heading/speed diagnostic is NOT a prediction baseline. Differences may reflect noise, timing, speed definition or lateral motion; not proof of sideslip."
+  }
+}

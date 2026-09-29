@@ -1,0 +1,35 @@
+{
+  "scope": "Existing exploratory chronological holdout; descriptive comparison, not fresh validation or equivalence testing.",
+  "rows": [
+    {
+      "name": "guarded_full",
+      "label": "独立双头 + guarded full",
+      "E100_mean": 0.34323681394259137,
+      "E100_seed_sd": 0.010333697972051251,
+      "difference_from_guarded_m": 0.0,
+      "relative_cost_percent": 0.0,
+      "reduction_vs_kinematic_percent": 61.76775438377824,
+      "max_seed_invalid_chart_percent": 0.056925996204933584
+    },
+    {
+      "name": "geometry_midpoint",
+      "label": "共享形状曲线 + 几何 midpoint",
+      "E100_mean": 0.37197304765383404,
+      "E100_seed_sd": 0.02774673519930121,
+      "difference_from_guarded_m": 0.028736233711242676,
+      "relative_cost_percent": 8.372130419567704,
+      "reduction_vs_kinematic_percent": 58.56690091845871,
+      "max_seed_invalid_chart_percent": 0.44781783681214427
+    },
+    {
+      "name": "arc_full",
+      "label": "单曲率表示 + 单位弧长圆弧",
+      "E100_mean": 0.4000961979230245,
+      "E100_seed_sd": 0.0054906674269769905,
+      "difference_from_guarded_m": 0.05685938398043311,
+      "relative_cost_percent": 16.565642632361467,
+      "reduction_vs_kinematic_percent": 55.43433720466826,
+      "max_seed_invalid_chart_percent": 0.0
+    }
+  ]
+}

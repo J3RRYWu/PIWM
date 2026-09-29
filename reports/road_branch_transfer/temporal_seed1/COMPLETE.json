@@ -1,0 +1,9 @@
+{
+  "protocol_sha256": "d693dc543b873d710bcef2c562f19688c4aff2acd9c58f6f57d781951b6c7289",
+  "files": {
+    "arrays.npz": "9606dcca3974b8bbc13c9d13ed6d54249636eb856a09f29e0c3ca67aad5b9a7f",
+    "windows.json": "e8a3e8b186aa2d2a2e0e1b33b6b5dfd0ae44253d7aedc7c461bcc25dd2556e71",
+    "summary.json": "bb75d424b0679b749bc3f21521377f6b2c3d5a795a1d54943e5ac51bcb4e096e",
+    "checks.json": "ced167cd3764bb5398d6c3a7ea44e2d53bb1fe888f73da329525ea89af236b3c"
+  }
+}

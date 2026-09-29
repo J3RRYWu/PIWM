@@ -1,0 +1,55 @@
+{
+  "status": "PASS",
+  "scope": "24 evenly spaced test windows per saved checkpoint; no refitting or selection",
+  "checks": {
+    "temporal/seed0/arc_full": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 3.725290298461914e-07
+    },
+    "temporal/seed0/arc_shape": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 2.384185791015625e-07
+    },
+    "temporal/seed0/arc_independent_encoder": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 4.76837158203125e-07
+    },
+    "temporal/seed0/cartesian_road": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 0.0
+    },
+    "temporal/seed1/arc_full": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 3.2782554626464844e-07
+    },
+    "temporal/seed1/arc_shape": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 2.384185791015625e-07
+    },
+    "temporal/seed1/arc_independent_encoder": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 6.258487701416016e-07
+    },
+    "temporal/seed1/cartesian_road": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 0.0
+    },
+    "temporal/seed2/arc_full": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 7.450580596923828e-07
+    },
+    "temporal/seed2/arc_shape": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 1.2665987014770508e-07
+    },
+    "temporal/seed2/arc_independent_encoder": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 3.8743019104003906e-07
+    },
+    "temporal/seed2/cartesian_road": {
+      "windows": 24,
+      "max_absolute_recomputed_difference": 0.0
+    }
+  },
+  "script_sha256": "a21bdb81c704e87dd28a5ee3d10217f8e7a703b81eeddf33f7267affc46657ce"
+}

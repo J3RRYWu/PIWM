@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "metric_rows": 36,
+  "all_finite": true,
+  "legacy_replay_max_absolute_difference": {
+    "outer0/seed0/legacy_full": 0.0,
+    "outer0/seed1/legacy_full": 0.0,
+    "outer0/seed2/legacy_full": 0.0,
+    "outer1/seed0/legacy_full": 0.0,
+    "outer1/seed1/legacy_full": 0.0,
+    "outer1/seed2/legacy_full": 0.0
+  }
+}

@@ -1,0 +1,1598 @@
+{
+  "protocol_sha256": "507d0e7b55b9bff7a192f9e633d50fd841a3c95fe45a834157535f491f5d7c1a",
+  "results": {
+    "temporal/seed0/curvature_response_off": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.1357177048921585,
+      "E50": 0.20629985630512238,
+      "E100": 0.3934802711009979,
+      "ADE": 0.21528184413909912
+    },
+    "temporal/seed0/curvature_pose_off": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.145382359623909,
+      "E50": 0.2074624001979828,
+      "E100": 0.3694276809692383,
+      "ADE": 0.21121975779533386
+    },
+    "temporal/seed0/curvature_both_off": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.16031014919281006,
+      "E50": 0.21660880744457245,
+      "E100": 0.3557957410812378,
+      "ADE": 0.21861428022384644
+    },
+    "temporal/seed0/guarded_full": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.13321956992149353,
+      "E50": 0.19699354469776154,
+      "E100": 0.362339586019516,
+      "ADE": 0.20136237144470215
+    },
+    "temporal/seed0/kinematic": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.17852512001991272,
+      "E50": 0.4281584322452545,
+      "E100": 0.892535388469696,
+      "ADE": 0.4331494867801666
+    },
+    "temporal/seed0/cartesian_guarded": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.1552145779132843,
+      "E50": 0.3792831301689148,
+      "E100": 1.126319408416748,
+      "ADE": 0.4576983153820038
+    },
+    "temporal/seed0/guarded_static_context": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.15527024865150452,
+      "E50": 0.22066360712051392,
+      "E100": 0.4020513892173767,
+      "ADE": 0.22727246582508087
+    },
+    "temporal/seed0/geometry_midpoint": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.13487333059310913,
+      "E50": 0.19212593138217926,
+      "E100": 0.3692370355129242,
+      "ADE": 0.20326334238052368
+    },
+    "temporal/seed1/curvature_response_off": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.12396691739559174,
+      "E50": 0.1939912885427475,
+      "E100": 0.37637194991111755,
+      "ADE": 0.20063848793506622
+    },
+    "temporal/seed1/curvature_pose_off": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.14974239468574524,
+      "E50": 0.21418453752994537,
+      "E100": 0.36522963643074036,
+      "ADE": 0.21475687623023987
+    },
+    "temporal/seed1/curvature_both_off": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.1404431313276291,
+      "E50": 0.21140192449092865,
+      "E100": 0.376248300075531,
+      "ADE": 0.21368414163589478
+    },
+    "temporal/seed1/guarded_full": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.13043983280658722,
+      "E50": 0.19199839234352112,
+      "E100": 0.35250264406204224,
+      "ADE": 0.19745653867721558
+    },
+    "temporal/seed1/kinematic": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.18162916600704193,
+      "E50": 0.4377165734767914,
+      "E100": 0.9035797119140625,
+      "ADE": 0.4409421682357788
+    },
+    "temporal/seed1/cartesian_guarded": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.1267652064561844,
+      "E50": 0.29231247305870056,
+      "E100": 0.8973280787467957,
+      "ADE": 0.3538396656513214
+    },
+    "temporal/seed1/guarded_static_context": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.14402472972869873,
+      "E50": 0.21364931762218475,
+      "E100": 0.41303160786628723,
+      "ADE": 0.22173650562763214
+    },
+    "temporal/seed1/geometry_midpoint": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.13199007511138916,
+      "E50": 0.18986710906028748,
+      "E100": 0.34803006052970886,
+      "ADE": 0.19863787293434143
+    },
+    "temporal/seed2/curvature_response_off": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.11935778707265854,
+      "E50": 0.19393600523471832,
+      "E100": 0.3654450476169586,
+      "ADE": 0.20005834102630615
+    },
+    "temporal/seed2/curvature_pose_off": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.1365259438753128,
+      "E50": 0.21077482402324677,
+      "E100": 0.36971917748451233,
+      "ADE": 0.21238432824611664
+    },
+    "temporal/seed2/curvature_both_off": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.14001204073429108,
+      "E50": 0.21314017474651337,
+      "E100": 0.38068222999572754,
+      "ADE": 0.21654514968395233
+    },
+    "temporal/seed2/guarded_full": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.12678879499435425,
+      "E50": 0.19827082753181458,
+      "E100": 0.36114948987960815,
+      "ADE": 0.2024134248495102
+    },
+    "temporal/seed2/kinematic": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.1808130294084549,
+      "E50": 0.43377721309661865,
+      "E100": 0.8971884846687317,
+      "ADE": 0.4373936057090759
+    },
+    "temporal/seed2/cartesian_guarded": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.13208971917629242,
+      "E50": 0.29953476786613464,
+      "E100": 0.9256905913352966,
+      "ADE": 0.37021076679229736
+    },
+    "temporal/seed2/guarded_static_context": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.13325825333595276,
+      "E50": 0.20309355854988098,
+      "E100": 0.37960270047187805,
+      "ADE": 0.20972880721092224
+    },
+    "temporal/seed2/geometry_midpoint": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.1274680346250534,
+      "E50": 0.19816908240318298,
+      "E100": 0.37981635332107544,
+      "ADE": 0.20515406131744385
+    },
+    "outer0/seed0/curvature_response_off": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.18119972944259644,
+      "E50": 0.4308622479438782,
+      "E100": 1.0248125791549683,
+      "ADE": 0.4705098569393158
+    },
+    "outer0/seed0/curvature_pose_off": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.17997527122497559,
+      "E50": 0.3919176459312439,
+      "E100": 0.9931297898292542,
+      "ADE": 0.44747796654701233
+    },
+    "outer0/seed0/curvature_both_off": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.18027734756469727,
+      "E50": 0.4111071527004242,
+      "E100": 0.9669545292854309,
+      "ADE": 0.44506511092185974
+    },
+    "outer0/seed0/guarded_full": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.1785789281129837,
+      "E50": 0.45709502696990967,
+      "E100": 1.1129732131958008,
+      "ADE": 0.5027705430984497
+    },
+    "outer0/seed0/kinematic": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.17534418404102325,
+      "E50": 0.45474040508270264,
+      "E100": 0.9352185726165771,
+      "ADE": 0.45437055826187134
+    },
+    "outer0/seed0/cartesian_guarded": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.2534421980381012,
+      "E50": 0.6370298266410828,
+      "E100": 1.3868128061294556,
+      "ADE": 0.6515527367591858
+    },
+    "outer0/seed0/guarded_static_context": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.21039968729019165,
+      "E50": 0.463437020778656,
+      "E100": 1.0524178743362427,
+      "ADE": 0.49605125188827515
+    },
+    "outer0/seed0/geometry_midpoint": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.1667913943529129,
+      "E50": 0.4047746956348419,
+      "E100": 0.9936271905899048,
+      "ADE": 0.4496592581272125
+    },
+    "outer0/seed1/curvature_response_off": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.18555948138237,
+      "E50": 0.44890278577804565,
+      "E100": 1.0740578174591064,
+      "ADE": 0.49665993452072144
+    },
+    "outer0/seed1/curvature_pose_off": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.1762332171201706,
+      "E50": 0.3717916011810303,
+      "E100": 0.9611729383468628,
+      "ADE": 0.4249132573604584
+    },
+    "outer0/seed1/curvature_both_off": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.18290337920188904,
+      "E50": 0.42011314630508423,
+      "E100": 0.9953166246414185,
+      "ADE": 0.45760977268218994
+    },
+    "outer0/seed1/guarded_full": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.16560114920139313,
+      "E50": 0.39339694380760193,
+      "E100": 1.0292807817459106,
+      "ADE": 0.45226678252220154
+    },
+    "outer0/seed1/kinematic": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.175003319978714,
+      "E50": 0.45418137311935425,
+      "E100": 0.9322084784507751,
+      "ADE": 0.45360246300697327
+    },
+    "outer0/seed1/cartesian_guarded": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.2610775828361511,
+      "E50": 0.6209505796432495,
+      "E100": 1.3436435461044312,
+      "ADE": 0.630173921585083
+    },
+    "outer0/seed1/guarded_static_context": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.19976958632469177,
+      "E50": 0.42682498693466187,
+      "E100": 0.9576981663703918,
+      "ADE": 0.458326131105423
+    },
+    "outer0/seed1/geometry_midpoint": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.16368965804576874,
+      "E50": 0.38459187746047974,
+      "E100": 0.9382418990135193,
+      "ADE": 0.4215725362300873
+    },
+    "outer0/seed2/curvature_response_off": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.19732798635959625,
+      "E50": 0.45321428775787354,
+      "E100": 0.9779646396636963,
+      "ADE": 0.47633299231529236
+    },
+    "outer0/seed2/curvature_pose_off": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.1704421043395996,
+      "E50": 0.39632874727249146,
+      "E100": 0.930780291557312,
+      "ADE": 0.4384947121143341
+    },
+    "outer0/seed2/curvature_both_off": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.21227888762950897,
+      "E50": 0.45289796590805054,
+      "E100": 0.8999908566474915,
+      "ADE": 0.4666789472103119
+    },
+    "outer0/seed2/guarded_full": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.1777806580066681,
+      "E50": 0.40500566363334656,
+      "E100": 0.9729763269424438,
+      "ADE": 0.4526131749153137
+    },
+    "outer0/seed2/kinematic": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.17640773952007294,
+      "E50": 0.4567863941192627,
+      "E100": 0.9411357045173645,
+      "ADE": 0.4565378427505493
+    },
+    "outer0/seed2/cartesian_guarded": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.28964895009994507,
+      "E50": 0.6697021722793579,
+      "E100": 1.3337041139602661,
+      "ADE": 0.6581800580024719
+    },
+    "outer0/seed2/guarded_static_context": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.13350814580917358,
+      "E50": 0.32719722390174866,
+      "E100": 0.843806266784668,
+      "ADE": 0.3815224766731262
+    },
+    "outer0/seed2/geometry_midpoint": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.21551673114299774,
+      "E50": 0.49067220091819763,
+      "E100": 1.0415290594100952,
+      "ADE": 0.5131300091743469
+    },
+    "outer1/seed0/curvature_response_off": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.2817925214767456,
+      "E50": 0.5630682706832886,
+      "E100": 1.2473053932189941,
+      "ADE": 0.5875288844108582
+    },
+    "outer1/seed0/curvature_pose_off": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.30215969681739807,
+      "E50": 0.6739199161529541,
+      "E100": 1.2802170515060425,
+      "ADE": 0.6609938144683838
+    },
+    "outer1/seed0/curvature_both_off": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.3017997145652771,
+      "E50": 0.6133889555931091,
+      "E100": 1.3436771631240845,
+      "ADE": 0.6301971077919006
+    },
+    "outer1/seed0/guarded_full": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.29196882247924805,
+      "E50": 0.601433515548706,
+      "E100": 1.3519461154937744,
+      "ADE": 0.6326990723609924
+    },
+    "outer1/seed0/kinematic": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.28493455052375793,
+      "E50": 0.6080133318901062,
+      "E100": 1.1610263586044312,
+      "ADE": 0.5953019857406616
+    },
+    "outer1/seed0/cartesian_guarded": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.295501172542572,
+      "E50": 0.6337374448776245,
+      "E100": 1.6727266311645508,
+      "ADE": 0.7001868486404419
+    },
+    "outer1/seed0/guarded_static_context": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.29314061999320984,
+      "E50": 0.5905492305755615,
+      "E100": 1.3003240823745728,
+      "ADE": 0.6116461753845215
+    },
+    "outer1/seed0/geometry_midpoint": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.2868676781654358,
+      "E50": 0.5802557468414307,
+      "E100": 1.234163761138916,
+      "ADE": 0.6007400155067444
+    },
+    "outer1/seed1/curvature_response_off": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.27923446893692017,
+      "E50": 0.5712860822677612,
+      "E100": 1.2320661544799805,
+      "ADE": 0.5916072726249695
+    },
+    "outer1/seed1/curvature_pose_off": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.29668089747428894,
+      "E50": 0.6310039758682251,
+      "E100": 1.3336927890777588,
+      "ADE": 0.6388093829154968
+    },
+    "outer1/seed1/curvature_both_off": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.28543558716773987,
+      "E50": 0.6005333662033081,
+      "E100": 1.3055620193481445,
+      "ADE": 0.6169135570526123
+    },
+    "outer1/seed1/guarded_full": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.2893529534339905,
+      "E50": 0.608751118183136,
+      "E100": 1.2617584466934204,
+      "ADE": 0.6130927205085754
+    },
+    "outer1/seed1/kinematic": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.28569549322128296,
+      "E50": 0.6097121238708496,
+      "E100": 1.1622519493103027,
+      "ADE": 0.5965741872787476
+    },
+    "outer1/seed1/cartesian_guarded": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.30716243386268616,
+      "E50": 0.5959194898605347,
+      "E100": 1.4439146518707275,
+      "ADE": 0.6321007013320923
+    },
+    "outer1/seed1/guarded_static_context": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.2919934391975403,
+      "E50": 0.6114552617073059,
+      "E100": 1.2347944974899292,
+      "ADE": 0.6110687851905823
+    },
+    "outer1/seed1/geometry_midpoint": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.28528016805648804,
+      "E50": 0.5639960169792175,
+      "E100": 1.2078090906143188,
+      "ADE": 0.5763660073280334
+    },
+    "outer1/seed2/curvature_response_off": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.25289052724838257,
+      "E50": 0.5404660701751709,
+      "E100": 1.2772839069366455,
+      "ADE": 0.580947756767273
+    },
+    "outer1/seed2/curvature_pose_off": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.2862011790275574,
+      "E50": 0.5957319736480713,
+      "E100": 1.3491429090499878,
+      "ADE": 0.624239981174469
+    },
+    "outer1/seed2/curvature_both_off": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.27000004053115845,
+      "E50": 0.5471266508102417,
+      "E100": 1.290350079536438,
+      "ADE": 0.5859125256538391
+    },
+    "outer1/seed2/guarded_full": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.26386430859565735,
+      "E50": 0.5846286416053772,
+      "E100": 1.3683977127075195,
+      "ADE": 0.6244302988052368
+    },
+    "outer1/seed2/kinematic": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.2847955524921417,
+      "E50": 0.6073929667472839,
+      "E100": 1.1519885063171387,
+      "ADE": 0.5933319330215454
+    },
+    "outer1/seed2/cartesian_guarded": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.29869040846824646,
+      "E50": 0.6518579721450806,
+      "E100": 1.695894479751587,
+      "ADE": 0.7194802761077881
+    },
+    "outer1/seed2/guarded_static_context": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.29767554998397827,
+      "E50": 0.6122240424156189,
+      "E100": 1.3795188665390015,
+      "ADE": 0.643194854259491
+    },
+    "outer1/seed2/geometry_midpoint": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.26062363386154175,
+      "E50": 0.522345781326294,
+      "E100": 1.2615230083465576,
+      "ADE": 0.5694786310195923
+    }
+  },
+  "diagnostics": {
+    "temporal/seed0/curvature_response_off": {
+      "samples": 52700,
+      "invalid_chart_fraction": 0.0006261859582542695,
+      "near_singular_fraction": 0.001347248576850095,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -0.6671266555786133,
+      "max_abs_state": [
+        4.305584907531738,
+        0.39596739411354065,
+        2.3993215560913086,
+        0.9735130071640015,
+        2.9581992626190186
+      ]
+    },
+    "temporal/seed0/curvature_pose_off": {
+      "samples": 52700,
+      "invalid_chart_fraction": 0.00013282732447817837,
+      "near_singular_fraction": 0.0004743833017077799,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -0.23992860317230225,
+      "max_abs_state": [
+        4.0480523109436035,
+        0.38540470600128174,
+        1.8135392665863037,
+        1.0537796020507812,
+        2.773146390914917
+      ]
+    },
+    "temporal/seed0/curvature_both_off": {
+      "samples": 52700,
+      "invalid_chart_fraction": 0.00022770398481973433,
+      "near_singular_fraction": 0.0003415559772296015,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -0.37128472328186035,
+      "max_abs_state": [
+        4.040200233459473,
+        0.4207187592983246,
+        1.8135392665863037,
+        0.9814702868461609,
+        2.67061448097229
+      ]
+    },
+    "temporal/seed0/guarded_full": {
+      "samples": 52700,
+      "invalid_chart_fraction": 0.0013282732447817836,
+      "near_singular_fraction": 0.00269449715370019,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -1.106572151184082,
+      "max_abs_state": [
+        4.346685409545898,
+        0.4490058720111847,
+        1.8135392665863037,
+        0.9963970184326172,
+        2.869999647140503
+      ]
+    },
+    "temporal/seed0/kinematic": {
+      "samples": 0,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": null,
+      "max_abs_state": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "temporal/seed0/cartesian_guarded": {
+      "samples": 0,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": null,
+      "max_abs_state": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "temporal/seed0/guarded_static_context": {
+      "samples": 52700,
+      "invalid_chart_fraction": 0.000588235294117647,
+      "near_singular_fraction": 0.0005502846299810247,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -0.9709212779998779,
+      "max_abs_state": [
+        4.197883129119873,
+        0.4324294924736023,
+        1.8135392665863037,
+        1.0072816610336304,
+        3.222862482070923
+      ]
+    },
+    "temporal/seed0/geometry_midpoint": {
+      "samples": 52700,
+      "invalid_chart_fraction": 0.0022580645161290325,
+      "near_singular_fraction": 0.0034724857685009486,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -2.3372788429260254,
+      "max_abs_state": [
+        4.760542869567871,
+        0.4245017170906067,
+        2.6015639305114746,
+        0.9735130071640015,
+        3.6970582008361816
+      ]
+    },
+    "temporal/seed1/curvature_response_off": {
+      "samples": 52700,
+      "invalid_chart_fraction": 0.0007590132827324478,
+      "near_singular_fraction": 0.0020113851992409866,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -0.543859601020813,
+      "max_abs_state": [
+        4.46722936630249,
+        0.405337929725647,
+        1.8135392665863037,
+        0.9845238924026489,
+        2.8597207069396973
+      ]
+    },
+    "temporal/seed1/curvature_pose_off": {
+      "samples": 52700,
+      "invalid_chart_fraction": 7.590132827324479e-05,
+      "near_singular_fraction": 0.0005692599620493358,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -0.05442941188812256,
+      "max_abs_state": [
+        3.961915969848633,
+        0.39558491110801697,
+        1.8135392665863037,
+        1.0355106592178345,
+        2.883241653442383
+      ]
+    },
+    "temporal/seed1/curvature_both_off": {
+      "samples": 52700,
+      "invalid_chart_fraction": 0.0003415559772296015,
+      "near_singular_fraction": 0.0007020872865275143,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -0.580686092376709,
+      "max_abs_state": [
+        4.192099571228027,
+        0.47788769006729126,
+        1.8135392665863037,
+        0.9954833984375,
+        3.0202765464782715
+      ]
+    },
+    "temporal/seed1/guarded_full": {
+      "samples": 52700,
+      "invalid_chart_fraction": 0.0020113851992409866,
+      "near_singular_fraction": 0.0037191650853889945,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -0.6926436424255371,
+      "max_abs_state": [
+        4.135123252868652,
+        0.4350048303604126,
+        1.8135392665863037,
+        0.9870595932006836,
+        2.6034529209136963
+      ]
+    },
+    "temporal/seed1/kinematic": {
+      "samples": 0,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": null,
+      "max_abs_state": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "temporal/seed1/cartesian_guarded": {
+      "samples": 0,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": null,
+      "max_abs_state": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "temporal/seed1/guarded_static_context": {
+      "samples": 52700,
+      "invalid_chart_fraction": 0.0003415559772296015,
+      "near_singular_fraction": 0.000588235294117647,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -0.4444476366043091,
+      "max_abs_state": [
+        4.010617256164551,
+        0.47253403067588806,
+        1.8135392665863037,
+        0.9735130071640015,
+        2.967132806777954
+      ]
+    },
+    "temporal/seed1/geometry_midpoint": {
+      "samples": 52700,
+      "invalid_chart_fraction": 0.004573055028462998,
+      "near_singular_fraction": 0.004667931688804554,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -2.301515579223633,
+      "max_abs_state": [
+        4.654748439788818,
+        0.45754605531692505,
+        1.8135392665863037,
+        0.9775542616844177,
+        3.000272035598755
+      ]
+    },
+    "temporal/seed2/curvature_response_off": {
+      "samples": 52700,
+      "invalid_chart_fraction": 0.000777988614800759,
+      "near_singular_fraction": 0.0016698292220113852,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -0.8543617725372314,
+      "max_abs_state": [
+        4.33246374130249,
+        0.40192678570747375,
+        1.8135392665863037,
+        0.9735130071640015,
+        2.51068115234375
+      ]
+    },
+    "temporal/seed2/curvature_pose_off": {
+      "samples": 52700,
+      "invalid_chart_fraction": 9.487666034155598e-05,
+      "near_singular_fraction": 0.00030360531309297915,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -0.327991247177124,
+      "max_abs_state": [
+        4.0509161949157715,
+        0.5263880491256714,
+        1.8135392665863037,
+        0.9899665713310242,
+        3.071666955947876
+      ]
+    },
+    "temporal/seed2/curvature_both_off": {
+      "samples": 52700,
+      "invalid_chart_fraction": 0.0005692599620493358,
+      "near_singular_fraction": 0.000777988614800759,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -0.6497924327850342,
+      "max_abs_state": [
+        4.0929274559021,
+        0.618503987789154,
+        2.8074982166290283,
+        1.0686696767807007,
+        3.975207805633545
+      ]
+    },
+    "temporal/seed2/guarded_full": {
+      "samples": 52700,
+      "invalid_chart_fraction": 0.0014231499051233396,
+      "near_singular_fraction": 0.0028462998102466793,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -0.7255736589431763,
+      "max_abs_state": [
+        4.0600810050964355,
+        0.3983227014541626,
+        1.8135392665863037,
+        0.9904966950416565,
+        2.7062432765960693
+      ]
+    },
+    "temporal/seed2/kinematic": {
+      "samples": 0,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": null,
+      "max_abs_state": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "temporal/seed2/cartesian_guarded": {
+      "samples": 0,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": null,
+      "max_abs_state": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "temporal/seed2/guarded_static_context": {
+      "samples": 52700,
+      "invalid_chart_fraction": 0.00045540796963946866,
+      "near_singular_fraction": 0.0006072106261859583,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -0.7608487606048584,
+      "max_abs_state": [
+        4.1144938468933105,
+        0.5781387686729431,
+        1.8135392665863037,
+        1.0253909826278687,
+        3.0763659477233887
+      ]
+    },
+    "temporal/seed2/geometry_midpoint": {
+      "samples": 52700,
+      "invalid_chart_fraction": 0.004022770398481973,
+      "near_singular_fraction": 0.004079696394686907,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -6.962953567504883,
+      "max_abs_state": [
+        5.00703239440918,
+        0.826034665107727,
+        2.307816743850708,
+        0.9846270084381104,
+        3.457274913787842
+      ]
+    },
+    "outer0/seed0/curvature_response_off": {
+      "samples": 84400,
+      "invalid_chart_fraction": 0.0007701421800947868,
+      "near_singular_fraction": 0.002180094786729858,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -0.6040935516357422,
+      "max_abs_state": [
+        4.065604209899902,
+        0.4144335389137268,
+        1.4334386587142944,
+        0.9083691239356995,
+        2.2194268703460693
+      ]
+    },
+    "outer0/seed0/curvature_pose_off": {
+      "samples": 84400,
+      "invalid_chart_fraction": 0.0007464454976303318,
+      "near_singular_fraction": 0.002085308056872038,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -0.4973701238632202,
+      "max_abs_state": [
+        3.893967866897583,
+        0.543157696723938,
+        2.4864206314086914,
+        0.9386587142944336,
+        2.422978639602661
+      ]
+    },
+    "outer0/seed0/curvature_both_off": {
+      "samples": 84400,
+      "invalid_chart_fraction": 0.001090047393364929,
+      "near_singular_fraction": 0.0025118483412322275,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -0.667243242263794,
+      "max_abs_state": [
+        3.7233502864837646,
+        0.5102392435073853,
+        2.388078451156616,
+        0.9368205666542053,
+        3.279923915863037
+      ]
+    },
+    "outer0/seed0/guarded_full": {
+      "samples": 84400,
+      "invalid_chart_fraction": 0.00245260663507109,
+      "near_singular_fraction": 0.0052843601895734595,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -0.8235204219818115,
+      "max_abs_state": [
+        3.832852602005005,
+        0.5008013248443604,
+        1.4334386587142944,
+        0.9193969964981079,
+        2.83965802192688
+      ]
+    },
+    "outer0/seed0/kinematic": {
+      "samples": 0,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": null,
+      "max_abs_state": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "outer0/seed0/cartesian_guarded": {
+      "samples": 0,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": null,
+      "max_abs_state": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "outer0/seed0/guarded_static_context": {
+      "samples": 84400,
+      "invalid_chart_fraction": 0.0009123222748815166,
+      "near_singular_fraction": 0.0021682464454976305,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -0.7191448211669922,
+      "max_abs_state": [
+        3.683712959289551,
+        0.8859660029411316,
+        1.4896364212036133,
+        0.9396620988845825,
+        3.4316184520721436
+      ]
+    },
+    "outer0/seed0/geometry_midpoint": {
+      "samples": 84400,
+      "invalid_chart_fraction": 0.0034715639810426542,
+      "near_singular_fraction": 0.004419431279620853,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -2.688782215118408,
+      "max_abs_state": [
+        4.406335353851318,
+        0.5157275795936584,
+        1.9928776025772095,
+        0.944774329662323,
+        3.890632152557373
+      ]
+    },
+    "outer0/seed1/curvature_response_off": {
+      "samples": 84400,
+      "invalid_chart_fraction": 0.0008886255924170616,
+      "near_singular_fraction": 0.0018127962085308057,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -0.5589197874069214,
+      "max_abs_state": [
+        4.1225972175598145,
+        0.6166214346885681,
+        3.14140248298645,
+        0.9331434369087219,
+        5.225281238555908
+      ]
+    },
+    "outer0/seed1/curvature_pose_off": {
+      "samples": 84400,
+      "invalid_chart_fraction": 0.0006635071090047393,
+      "near_singular_fraction": 0.0013625592417061611,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -0.6614445447921753,
+      "max_abs_state": [
+        3.8001296520233154,
+        0.5017225742340088,
+        1.5264867544174194,
+        0.9554497599601746,
+        2.84226131439209
+      ]
+    },
+    "outer0/seed1/curvature_both_off": {
+      "samples": 84400,
+      "invalid_chart_fraction": 0.0020023696682464455,
+      "near_singular_fraction": 0.0028791469194312798,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -1.3059277534484863,
+      "max_abs_state": [
+        3.747103452682495,
+        0.6978967189788818,
+        3.1378796100616455,
+        0.9074994325637817,
+        3.2436230182647705
+      ]
+    },
+    "outer0/seed1/guarded_full": {
+      "samples": 84400,
+      "invalid_chart_fraction": 0.0011966824644549763,
+      "near_singular_fraction": 0.00231042654028436,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -0.617540717124939,
+      "max_abs_state": [
+        3.7668023109436035,
+        0.48591017723083496,
+        1.4334386587142944,
+        0.9462300539016724,
+        2.336676597595215
+      ]
+    },
+    "outer0/seed1/kinematic": {
+      "samples": 0,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": null,
+      "max_abs_state": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "outer0/seed1/cartesian_guarded": {
+      "samples": 0,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": null,
+      "max_abs_state": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "outer0/seed1/guarded_static_context": {
+      "samples": 84400,
+      "invalid_chart_fraction": 0.004383886255924171,
+      "near_singular_fraction": 0.005639810426540284,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -2.22289776802063,
+      "max_abs_state": [
+        3.9140167236328125,
+        0.8539789319038391,
+        3.140205144882202,
+        0.9179672002792358,
+        5.118124961853027
+      ]
+    },
+    "outer0/seed1/geometry_midpoint": {
+      "samples": 84400,
+      "invalid_chart_fraction": 0.005604265402843602,
+      "near_singular_fraction": 0.0034834123222748817,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -45.50141143798828,
+      "max_abs_state": [
+        4.6896257400512695,
+        1.195854663848877,
+        3.1193923950195312,
+        0.9093537330627441,
+        4.4771342277526855
+      ]
+    },
+    "outer0/seed2/curvature_response_off": {
+      "samples": 84400,
+      "invalid_chart_fraction": 0.001090047393364929,
+      "near_singular_fraction": 0.0025829383886255925,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -0.4932616949081421,
+      "max_abs_state": [
+        3.8769609928131104,
+        0.5691941976547241,
+        2.695387363433838,
+        0.9148162007331848,
+        3.2508227825164795
+      ]
+    },
+    "outer0/seed2/curvature_pose_off": {
+      "samples": 84400,
+      "invalid_chart_fraction": 0.0014218009478672985,
+      "near_singular_fraction": 0.0024407582938388624,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -0.8478919267654419,
+      "max_abs_state": [
+        3.825410842895508,
+        0.533263623714447,
+        1.4334386587142944,
+        0.9017776250839233,
+        2.769970655441284
+      ]
+    },
+    "outer0/seed2/curvature_both_off": {
+      "samples": 84400,
+      "invalid_chart_fraction": 0.002523696682464455,
+      "near_singular_fraction": 0.003744075829383886,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -1.299281358718872,
+      "max_abs_state": [
+        3.804206371307373,
+        0.6540995240211487,
+        3.140364646911621,
+        1.0585370063781738,
+        5.984916687011719
+      ]
+    },
+    "outer0/seed2/guarded_full": {
+      "samples": 84400,
+      "invalid_chart_fraction": 0.001872037914691943,
+      "near_singular_fraction": 0.0030213270142180094,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -0.8147259950637817,
+      "max_abs_state": [
+        4.162622451782227,
+        0.518581211566925,
+        1.4334386587142944,
+        0.9403501152992249,
+        2.48199725151062
+      ]
+    },
+    "outer0/seed2/kinematic": {
+      "samples": 0,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": null,
+      "max_abs_state": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "outer0/seed2/cartesian_guarded": {
+      "samples": 0,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": null,
+      "max_abs_state": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "outer0/seed2/guarded_static_context": {
+      "samples": 84400,
+      "invalid_chart_fraction": 0.0013507109004739337,
+      "near_singular_fraction": 0.0018364928909952608,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -0.7028275728225708,
+      "max_abs_state": [
+        3.732811450958252,
+        0.46902164816856384,
+        1.4334386587142944,
+        0.9343867897987366,
+        2.614649534225464
+      ]
+    },
+    "outer0/seed2/geometry_midpoint": {
+      "samples": 84400,
+      "invalid_chart_fraction": 0.006220379146919431,
+      "near_singular_fraction": 0.0067772511848341235,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -26.76116180419922,
+      "max_abs_state": [
+        4.6472978591918945,
+        1.1402673721313477,
+        3.073371171951294,
+        0.9254598021507263,
+        3.958441734313965
+      ]
+    },
+    "outer1/seed0/curvature_response_off": {
+      "samples": 165300,
+      "invalid_chart_fraction": 0.0045069570477918935,
+      "near_singular_fraction": 0.004603750756200847,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -2.766862154006958,
+      "max_abs_state": [
+        3.940718412399292,
+        1.5975382328033447,
+        3.1396851539611816,
+        1.152014970779419,
+        4.289719581604004
+      ]
+    },
+    "outer1/seed0/curvature_pose_off": {
+      "samples": 165300,
+      "invalid_chart_fraction": 0.0069751966122202054,
+      "near_singular_fraction": 0.006545674531155475,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -4.015496253967285,
+      "max_abs_state": [
+        4.701225280761719,
+        1.9265637397766113,
+        3.141279458999634,
+        1.1571465730667114,
+        5.5962748527526855
+      ]
+    },
+    "outer1/seed0/curvature_both_off": {
+      "samples": 165300,
+      "invalid_chart_fraction": 0.00868723532970357,
+      "near_singular_fraction": 0.009522081064730792,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -1.5974483489990234,
+      "max_abs_state": [
+        2.957984685897827,
+        1.0278970003128052,
+        1.8135392665863037,
+        1.152014970779419,
+        2.7942821979522705
+      ]
+    },
+    "outer1/seed0/guarded_full": {
+      "samples": 165300,
+      "invalid_chart_fraction": 0.006388384754990925,
+      "near_singular_fraction": 0.004972776769509982,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -4.021633148193359,
+      "max_abs_state": [
+        3.4254040718078613,
+        1.6820045709609985,
+        1.8773226737976074,
+        1.152014970779419,
+        2.7942821979522705
+      ]
+    },
+    "outer1/seed0/kinematic": {
+      "samples": 0,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": null,
+      "max_abs_state": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "outer1/seed0/cartesian_guarded": {
+      "samples": 0,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": null,
+      "max_abs_state": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "outer1/seed0/guarded_static_context": {
+      "samples": 165300,
+      "invalid_chart_fraction": 0.00690865093768905,
+      "near_singular_fraction": 0.004016938898971567,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -5.603701114654541,
+      "max_abs_state": [
+        4.000182628631592,
+        2.528139591217041,
+        2.5275990962982178,
+        1.152014970779419,
+        4.065612316131592
+      ]
+    },
+    "outer1/seed0/geometry_midpoint": {
+      "samples": 165300,
+      "invalid_chart_fraction": 0.005499092558983666,
+      "near_singular_fraction": 0.004791288566243194,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -8.468320846557617,
+      "max_abs_state": [
+        4.019947528839111,
+        1.8723268508911133,
+        3.1414198875427246,
+        1.152014970779419,
+        7.257165908813477
+      ]
+    },
+    "outer1/seed1/curvature_response_off": {
+      "samples": 165300,
+      "invalid_chart_fraction": 0.013000604960677556,
+      "near_singular_fraction": 0.013278886872353297,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -2.4074363708496094,
+      "max_abs_state": [
+        4.839090824127197,
+        2.1960337162017822,
+        3.1346654891967773,
+        1.152014970779419,
+        5.434362411499023
+      ]
+    },
+    "outer1/seed1/curvature_pose_off": {
+      "samples": 165300,
+      "invalid_chart_fraction": 0.009007864488808227,
+      "near_singular_fraction": 0.009969751966122202,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -2.3696787357330322,
+      "max_abs_state": [
+        4.117966175079346,
+        1.3996236324310303,
+        2.0689873695373535,
+        1.152014970779419,
+        2.7942821979522705
+      ]
+    },
+    "outer1/seed1/curvature_both_off": {
+      "samples": 165300,
+      "invalid_chart_fraction": 0.00822141560798548,
+      "near_singular_fraction": 0.01192377495462795,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -1.4416112899780273,
+      "max_abs_state": [
+        3.430654764175415,
+        1.058184027671814,
+        1.8135392665863037,
+        1.152014970779419,
+        3.1273653507232666
+      ]
+    },
+    "outer1/seed1/guarded_full": {
+      "samples": 165300,
+      "invalid_chart_fraction": 0.01161524500907441,
+      "near_singular_fraction": 0.012141560798548095,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -2.2362403869628906,
+      "max_abs_state": [
+        4.442730903625488,
+        1.5518907308578491,
+        1.8135392665863037,
+        1.152014970779419,
+        2.7942821979522705
+      ]
+    },
+    "outer1/seed1/kinematic": {
+      "samples": 0,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": null,
+      "max_abs_state": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "outer1/seed1/cartesian_guarded": {
+      "samples": 0,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": null,
+      "max_abs_state": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "outer1/seed1/guarded_static_context": {
+      "samples": 165300,
+      "invalid_chart_fraction": 0.012534785238959468,
+      "near_singular_fraction": 0.012262552934059286,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -3.2853469848632812,
+      "max_abs_state": [
+        4.748836994171143,
+        1.85138738155365,
+        2.1698477268218994,
+        1.152014970779419,
+        4.158130645751953
+      ]
+    },
+    "outer1/seed1/geometry_midpoint": {
+      "samples": 165300,
+      "invalid_chart_fraction": 0.01411373260738052,
+      "near_singular_fraction": 0.00836660617059891,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -232.64871215820312,
+      "max_abs_state": [
+        4.1680474281311035,
+        1.2047786712646484,
+        3.133638858795166,
+        5.467499732971191,
+        48.666954040527344
+      ]
+    },
+    "outer1/seed2/curvature_response_off": {
+      "samples": 165300,
+      "invalid_chart_fraction": 0.0030852994555353903,
+      "near_singular_fraction": 0.0030792498487598307,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -1.8702785968780518,
+      "max_abs_state": [
+        3.207124710083008,
+        0.6639435291290283,
+        1.8135392665863037,
+        1.152014970779419,
+        2.7942821979522705
+      ]
+    },
+    "outer1/seed2/curvature_pose_off": {
+      "samples": 165300,
+      "invalid_chart_fraction": 0.004258923169993951,
+      "near_singular_fraction": 0.004833635813672112,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -2.1921050548553467,
+      "max_abs_state": [
+        3.2543931007385254,
+        0.8271037936210632,
+        1.8135392665863037,
+        1.152014970779419,
+        2.7942821979522705
+      ]
+    },
+    "outer1/seed2/curvature_both_off": {
+      "samples": 165300,
+      "invalid_chart_fraction": 0.00500907441016334,
+      "near_singular_fraction": 0.0055656382335148216,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -1.9480736255645752,
+      "max_abs_state": [
+        3.442875862121582,
+        0.7551419734954834,
+        1.8135392665863037,
+        1.152014970779419,
+        2.7942821979522705
+      ]
+    },
+    "outer1/seed2/guarded_full": {
+      "samples": 165300,
+      "invalid_chart_fraction": 0.0022625529340592862,
+      "near_singular_fraction": 0.002377495462794918,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -1.4458622932434082,
+      "max_abs_state": [
+        2.92305588722229,
+        0.529924750328064,
+        1.8135392665863037,
+        1.152014970779419,
+        2.7942821979522705
+      ]
+    },
+    "outer1/seed2/kinematic": {
+      "samples": 0,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": null,
+      "max_abs_state": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "outer1/seed2/cartesian_guarded": {
+      "samples": 0,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": null,
+      "max_abs_state": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "outer1/seed2/guarded_static_context": {
+      "samples": 165300,
+      "invalid_chart_fraction": 0.004192377495462795,
+      "near_singular_fraction": 0.0050635208711433755,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -2.0194075107574463,
+      "max_abs_state": [
+        3.069681167602539,
+        0.7464842796325684,
+        1.9450992345809937,
+        1.152014970779419,
+        2.7942821979522705
+      ]
+    },
+    "outer1/seed2/geometry_midpoint": {
+      "samples": 165300,
+      "invalid_chart_fraction": 0.004222625529340593,
+      "near_singular_fraction": 0.0033877797943133695,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -16.724851608276367,
+      "max_abs_state": [
+        4.269155025482178,
+        0.6350383758544922,
+        2.837137222290039,
+        1.152014970779419,
+        3.1122384071350098
+      ]
+    }
+  },
+  "inherited_reference_names": [
+    "guarded_full",
+    "kinematic",
+    "cartesian_guarded",
+    "guarded_static_context",
+    "geometry_midpoint"
+  ]
+}

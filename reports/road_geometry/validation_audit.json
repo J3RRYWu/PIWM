@@ -1,0 +1,108 @@
+{
+  "partition": "validation only; previous source splits",
+  "checks": "PASS: straight curve, extrapolation, readout identity, derivative finite differences, Cartesian velocity consistency",
+  "results": {
+    "outer0/oracle_geometry": {
+      "curve_samples": 17100,
+      "degenerate_fraction": 0.0,
+      "arc_speed_abs_error_median": 0.05091819167137146,
+      "arc_speed_abs_error_p95": 0.23810356855392456,
+      "speed_outside_20percent_fraction": 0.07257309941520468,
+      "curvature_head_vs_shape_abs_difference_median": 0.22926566004753113,
+      "curvature_head_vs_shape_abs_difference_p95": 1.74199640750885,
+      "nonfinite_values": 0
+    },
+    "outer0/seed0": {
+      "curve_samples": 17100,
+      "degenerate_fraction": 0.0,
+      "arc_speed_abs_error_median": 0.09322977066040039,
+      "arc_speed_abs_error_p95": 0.3429318368434906,
+      "speed_outside_20percent_fraction": 0.20292397660818715,
+      "curvature_head_vs_shape_abs_difference_median": 0.3487456440925598,
+      "curvature_head_vs_shape_abs_difference_p95": 2.079484701156616,
+      "nonfinite_values": 0,
+      "windows": 380,
+      "curvature_RMSE": 0.35430359840393066,
+      "shape_RMSE": 0.2544165253639221
+    },
+    "outer0/seed1": {
+      "curve_samples": 17100,
+      "degenerate_fraction": 0.0,
+      "arc_speed_abs_error_median": 0.37798038125038147,
+      "arc_speed_abs_error_p95": 0.41441988945007324,
+      "speed_outside_20percent_fraction": 0.8012280701754386,
+      "curvature_head_vs_shape_abs_difference_median": 0.4198318421840668,
+      "curvature_head_vs_shape_abs_difference_p95": 1.0474178791046143,
+      "nonfinite_values": 0,
+      "windows": 380,
+      "curvature_RMSE": 0.9155914187431335,
+      "shape_RMSE": 0.735604465007782
+    },
+    "outer0/seed2": {
+      "curve_samples": 17100,
+      "degenerate_fraction": 0.0,
+      "arc_speed_abs_error_median": 0.08722838759422302,
+      "arc_speed_abs_error_p95": 0.3269414007663727,
+      "speed_outside_20percent_fraction": 0.1864327485380117,
+      "curvature_head_vs_shape_abs_difference_median": 0.3191637098789215,
+      "curvature_head_vs_shape_abs_difference_p95": 1.9071341753005981,
+      "nonfinite_values": 0,
+      "windows": 380,
+      "curvature_RMSE": 0.3645464777946472,
+      "shape_RMSE": 0.26302480697631836
+    },
+    "outer1/oracle_geometry": {
+      "curve_samples": 6615,
+      "degenerate_fraction": 0.0,
+      "arc_speed_abs_error_median": 0.050408780574798584,
+      "arc_speed_abs_error_p95": 0.22949305176734924,
+      "speed_outside_20percent_fraction": 0.06424792139077853,
+      "curvature_head_vs_shape_abs_difference_median": 0.2096593827009201,
+      "curvature_head_vs_shape_abs_difference_p95": 1.697688102722168,
+      "nonfinite_values": 0
+    },
+    "outer1/seed0": {
+      "curve_samples": 6615,
+      "degenerate_fraction": 0.0,
+      "arc_speed_abs_error_median": 0.07867610454559326,
+      "arc_speed_abs_error_p95": 0.3017714321613312,
+      "speed_outside_20percent_fraction": 0.15918367346938775,
+      "curvature_head_vs_shape_abs_difference_median": 0.3508620858192444,
+      "curvature_head_vs_shape_abs_difference_p95": 2.125370979309082,
+      "nonfinite_values": 0,
+      "windows": 147,
+      "curvature_RMSE": 0.24263708293437958,
+      "shape_RMSE": 0.11557619273662567
+    },
+    "outer1/seed1": {
+      "curve_samples": 6615,
+      "degenerate_fraction": 0.0,
+      "arc_speed_abs_error_median": 0.08525073528289795,
+      "arc_speed_abs_error_p95": 0.3110322952270508,
+      "speed_outside_20percent_fraction": 0.1671957671957672,
+      "curvature_head_vs_shape_abs_difference_median": 0.3590186834335327,
+      "curvature_head_vs_shape_abs_difference_p95": 2.2740068435668945,
+      "nonfinite_values": 0,
+      "windows": 147,
+      "curvature_RMSE": 0.2740912139415741,
+      "shape_RMSE": 0.12903429567813873
+    },
+    "outer1/seed2": {
+      "curve_samples": 6615,
+      "degenerate_fraction": 0.0,
+      "arc_speed_abs_error_median": 0.07573747634887695,
+      "arc_speed_abs_error_p95": 0.2814311683177948,
+      "speed_outside_20percent_fraction": 0.1253212396069539,
+      "curvature_head_vs_shape_abs_difference_median": 0.3241214156150818,
+      "curvature_head_vs_shape_abs_difference_p95": 1.779705286026001,
+      "nonfinite_values": 0,
+      "windows": 147,
+      "curvature_RMSE": 0.24852339923381805,
+      "shape_RMSE": 0.09904450178146362
+    }
+  },
+  "sources": {
+    "scripts\\audit_road_geometry.py": "4ff2f93ca849586a9356e6b2c88c69a80ee4ffab625467218d36ae9aa30ef4c2",
+    "src\\baselines\\consistent_road_geometry.py": "890bbbd7a6a3b7ba383347ec64e907087ab2db94d3cec014258b29749259b21f"
+  }
+}

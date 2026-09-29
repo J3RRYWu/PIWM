@@ -1,0 +1,5 @@
+{
+  "status": "PASS",
+  "script_sha256": "4bb29ef29b844cbd7376eb370149b6ae7d43549f460178b1f7b63071c60598ef",
+  "note": "Frozen report() computed a NumPy integer segment count that json could not serialize. This report-only adapter converts NumPy scalars to native scalars. No fit, metric, checkpoint, protocol or frozen source changed."
+}

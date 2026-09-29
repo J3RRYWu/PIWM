@@ -1,0 +1,18 @@
+{
+  "guarded_full/predicted": {
+    "max_absolute_difference_m": 0.0,
+    "scope": "all inherited windows"
+  },
+  "guarded_full/exact": {
+    "max_absolute_difference_m": 2.4437904357910156e-06,
+    "scope": "24 independent uninstrumented recomputations"
+  },
+  "geometry_midpoint/predicted": {
+    "max_absolute_difference_m": 0.0,
+    "scope": "all inherited windows"
+  },
+  "geometry_midpoint/exact": {
+    "max_absolute_difference_m": 4.231929779052734e-06,
+    "scope": "24 independent uninstrumented recomputations"
+  }
+}

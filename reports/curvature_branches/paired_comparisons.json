@@ -1,0 +1,128 @@
+{
+  "temporal/curvature_response_off": {
+    "paired_E100_differences": [
+      0.031140685081481934,
+      0.023869305849075317,
+      0.004295557737350464
+    ],
+    "mean_difference_m": 0.019768516222635906,
+    "better_seeds": 0,
+    "better_segments": 4,
+    "segments": 14
+  },
+  "temporal/curvature_pose_off": {
+    "paired_E100_differences": [
+      0.00708809494972229,
+      0.01272699236869812,
+      0.008569687604904175
+    ],
+    "mean_difference_m": 0.009461591641108194,
+    "better_seeds": 0,
+    "better_segments": 5,
+    "segments": 14
+  },
+  "temporal/curvature_both_off": {
+    "paired_E100_differences": [
+      -0.006543844938278198,
+      0.02374565601348877,
+      0.019532740116119385
+    ],
+    "mean_difference_m": 0.012244850397109985,
+    "better_seeds": 1,
+    "better_segments": 6,
+    "segments": 14
+  },
+  "temporal/interaction": {
+    "definition": "full - response_off - pose_off + both_off; descriptive nonlinear endpoint-error interaction",
+    "per_seed": [
+      -0.04477262496948242,
+      -0.012850642204284668,
+      0.006667494773864746
+    ],
+    "mean": -0.016985257466634113
+  },
+  "outer0/curvature_response_off": {
+    "paired_E100_differences": [
+      -0.08816063404083252,
+      0.0447770357131958,
+      0.004988312721252441
+    ],
+    "mean_difference_m": -0.012798428535461426,
+    "better_seeds": 1,
+    "better_segments": 11,
+    "segments": 18
+  },
+  "outer0/curvature_pose_off": {
+    "paired_E100_differences": [
+      -0.11984342336654663,
+      -0.06810784339904785,
+      -0.042196035385131836
+    ],
+    "mean_difference_m": -0.07671576738357544,
+    "better_seeds": 3,
+    "better_segments": 13,
+    "segments": 18
+  },
+  "outer0/curvature_both_off": {
+    "paired_E100_differences": [
+      -0.14601868391036987,
+      -0.03396415710449219,
+      -0.07298547029495239
+    ],
+    "mean_difference_m": -0.08432277043660481,
+    "better_seeds": 3,
+    "better_segments": 16,
+    "segments": 18
+  },
+  "outer0/interaction": {
+    "definition": "full - response_off - pose_off + both_off; descriptive nonlinear endpoint-error interaction",
+    "per_seed": [
+      0.06198537349700928,
+      -0.010633349418640137,
+      -0.035777747631073
+    ],
+    "mean": 0.005191425482432048
+  },
+  "outer1/curvature_response_off": {
+    "paired_E100_differences": [
+      -0.10464072227478027,
+      -0.02969229221343994,
+      -0.09111380577087402
+    ],
+    "mean_difference_m": -0.07514894008636475,
+    "better_seeds": 3,
+    "better_segments": 41,
+    "segments": 46
+  },
+  "outer1/curvature_pose_off": {
+    "paired_E100_differences": [
+      -0.07172906398773193,
+      0.07193434238433838,
+      -0.01925480365753174
+    ],
+    "mean_difference_m": -0.006349841753641765,
+    "better_seeds": 2,
+    "better_segments": 30,
+    "segments": 46
+  },
+  "outer1/curvature_both_off": {
+    "paired_E100_differences": [
+      -0.008268952369689941,
+      0.04380357265472412,
+      -0.07804763317108154
+    ],
+    "mean_difference_m": -0.014171004295349121,
+    "better_seeds": 2,
+    "better_segments": 37,
+    "segments": 46
+  },
+  "outer1/interaction": {
+    "definition": "full - response_off - pose_off + both_off; descriptive nonlinear endpoint-error interaction",
+    "per_seed": [
+      0.16810083389282227,
+      0.0015615224838256836,
+      0.03232097625732422
+    ],
+    "mean": 0.0673277775446574
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "status": "PASS",
+  "checks": [
+    "Train-only mean and scale recomputed",
+    "All validation CNN losses recomputed from saved weights",
+    "25 epochs and validation-minimum checkpoint for every seed"
+  ],
+  "results": {
+    "seed0": {
+      "val_loss": 0.08360348056241239,
+      "epoch": 20,
+      "parameters": 1755143
+    },
+    "seed1": {
+      "val_loss": 0.08940887410058923,
+      "epoch": 21,
+      "parameters": 1755143
+    },
+    "seed2": {
+      "val_loss": 0.08941327456149639,
+      "epoch": 21,
+      "parameters": 1755143
+    }
+  }
+}

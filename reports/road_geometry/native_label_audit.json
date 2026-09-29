@@ -1,0 +1,84 @@
+{
+  "scope": "Persisted map metadata plus temporal train/validation windows only; no training or test-window use.",
+  "track_sha256": "d21b063b792229fe396c50e2638ae9470b2bb7d57d3127e3e1254283e2717a5d",
+  "protocol_sha256": "139b48120e258ecd86876106aeeb4edac1868ecb337b8c00f2a2be52e76c8df6",
+  "map": {
+    "points": 209,
+    "nominal_length": 10.450000000000001,
+    "polygon_length": 9.742579892948818,
+    "native_speed": {
+      "n": 209,
+      "mean": 0.9319260077074802,
+      "median": 0.9487628990183938,
+      "p95": 0.9862397548644071,
+      "max": 0.9948387323287818
+    },
+    "native_speed_abs_error": {
+      "n": 209,
+      "mean": 0.06807399229251966,
+      "median": 0.051237100981606165,
+      "p95": 0.18475568598476283,
+      "max": 0.2709565919837895
+    },
+    "native_speed_outside_20percent_fraction": 0.0430622009569378,
+    "stored_curvature_vs_center_derivative": {
+      "n": 209,
+      "mean": 0.21109280796412716,
+      "median": 0.0928149931438017,
+      "p95": 0.9476230976387433,
+      "max": 2.1216460041002847
+    },
+    "stored_curvature_vs_heading_derivative": {
+      "n": 209,
+      "mean": 0.2107152118272406,
+      "median": 0.09519318602356919,
+      "p95": 0.9476052328207166,
+      "max": 2.121651171641834
+    }
+  },
+  "partitions": {
+    "train": {
+      "windows": 1216,
+      "arc_reconstruction_of_stored_curvature_vs_stored_shape": {
+        "n": 12160,
+        "mean": 0.23501883447170258,
+        "median": 0.21066883206367493,
+        "p95": 0.49496394395828247,
+        "max": 1.3814023733139038
+      },
+      "endpoint_shape_difference": {
+        "n": 1216,
+        "mean": 0.39005720615386963,
+        "median": 0.3575860857963562,
+        "p95": 0.7546311020851135,
+        "max": 1.3814023733139038
+      },
+      "coordinate_RMSE": 0.20945966243743896
+    },
+    "validation": {
+      "windows": 500,
+      "arc_reconstruction_of_stored_curvature_vs_stored_shape": {
+        "n": 5000,
+        "mean": 0.23646137118339539,
+        "median": 0.22258178889751434,
+        "p95": 0.4901423454284668,
+        "max": 1.3814023733139038
+      },
+      "endpoint_shape_difference": {
+        "n": 500,
+        "mean": 0.3913012146949768,
+        "median": 0.36620020866394043,
+        "p95": 0.5952353477478027,
+        "max": 1.3814023733139038
+      },
+      "coordinate_RMSE": 0.20743125677108765
+    }
+  },
+  "interpretation": [
+    "The persisted grid parameter is nominal distance before smoothing, not exactly arc length of the final centerline.",
+    "Curvature is additionally smoothed separately from centerline/heading; identities need not hold exactly.",
+    "Arc reconstruction mismatch also includes 0.5-m curvature discretization and piecewise-constant approximation; this audit does not isolate all causes.",
+    "A constrained unit-speed encoder trained against both legacy targets faces representation mismatch. This does not prove that label mismatch caused any test result.",
+    "Existing frozen experiments and all results are retained; no labels or checkpoints are modified."
+  ]
+}

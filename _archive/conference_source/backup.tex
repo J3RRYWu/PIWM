@@ -1,0 +1,1267 @@
+%%
+%% This is file `sample-sigconf.tex',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% samples.dtx  (with options: `all,proceedings,bibtex,sigconf')
+%% 
+%% IMPORTANT NOTICE:
+%% 
+%% For the copyright see the source file.
+%% 
+%% Any modified versions of this file must be renamed
+%% with new filenames distinct from sample-sigconf.tex.
+%% 
+%% For distribution of the original source see the terms
+%% for copying and modification in the file samples.dtx.
+%% 
+%% This generated file may be distributed as long as the
+%% original source files, as listed above, are part of the
+%% same distribution. (The sources need not necessarily be
+%% in the same archive or directory.)
+%%
+%%
+%% Commands for TeXCount
+%TC:macro \cite [option:text,text]
+%TC:macro \citep [option:text,text]
+%TC:macro \citet [option:text,text]
+%TC:envir table 0 1
+%TC:envir table* 0 1
+%TC:envir tabular [ignore] word
+%TC:envir displaymath 0 word
+%TC:envir math 0 word
+%TC:envir comment 0 0
+%%
+%% The first command in your LaTeX source must be the \documentclass
+%% command.
+%%
+%% For submission and review of your manuscript please change the
+%% command to \documentclass[manuscript, screen, review]{acmart}.
+%%
+%% When submitting camera ready or to TAPS, please change the command
+%% to \documentclass[sigconf]{acmart} or whichever template is required
+%% for your publication.
+%%
+%%
+\documentclass[sigconf]{acmart}
+%%
+%% \BibTeX command to typeset BibTeX logo in the docs
+\AtBeginDocument{%
+  \providecommand\BibTeX{{%
+    Bib\TeX}}}
+
+%% Rights management information.  This information is sent to you
+%% when you complete the rights form.  These commands have SAMPLE
+%% values in them; it is your responsibility as an author to replace
+%% the commands and values with those provided to you when you
+%% complete the rights form.
+\setcopyright{acmlicensed}
+\copyrightyear{2018}
+\acmYear{2018}
+\acmDOI{XXXXXXX.XXXXXXX}
+%% These commands are for a PROCEEDINGS abstract or paper.
+\acmConference[Conference acronym 'XX]{Make sure to enter the correct
+  conference title from your rights confirmation email}{June 03--05,
+  2018}{Woodstock, NY}
+%%
+%%  Uncomment \acmBooktitle if the title of the proceedings is different
+%%  from ``Proceedings of ...''!
+%%
+%%\acmBooktitle{Woodstock '18: ACM Symposium on Neural Gaze Detection,
+%%  June 03--05, 2018, Woodstock, NY}
+\acmISBN{978-1-4503-XXXX-X/2018/06}
+
+
+%%
+%% Submission ID.
+%% Use this when submitting an article to a sponsored event. You'll
+%% receive a unique submission ID from the organizers
+%% of the event, and this ID should be used as the parameter to this command.
+%%\acmSubmissionID{123-A56-BU3}
+
+%%
+%% For managing citations, it is recommended to use bibliography
+%% files in BibTeX format.
+%%
+%% You can then either use BibTeX with the ACM-Reference-Format style,
+%% or BibLaTeX with the acmnumeric or acmauthoryear sytles, that include
+%% support for advanced citation of software artefact from the
+%% biblatex-software package, also separately available on CTAN.
+
+\usepackage{amsthm}
+\newtheorem{definition}{Definition}
+
+\usepackage{graphicx}  % for \resizebox
+\usepackage{makecell}  % for line 
+\usepackage{wrapfig}
+\usepackage{subcaption}
+\usepackage{siunitx} % For better number alignment, especially with ±
+% 插入图片breaks inside table cells
+% \usepackage{tikz}
+ \usepackage{multirow}
+\let\Bbbk\relax
+\usepackage{amssymb} 
+\usepackage{pifont}       % for \ding{55}
+\usepackage{xcolor}       % for colored checkmark/xmark
+\usepackage{rotating}   % 支持 sidewaysfigure
+\usepackage{booktabs}   % 更美观的表格横线
+\usepackage{adjustbox}  % 可选，缩放表格
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+% （可选）让输入/输出文字更漂亮
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+
+%%
+%% Look at the sample-*-biblatex.tex files for templates showcasing
+%% the biblatex styles.
+%%
+
+%%
+%% The majority of ACM publications use numbered citations and
+%% references.  The command \citestyle{authoryear} switches to the
+%% "author year" style.
+%%
+%% If you are preparing content for an event
+%% sponsored by ACM SIGGRAPH, you must use the "author year" style of
+%% citations and references.
+%% Uncommenting
+%% the next command will enable that style.
+%%\citestyle{acmauthoryear}
+
+
+%%
+%% end of the preamble, start of the body of the document source.
+\begin{document}
+
+%%
+%% The "title" command has an optional parameter,
+%% allowing the author to define a "short title" to be used in page headers.
+\title{Physically Interpretable World Models \\ via Weakly Supervised Representation Learning}
+
+%%
+%% The "author" command and its associated commands are used to define
+%% the authors and their affiliations.
+%% Of note is the shared affiliation of the first two authors, and the
+%% "authornote" and "authornotemark" commands
+%% used to denote shared contribution to the research.
+% \author{Ben Trovato}
+% \authornote{Both authors contributed equally to this research.}
+% \email{trovato@corporation.com}
+% \orcid{1234-5678-9012}
+% \author{G.K.M. Tobin}
+% \authornotemark[1]
+% \email{webmaster@marysville-ohio.com}
+% \affiliation{%
+%   \institution{Institute for Clarity in Documentation}
+%   \city{Dublin}
+%   \state{Ohio}
+%   \country{USA}
+% }
+
+\author{Anonymous authors
+}
+% \affiliation{%
+%   \institution{Paper under double-blind review}
+%   % \city{Hekla}
+%   % \country{Iceland}
+%   }
+% \email{larst@affiliation.org}
+
+% \author{Valerie B\'eranger}
+% \affiliation{%
+%   \institution{Inria Paris-Rocquencourt}
+%   \city{Rocquencourt}
+%   \country{France}
+% }
+
+% \author{Aparna Patel}
+% \affiliation{%
+%  \institution{Rajiv Gandhi University}
+%  \city{Doimukh}
+%  \state{Arunachal Pradesh}
+%  \country{India}}
+
+% \author{Huifen Chan}
+% \affiliation{%
+%   \institution{Tsinghua University}
+%   \city{Haidian Qu}
+%   \state{Beijing Shi}
+%   \country{China}}
+
+% \author{Charles Palmer}
+% \affiliation{%
+%   \institution{Palmer Research Laboratories}
+%   \city{San Antonio}
+%   \state{Texas}
+%   \country{USA}}
+% \email{cpalmer@prl.com}
+
+% \author{John Smith}
+% \affiliation{%
+%   \institution{The Th{\o}rv{\"a}ld Group}
+%   \city{Hekla}
+%   \country{Iceland}}
+% \email{jsmith@affiliation.org}
+
+% \author{Julius P. Kumquat}
+% \affiliation{%
+%   \institution{The Kumquat Consortium}
+%   \city{New York}
+%   \country{USA}}
+% \email{jpkumquat@consortium.net}
+
+%%
+%% By default, the full list of authors will be used in the page
+%% headers. Often, this list is too long, and will overlap
+%% other information printed in the page headers. This command allows
+%% the author to define a more concise list
+%% of authors' names for this purpose.
+\renewcommand{\shortauthors}{Trovato et al.}
+
+%%
+%% The abstract is a short summary of the work to be presented in the
+%% article.
+\begin{abstract}
+Learning predictive models from high-dimensional sensory observations is fundamental for autonomous systems, yet the latent representations learned by standard world models lack physical interpretability. This limits their reliability, generalizability, and applicability to safety-critical tasks. We introduce Physically Interpretable World Models (PIWM), a framework that aligns latent representations with real-world physical quantities and constrains their evolution through partially known physical dynamics. Physical interpretability in PIWM is defined by two complementary properties: (i) the learned latent state corresponds to meaningful physical variables, and (ii) its temporal evolution follows physically consistent dynamics. To achieve this without requiring ground-truth physical annotations, PIWM employs weak distribution-based supervision that captures state uncertainty naturally arising from real-world sensing pipelines. The architecture integrates a VQ-based visual encoder, a transformer-based physical encoder, and a learnable dynamics model grounded in known physical equations. Across three case studies, Cart Pole, Lunar Lander, and Donkey Car, PIWM achieves accurate long-horizon prediction, recovers true system parameters, and significantly improves physical grounding over purely data-driven models. These results demonstrate the feasibility and advantages of learning physically interpretable world models directly from images under weak supervision.
+\end{abstract}
+
+%%
+%% The code below is generated by the tool at http://dl.acm.org/ccs.cfm.
+%% Please copy and paste the code instead of the example below.
+%%
+\begin{CCSXML}
+<ccs2012>
+   <concept>
+<concept_id>10010147.10010257.10010293.10010319</concept_id>
+       <concept_desc>Computing methodologies~Learning latent representations</concept_desc>
+       <concept_significance>500</concept_significance>
+       </concept>
+   <concept>
+       <concept_id>10010520.10010553</concept_id>
+       <concept_desc>Computer systems organization~Embedded and cyber-physical systems</concept_desc>
+       <concept_significance>500</concept_significance>
+       </concept>
+ </ccs2012>
+\end{CCSXML}
+
+\ccsdesc[500]{Computing methodologies~Learning latent representations}
+\ccsdesc[500]{Computer systems organization~Embedded and cyber-physical systems}
+
+%%
+%% Keywords. The author(s) should pick words that accurately describe
+%% the work being presented. Separate the keywords with commas.
+% \keywords{Do, Not, Use, This, Code, Put, the, Correct, Terms, for,
+%   Your, Paper}
+
+\keywords{Interpretable Representation Learning, Trajectory Prediction, World Models, Physics-Informed Machine Learning, Autonomous Systems}
+
+
+%% A "teaser" image appears between the author and affiliation
+%% information and the body of the document, and typically spans the
+%% page.
+% \begin{teaserfigure}
+%   \includegraphics[width=\textwidth]{sampleteaser}
+%   \caption{Seattle Mariners at Spring Training, 2010.}
+%   \Description{Enjoying the baseball game from the third-base
+%   seats. Ichiro Suzuki preparing to bat.}
+%   \label{fig:teaser}
+% \end{teaserfigure}
+
+% \received{20 February 2025}
+% \received[revised]{12 March 2009}
+% \received[accepted]{5 June 2009}
+
+%%
+%% This command processes the author and affiliation and title
+%% information and builds the first part of the formatted document.
+\maketitle
+\section{Introduction}
+
+
+Accurate and robust trajectory prediction from high-dimensional sensor data, such as camera images, is a fundamental challenge for the safe operation of autonomous systems. A dominant paradigm for this task is to learn a compact latent representation of the environment and evolve it over time. This principle forms the basis of modern \textit{world models}~\cite[]{ha2018world}, which extend Variational Autoencoders (VAEs)~\cite[]{kingma2013auto} by integrating predictive components like recurrent neural networks (RNNs) to capture temporal dependencies~\cite[]{mao2024safe,mao2025safe}. Recent advancements in hierarchical latent modeling and transformer architectures have further enhanced the fidelity and long-horizon capabilities of these predictive models~\cite[]{micheli2022transformers,hafner2023mastering,seo2023masked}. However, while these models achieve impressive predictive performance, their learned representations often function as a ``black box,'' lacking a clear connection to the underlying physical state of the system.
+
+
+
+
+
+Bridging this gap would greatly improve the trustworthiness and controllability of autonomous systems operating in complex, high-risk scenarios. For instance, in autonomous driving, linking latent representations to physical states could generate causal explanations for decisions (e.g., slowing down due to occlusions) and enable high-assurance methods like formal verification~\cite[]{hasan2015formal} and run-time shielding~\cite[]{waga2022dynamic}. Moreover, physical states are essential for high-assurance methods such as formal verification~\cite[]{katz2022verification} and run-time shielding~\cite[]{alshiekh2018safe}. For instance, if a predicted position lies in an occupied lane, a shield can intervene to prevent a collision. Physically interpretable representations also support causal explanations. For example, ``that car won’t slow down because it doesn’t see you'' which enhances trust in autonomous behavior. Finally, physical priors improve generalization and sample efficiency by guiding the model toward plausible trajectories.
+
+So far, several approaches for achieving physically interpretable latent spaces from high-dimensional observations can be categorized into two fundamental paradigms: intrinsic and extrinsic encoding methods (Figure~\ref{fig:1}). Extrinsic approaches adopt a two-stage strategy, first learning abstract latent representations from images through standard autoencoders, then mapping these representations to physical quantities via additional neural network layers.
+While this decoupling provides flexibility, it typically requires ground-truth physical states for training the mapping function and may lose physical consistency during the intermediate representation stage.
+Intrinsic approaches attempt to directly encode physical structure into the image encoder itself, ensuring that the latent representations extracted from visual inputs inherently correspond to meaningful physical quantities~\cite[]{le2025pixie}. However, both extrinsic and intrinsic methods face significant limitations: they require large-scale datasets with precise physical annotations, need exact supervision of physical variables during training, or are limited to scenarios where object decomposition is feasible and meaningful with object-centric representation learning method~\cite[]{mosbach2025soldslotobjectcentriclatent}.
+
+
+\begin{figure}[t]
+	\centering     
+\includegraphics[width=\columnwidth]{imgs/newoeverview.pdf}
+\caption{Overview of Physically Interpretable World Models (PIWM). Two approaches to learn a physically meaningful latent space ($z^*$): Intrinsic and Extrinsic Autoencoding. }	\label{fig:1}
+ \end{figure}
+
+
+
+
+ \looseness=-1
+We aim to address the problem of learning physically meaningful representations \textit{without exact supervision of physical labels} in the context of trajectory prediction. Instead, we rely on weak supervisory signals, which contain valuable information such as approximate speed bounds inferred from coarse or noisy position sequences. As a natural representation of such uncertain signals, we use \textit{distributions} over the true values, which tend to come from sensing and perception pipelines in autonomous systems. In practice, many such pipelines (e.g., GPS, radar) produce probabilistic estimates, such as confidence ellipses or ranges, rather than precise values. Distributions offer a simple, expressive, and widely used abstraction for representing such uncertainty, especially in field robotics, where full state information is rarely available. Thus, we use weak-supervision distributions to steer the encoding of high-dimensional images into physically interpretable representations. This creates an opportunity for physics-informed prediction. Since the governing dynamics of many real-world systems are known or can be well-approximated, we can now make physically plausible predictions by embedding this known structure and learning only its unknown internal parameters.
+
+
+
+
+
+Our central contribution is the \textit{Physically Interpretable World Model} (PIWM), a novel and flexible architecture designed to learn physically meaningful representations from high-dimensional observations. In this work, we use the term \emph{physical interpretability} to refer to two complementary aspects: 
+(i) the learned latent space corresponds to meaningful physical quantities, and 
+(ii) the learned dynamics model follows physically consistent evolution. 
+Our method achieves both aspects directly from high-dimensional image observations.
+The core principle of PIWM is to align its learned latent space with real-world physical quantities. It achieves this by integrating a learnable dynamics model, which incorporates partially known physical equations as structural priors, with a powerful image autoencoder. A key aspect of our approach is the use of weak distributional supervision to guide this alignment, which eliminates the impractical reliance on ground-truth physical state annotations.
+
+
+\looseness=-1
+Within the PIWM architecture, we conduct an in-depth experimental analysis to answer a central question: Can weak quantization make world models physically interpretable, and how to construct a more interpretable latent space? To this end, we systematically evaluate several key design choices, including continuous versus discrete latent spaces and the use of intrinsic versus extrinsic physical encodings.
+We validate the proposed architecture across three autonomy case studies: cart pole, lunar lander, and autonomous racing donkey car. The experiments demonstrate that the PIWM framework not only achieves superior physical grounding and lower prediction error compared to purely data-driven baselines but also provides clear insights into the optimal design of physically interpretable latent spaces. More specifically, our results reveal that extrinsic architectures, which decouple visual perception from physical interpretation, significantly outperform their end-to-end intrinsic counterparts in both predictive accuracy and the plausibility of the learned physical parameters.
+
+\section{Preliminaries}\label{sec:problem}
+
+\subsection{Autonomous system and world models}
+\begin{definition}[Autonomous System]
+A \emph{autonomous system} $s = (X, I, A, \phi_{\theta}, g, Y)$ models the evolution of an image-based control system, where the state set $X$ defines the finite-dimensional space of physical states, the initial set $I \subset X$ specifies possible starting states, and the action set $A$ contains all possible control actions. The system dynamics $\phi_{\theta}: X \times A \times \Theta \rightarrow X$ govern state transitions under physical parameters $\theta \in \Theta$, the observation function $g: X \rightarrow Y$ maps states to observations, and the controller $h: Y \rightarrow A$ selects actions based on observations.
+\end{definition}
+
+
+
+
+
+ 
+
+Consider an autonomous system with observation-based control, the states of which evolve as $x_{t+1} = \phi(x_t, a_t, \theta^*),$ where $\theta^*$ are the true (unknown) physical parameters. The known controller $h$ relies on observations $y$ from sensors (e.g., cameras). Such controllers can be trained by imitation learning~\cite[]{hussein2017imitation} or reinforcement learning~\cite[]{kaelbling1996reinforcement,lillicrap2015continuous}.
+Given an initial state \( x_0 \in I \), a \textit{state trajectory} is defined by iteratively applying the dynamics function \( \phi \), yielding a sequence \( (x_0, x_1, \ldots, x_{i+1}) \), where each state is \( x_{t+1} = \phi(x_t, a_t, \theta^*) \) and the action is generated by the controller based on the observation:  \( a_{t}  = h(y_t) = h(g(x_t)) \). Correspondingly, an \textit{observation trajectory} \( (y_0, y_1, \ldots, y_{t+1}) \) is generated by applying the observation function \( g \) to each state: \( y_t = g(x_t) \). 
+
+
+We consider the setting where the state is not directly observable, and to anticipate hazards and adapt, the system needs to forecast observations. This is done by combining a world model conditioned on past observations with an observation-based controller $h$, essentially forming an efficient online simulator of future observations. 
+
+\begin{definition}[World Model]
+A \emph{world model} $\mathcal{W} = (\mathcal{E}, f, \mathcal{D})$ predicts the future evolution of observations in a robotic system $s$, where the encoder $\mathcal{E}: Y \rightarrow Z$ compresses high-dimensional observations into latent representations, the predictor $f: Z \times A \rightarrow Z$ forecasts future latents conditioned on actions, and the decoder $\mathcal{D}: Z \rightarrow Y$ reconstructs predicted observations. The actions $a_t$ are generated by a controller $h: Y \rightarrow A$ based on the current observation $y_t$, and together with the encoded latent $z_t = \mathcal{E}(y_t)$, are used to obtain the future latent $z_{t+1} = f(z_t, a_t)$. The predicted observation $\hat{y}_{t+1}$ is then obtained by decoding $z_{t+1}$ with $\mathcal{D}: \hat{y}_{t+1} = \mathcal{D}(z_{t+1}) $.
+\end{definition}
+
+While world models enable diverse tasks (e.g., controller training), 
+they are usually evaluated with \textit{predictive accuracy} --- how closely the predicted observations $\hat{y}_{t+1:t+n}$ match the true observations $y_{t+1:t+n}$. The typical metrics include mean squared error (MSE) and structural similarity index (SSIM). 
+Unfortunately, these metrics are inherently limited: similar pixel-wise observations may correspond to very different underlying states. This means that the similarity (low MSE and high SSIM) between $\hat{y}_{t+1:t+n}$ and  $y_{t+1:t+n}$ does not guarantee similarity between the underlying physical states corresponding to the predicted observations and the true physical ones.
+% does not guarantee a the similarity (low MSE/RMSE) between the predicted states $g^{-1}(\hat{y}_{t+1:t+n})$ and the true physical ones $x_{t+1:t+n}$. 
+Thus, the error in predicted observations is not physically interpretable. This severely limits the predictions' utility for downstream tasks like safety monitoring and planning.
+
+\subsection{Interpretable Representation Learning and Prediction}
+
+% \noindent
+% \textbf{Variational Autoencoding.}
+
+ \begin{figure*}[t]
+	\centering     
+\includegraphics[width=1.7\columnwidth]{imgs/comp2.pdf}
+\caption{Overview of Physically Interpretable World Models (PIWM). {(Left)}  Standard World Model uses an encoder-decoder structure with a data-driven predictor (e.g., LSTM) to model latent dynamics, where the latent representations lack physical meaning.{(Right)} The PIWM architecture learns a structured latent representation $z^*$ from images, uses a learnable dynamics model $\phi$ with physical priors to predict future latent states, and decodes them into future images.}	\label{fig:15}
+ \end{figure*}
+
+ 
+The autoencoder components $\mathcal{E}$ and $\mathcal{D}$ in world models are primarily based on either VAE, VQ-VAE, or their variants. VAEs~\cite[]{kingma2013auto} encode high-dimensional inputs \( y \) into continuous latent vectors \( z = \mathcal{E}(y) \), which are then decoded back into reconstructed inputs \( \hat{y} = \mathcal{D}(z) \). A standard VAE assumes a simple prior distribution over the latent space, typically an isotropic Gaussian, which facilitates tractable inference but imposes a strong inductive bias.  A VQ-VAE~\cite[]{van2017neural} discretizes the latent space by mapping a high-dimensional observation \( y_t \) to a continuous latent vector \( z_t = \mathcal{E}(y_t) \), then quantizing it via a \textit{codebook} \( \{\mathbf{e}_k\}_{k=1}^K \) to obtain a discrete latent \textit{index} \( z_t^* = \arg\min_k \|z_t - \mathbf{e}_k\|_2^2 \) closest to the continuous latent $z_t$. The decoder then reconstructs the observation via \( \hat{y}_t = \mathcal{D}(\mathbf{e}_{z_t^*}) \). While discretization introduces structure and regularization, the learned codebook vectors \( \mathbf{e}_k \) themselves are typically unstructured and lack interpretation.  Therefore, merely discretizing the space is insufficient; hence, an explicit mechanism is needed to align these latent representations with physical semantics.
+
+
+% \textbf{Interpretable Representation Learning and Prediction.} 
+
+\looseness=-1
+Our setting assumes that general knowledge about the dynamics function \( \phi \), namely the structure of its equations. However, the dynamics parameters \( \theta \), such as the mass or friction coefficient, are unknown, making the system $s$ only partially specified. In practice, it is often hard to find the true parameters $\theta^*$ because true physical states $x$ cannot be measured precisely. However, it is typical to compute a distribution $p(x)$ from high-dimensional observations. For instance, the robot's pose may be estimated from images as a range/distribution --- and serve as a weak supervisory signal.
+
+Thus, to train a world model, we are given a dataset \( \mathcal{S} \) of trajectories, consisting of \( N \) sequences of length \( M \), where each sequence contains tuples of images, actions, and state distribution labels:
+\begin{equation}
+ \mathcal{S} = \Big\{ \big(y_{1:M}, a_{1:M}, p_{1:M}(x) \big) \Big\}_{1:N}
+\end{equation}
+
+The weak supervision is provided by state distributions \( p_t(x) \), for which we assume no analytical form is known. Instead, we can only draw a finite set of samples from them. This represents a challenging yet practical scenario, as it is a weaker assumption than knowing the distribution's type (e.g., Gaussian), its parameters (e.g., mean and variance), or even a definitive interval. 
+
+\looseness=-1
+Our ultimate task is to learn a representation \( z^* \) that accurately approximates the system’s true, unobserved physical state \( x \) for prediction. We formalize this as two distinct but related problems:
+
+\begin{definition}[Interpretable Representation Learning Problem]
+Given a dataset \( \mathcal{S} \) and a controller \( h \), the objective is to \emph{learn a state representation} \( z^* = \mathcal{E}(y) \) that minimizes the mean squared error to the true physical state \( x \):
+\begin{equation}
+\min_{\mathcal{E}} \ \mathbb{E} \big[ \| x - \mathcal{E}(y) \|_2^2 \big]
+\end{equation}
+\label{def:repprob}
+\end{definition}
+
+The prediction problem is to forecast the evolution of these interpretable representations over time.
+
+\begin{definition}[Prediction Problem for Interpretable Representations]
+Given a dataset \( \mathcal{S} \), a dynamics function \( \phi \) with unknown parameters, and a controller \( h \), the objective is to \emph{train a predictor} that maps a history of representations to a future representation, \( \hat{z}^*_{t+k} = \mathcal{P}(z^*_{t-m:t}) \), by minimizing the future state prediction error:
+\begin{equation}
+\min_{\mathcal{P}} \ \mathbb{E} \big[ \| x_{t+k} - \hat{z}^*_{t+k} \|_2^2 \big].
+\end{equation}
+\label{def:predprob}
+\end{definition}
+
+The objectives in Definitions \ref{def:repprob} and \ref{def:predprob} are formulated with respect to the true physical state \( x \), which serves as the ultimate ground truth for evaluating physical interpretability. However, since \( x \) is not accessible during training, these objectives cannot be optimized directly. Our proposed method, detailed in Section~\ref{sec:approach}, addresses this challenge by constructing a tractable surrogate objective that leverages the weak supervision by sampling state distributions \( p(x) \). Throughout this paper, we use calligraphic letters (e.g., $\mathcal{E}$, $\mathcal{D}$, $\mathcal{S}$) to denote functions and datasets for clarity. During training, we optimize model parameters $w$ using mini-batch gradient descent with batch size $B$, learning rate $\eta$, and train for $n_{\text{epochs}}$ epochs.
+
+
+\paragraph{Noise Model.}
+Let $\mathcal{S}_i = [x_i^{\min}, x_i^{\max}]$ denote the state space of the $i$-th physical dimension, and define its size as
+$\mathcal{X}_i = x_i^{\max} - x_i^{\min}$. 
+The weak supervision provides a nominal value $\mu_i$ for this dimension (e.g., the center of an interval estimate), but we assume that the true physical value $x_i$ is only known to lie in a neighborhood around $\mu_i$ whose width is proportional to the size of the state space:
+\[
+    x_i \in \big[\mu_i - \delta\, \mathcal{X}_i,\; \mu_i + \delta\, \mathcal{X}_i\big] \cap \mathcal{S}_i ,
+\]
+where $\delta \in (0,1)$ controls the uncertainty level of the weak supervision. 
+This interval-based noise model defines the feasible set $\Xi$ that is used in our weak supervision loss.
+
+
+The weak supervision in our formulation allows recovery of physical properties only through their influence on temporal evolution. 
+That is, a physical parameter is identifiable if and only if it induces observable differences in motion across a sequence of images. 
+Static appearance differences alone are insufficient: for instance, two objects with identical geometry but different mass or material remain distinguishable because they produce different trajectories under the same dynamics. 
+Thus, our method assumes that physical states are identifiable from motion, rather than from single-frame visual cues.
+
+
+
+
+\section{Architecture}\label{sec:approach}
+
+We introduce the \textit{Physically Interpretable World Model} (PIWM), a flexible prediction architecture with physically-grounded representations of high-dimensional observations. It consists of two core components: (1) a {physically interpretable autoencoder} responsible for learning the state representation, and (2) a {learnable dynamics model} that predicts the evolution of this representation. A high-level overview of the proposed PIWM architecture is shown in Figure ~\ref{fig:15}, which contrasts it with a standard world model and highlights the structured interpretable latent state. 
+In our formulation, physical interpretability has two components. 
+First, the learned physical latent variables $z^*$ correspond to meaningful physical quantities such as position, velocity, or other environment-specific state variables. 
+Second, the dynamics model $\phi$ is required to follow physically consistent evolution, ensuring that the temporal behavior of $z^*$ aligns with the underlying laws of motion. 
+Our goal is to achieve both forms of interpretability directly from high-dimensional image observations under weak supervision.
+
+
+% A high-level overview of the architecture is shown in Figure.
+
+
+\subsection{Learning Physically Interpretable Representations}
+
+% \textbf{Learning Physically Interpretable Representations.}
+
+The primary goal of the autoencoder is to map a high-dimensional observation \(y\) to a low-dimensional interpretable latent state \(z^*\). This representation must be explicitly aligned with the true physical state \(x\). Per Section~\ref{sec:problem}, we cannot access \(x\) or the analytical form of its supervisory distribution \(p(x)\). Instead, we are given access to a set of \(L\) state proxy samples, \(\Xi = \{\xi^{(l)}\}_{l=1}^L\), drawn from \(p(x)\). 
+To leverage these proxy samples \(\Xi\) for training, we formulate a general {interpretability loss}, \(\mathcal{L}_{\text{interp}}\), which measures the discrepancy between a predicted physically interpretable state \(z_p^*\) and the sample set \(\Xi\). In our experiments, we primarily use a Mean Squared Error (MSE) formulation that penalizes the distance to the empirical mean of the samples:
+
+\begin{equation}
+\mathcal{L}_{\text{interp}}(z_p^*, \Xi) = \| z_p^* - \hat{\mu}_{\xi} \|_2^2, \quad \text{where} \quad \hat{\mu}_{\xi} = \frac{1}{L}\sum_{l=1}^L \xi^{(l)}.
+\label{eq:interp_loss}
+\end{equation}
+An alternative could be to use the Kullback-Leibler (KL) Divergence against a Gaussian fitted to the samples. This serves as the mechanism for enforcing physical grounding throughout our models.
+
+
+
+A central design question in learning representation \(z^*\) is how to manage two competing objectives: reconstructing high-dimensional observations versus aligning the latent space with low-dimensional physical states. We consider two approaches. The \emph{Intrinsic} approach attempts to achieve both objectives simultaneously with a single, end-to-end encoder. While potentially more efficient, this forces one network to both capture fine-grained visual details (for reconstruction) and ignore those same details to extract the underlying physical state --- a difficult optimization task. In contrast, the \emph{Extrinsic} approach follows a two-stage process: a vision autoencoder first learns an intermediate representation focused on reconstruction, and then a second, physical encoder extracts the interpretable state from it. This modularity may stabilize training but risks information loss in the intermediate step. Given the fundamental trade-offs, we will systematically investigate both approaches.
+
+\looseness=-1
+Orthogonal to this architectural choice, a second key design decision is the nature of the latent space \(Z^*\). \emph{Continuous spaces} can represent high-fidelity physical quantities but lack a built-in organizational prior, requiring explicit regularization for disentanglement. Conversely, \emph{discrete spaces} enforce regularity by design through their finite codebook but lose precision due to quantization error.
+Below, we detail the combinations of intrinsic/extrinsic and continuous/discrete approaches. 
+
+\subsubsection{Intrinsic Autoencoding}
+
+% \noindent\textbf{Intrinsic Autoencoding.}
+
+
+This approach employs a single, end-to-end encoder \(\mathcal{E}: Y \to Z^*\) that directly maps an observation \(y\) to the final interpretable latent state \(z^*\). This unified representation must disentangle visual features from physical semantics, a known challenge where information may leak between different physical attributes and hinder the desired learning \cite[]{peper2025four}.
+For the case of \textit{continuous} latent space, the encoder outputs the parameters for a posterior distribution \(q(z^*\mid y)\) over the latent space \(Z^*\). Sampled from this distribution, a latent vector is then partitioned in a fixed manner:  \(z^* = [z_p^*, z_v^*]\), where \(z_p^*\) is the physically interpretable part and \(z_v^*\) captures the remaining visual information necessary for reconstruction. The full objective follows the \(\beta\)-VAE formulation, with the interpretability loss applied only to \(z_p^*\) and KL loss applied to $z_v^*$:
+% \begin{equation}
+%     \mathcal{L}_{\text{intrinsic-cont}} = \mathcal{L}_{\text{recon}}(y, \hat{y}) + \lambda_{\text{interp}}\mathcal{L}_{\text{interp}}(z_p^*, \Xi) + \beta D_{\text{KL}}\big(q(z_v^*|y) \,\|\, \mathcal{N}(0, I)\big)
+%     \vspace{-2mm}
+% \end{equation}
+
+\begin{equation}
+\begin{split}
+    \mathcal{L}_{\text{intrinsic-cont}} = &\mathcal{L}_{\text{recon}}(y, \hat{y}) + \lambda_{\text{interp}}\mathcal{L}_{\text{interp}}(z_p^*, \Xi) \\
+    &+ \beta D_{\text{KL}}\big(q(z_v^*|y) \,\|\, \mathcal{N}(0, I)\big)
+\end{split}
+\end{equation}
+
+
+
+For the case of \textit{discrete} latent space, we structure the codebook to be interpretable. Each vector \(\mathbf{e}_k\) is partitioned as \(\mathbf{e}_k = [\mathbf{e}_k^p, \mathbf{e}_k^v]\).  Only the visual part \(\mathbf{e}_k^v\) is a typical learnable VQ-VAE codebook vector.  The physical part \(\mathbf{e}_k^p\) is a constant vector representing a specific point in a discretized grid of physical values (e.g., specific positions). Then, the interpretable state is computed as the average of the physical portions of the codebook vectors, \( z_p^* = \frac{1}{|I|} \sum_{i \in I} \mathbf{e}_i^p \). The full objective combines the standard VQ loss with our interpretability loss:
+\begin{equation}
+    \mathcal{L}_{\text{intrinsic-disc}} = \mathcal{L}_{\text{VQ}}(y, \hat{y}) + \lambda_{\text{interp}}\mathcal{L}_{\text{interp}}(z_p^*, \Xi),
+\end{equation}
+where \(\mathcal{L}_{\text{VQ}}\) includes reconstruction, codebook, and commitment losses:
+\begin{equation}
+    \mathcal{L}_{\text{VQ}} = \| y - \hat{y} \|_2^2 + \big\| \text{sg}[z_{\text{cont}}] - z_q \big\|_2^2 + \beta \big\| z_{\text{cont}} - \text{sg}[z_q] \big\|_2^2
+\end{equation}
+
+
+Here, \(z_{\text{cont}}\) is the continuous output of the encoder \(\mathcal{E}\), and \(z_q\) is its nearest vector from the codebook. The \(\text{sg}[\cdot]\) is the stop-gradient operator, which ensures that gradients are routed correctly for the codebook loss (updating \(z_q\)) and the commitment loss (updating \(z_{\text{cont}}\)). The hyperparameter \(\beta\) weights this commitment loss, controlling how strongly the encoder's output is encouraged to match the chosen codebook vector.
+
+
+\subsubsection{Extrinsic Autoencoding}
+
+% \noindent\textbf{Extrinsic Autoencoding.}
+
+This approach utilizes a two-stage training process to decouple perception from interpretation.
+First, a general-purpose vision autoencoder (\(\mathcal{E}_v, \mathcal{D}_v\)) is trained to map an observation \(y\) to an intermediate latent vector \(z = \mathcal{E}_v(y)\). This stage is trained with a standard objective, independent of physical supervision.
+For the \textit{continuous} case, this is a \(\beta\)-VAE trained to minimize:
+\begin{equation}
+    \mathcal{L}_{\text{vision-cont}} = \mathcal{L}_{\text{recon}}(y, \hat{y}) + \beta D_{\text{KL}}\big(q(z \mid y) \,\|\, \mathcal{N}(0, I)\big)
+\end{equation}
+For the \textit{discrete} case, a VQ-VAE is trained to minimize the standard VQ loss \(\mathcal{L}_{\text{vision-disc}} = \mathcal{L}_{\text{VQ}}(y, \hat{y})\).
+
+
+After the first stage, the vision encoder \(\mathcal{E}_v\) is frozen. The second stage trains a separate, auxiliary {physical autoencoder} (\(\mathcal{E}_p, \mathcal{D}_p\)) to map the intermediate representation \(z = \mathcal{E}_v(y)\) to a final, purely physical representation \(z^* = \mathcal{E}_p(z)\). The training objective for this stage is:
+\begin{equation}
+    \mathcal{L}_{\text{physical}} = \lambda_{\text{interp}}\mathcal{L}_{\text{interp}}(z^*, \Xi) + \lambda_{\text{latent}}\mathcal{L}_{\text{recon}}\big(z,  \mathcal{D}_p(z^*))
+\end{equation}
+%where \(z^*=\mathcal{E}_p(z)\) and \(\hat{z} = \mathcal{D}_p(z^*)\). 
+This same loss \(\mathcal{L}_{\text{physical}}\) is used for both continuous and discrete intermediate representation \(z\).
+
+
+
+
+ 
+\subsection{Learnable Dynamics Model}
+
+% \textbf{Learnable Dynamics Model.}
+
+The second core component of our PIWM is a latent dynamics model \(\phi\) that predicts the temporal evolution of the physically interpretable state \(z^*\). Rather than using black-box sequence models, our prediction is based on known dynamics equations, \(\phi(z^*_t, a_t, \theta)\), where the form of \(\phi\) (e.g., kinematics) is fixed and only its parameters \(\theta\) are learnable. This allows our model to reflect the underlying physical laws while adapting to unknown system parameters $\theta$ such as friction and mass.
+
+The dynamics model is responsible for estimating physical quantities that depend on a history of states, such as velocity, in order to predict the system's evolution. 
+To do this, the model is initialized with a short window of consecutive representations, \( (z^*_t, z^*_{t+1}) \), produced by the encoder from observations. 
+These two states, along with the control action \(a_{t+1}\) that causes the transition from state \(t+1\) to \(t+2\), are used by the learnable dynamics model \(\phi\) to predict the next state: \( \hat{z}^*_{t+2} = \phi(z^*_t, z^*_{t+1}, a_{t+1}, \theta) \). 
+By taking two consecutive states as input, the model can internally compute velocity and other time-derivative quantities necessary for an accurate physical prediction. 
+After this initialization phase, the model can operate recursively for multi-step rollouts, taking its own prediction from the previous step as input to generate a future trajectory. 
+This enables efficient, long-horizon forecasting without needing a sequence of observations at every step.
+
+
+
+
+
+The learnable parameters \(\theta\) of the dynamics model \(\phi\) are trained by minimizing a dynamics loss, \(\mathcal{L}_{\text{dyn}}\). This objective ensures that the predicted state \(\hat{z}^*_{t+k}\), generated by recursively applying the dynamics model \(\phi(\cdot, \cdot, \theta)\), aligns with the weak supervision available for that future time step. We use a Mean Squared Error (MSE) loss, which compares the prediction against the empirical mean of the proxy labels \(\Xi_{t+k}\). The loss is defined as a function of the parameters \(\theta\):
+\begin{equation}
+    \mathcal{L}_{\text{dyn}}(\theta) = \| \hat{z}^*_{t+k} -  \hat{\mu}_{\xi_{t+k}} \|_2^2,
+\end{equation}
+where $\hat{z}^*_{t+k}$ is the state predicted by the dynamics model parameterized by $\theta$, and $\hat{\mu}_{\xi_{t+k}} = \frac{1}{L}\sum_{l=1}^L \xi^{(l)}_{t+k}$ is the empirical mean of the $L$ proxy samples for the future state. 
+
+
+To optimize the learnable parameters $\theta$, we backpropagate 
+through the structured \emph{second-order} dynamics model used in Algorithm~\ref{alg:piwm}.
+Since each predicted state $\hat{z}^{*}_{t+k}$ is obtained by recursively applying
+\[
+\hat{z}^{*}_{t+2} = \phi(z^{*}_{t},\, z^{*}_{t+1},\, a_{t+1};\, \theta),
+\]
+it depends on \emph{two} previous latent states, consistent with the model definition.
+The gradient of the multi-step dynamics loss is:
+\[
+\frac{\partial \mathcal{L}_{\mathrm{dyn}}}{\partial \theta}
+=
+\frac{\partial \mathcal{L}_{\mathrm{dyn}}}{\partial \hat{z}^{*}_{t+k}}
+\cdot
+\frac{\partial \hat{z}^{*}_{t+k}}{\partial \theta}.
+\]
+
+The recursive derivative for $\hat{z}^{*}_{t+k}$ expands as:
+\[
+\frac{\partial \hat{z}^{*}_{t+k}}{\partial \theta}
+=
+\frac{\partial \phi}{\partial \theta}
++
+\frac{\partial \phi}{\partial z^{*}_{t+k-1}}
+\cdot
+\frac{\partial z^{*}_{t+k-1}}{\partial \theta}
++
+\frac{\partial \phi}{\partial z^{*}_{t+k-2}}
+\cdot
+\frac{\partial z^{*}_{t+k-2}}{\partial \theta},
+\]
+reflecting the fact that the dynamics model $\phi$ takes 
+$(z^{*}_{t+k-2}, z^{*}_{t+k-1}, a_{t+k-1})$ as inputs.
+This recursive computation enables end-to-end learning of both the interpretable 
+latent states and the dynamics parameters, ensuring that the learned physical 
+parameters remain consistent with observed trajectories.
+
+
+
+
+\begin{figure*}[t]
+	\centering         \includegraphics[width=1.8\columnwidth]{imgs/resultsx2.pdf}
+\caption{Prediction performance. The Root Mean Square Error (RMSE) of our PIWM variants (extrinsic methods, left; intrinsic methods, right) is compared against baselines over a 30-step prediction horizon in the Donkey Car and Lunar Lander across varying levels of weak supervision ($\delta$).}	\label{fig:2}
+
+ \end{figure*}
+
+
+\begin{algorithm}[t]
+\caption{General Training Framework for PIWM}
+\label{alg:piwm}
+\begin{algorithmic}[1]
+\Require Training set $\mathcal{S} = \{(y_{1:M}, a_{1:M}, \Xi_{1:M})\}_{i=1}^N$, architecture type, latent type, batch size $B$, weights $\{\lambda_i\}$
+\Ensure Trained model parameters $w$
+\State Initialize model parameters $w$ randomly
+\For{epoch $= 1$ to $n_{\text{epochs}}$}
+  \For{each batch of $B$ sequences from $\mathcal{S}$}
+    \For{$t = 1$ to $M - 2$}
+      \State \textbf{Stage 1: Encode observations to latent space}
+      \If{architecture = intrinsic}
+        \State $z^*_t \gets \mathcal{E}(y_t)$; \quad $z^*_{t+1} \gets \mathcal{E}(y_{t+1})$
+        \If{latent = discrete}
+          \State $z^*_t \gets \text{Quantize}(z^*_t)$
+        \EndIf
+        \State $z^*_p[t] \gets \text{ExtractPhysical}(z^*_t)$
+      \Else
+        \State $z_t \gets \mathcal{E}_v(y_t)$; \quad $z_{t+1} \gets \mathcal{E}_v(y_{t+1})$
+        \If{latent = discrete}
+          \State $z_t \gets \text{Quantize}(z_t)$
+        \EndIf
+        \State $z^*_p[t] \gets \mathcal{E}_p(z_t)$
+      \EndIf
+      
+      \State \textbf{Stage 2: Predict dynamics}
+      \State $a_t \gets h(y_t)$
+      \State $\hat{z}^*_p[t+2] \gets \phi_\theta(z^*_p[t], z^*_p[t+1], a_t)$
+      
+      \State \textbf{Stage 3: Decode for reconstruction}
+      \If{architecture = intrinsic}
+        \State $\hat{y}_{t+2} \gets \mathcal{D}(\text{Combine}(\hat{z}^*_p[t+2], z^*_v[t+2]))$
+      \Else
+        \State $\hat{z}_{t+2} \gets \mathcal{D}_p(\hat{z}^*_p[t+2])$
+        \State $\hat{y}_{t+2} \gets \mathcal{D}_v(\hat{z}_{t+2})$
+      \EndIf
+      
+      \State \textbf{Stage 4: Compute losses}
+      \State $\mathcal{L}_{\text{rec}} \gets \|y_{t+2} - \hat{y}_{t+2}\|^2_2$
+      \State $\mathcal{L}_{\text{interp}} \gets \text{InterpLoss}(z^*_p[t], \Xi_t)$
+      \State $\mathcal{L}_{\text{dyn}} \gets \text{InterpLoss}(\hat{z}^*_p[t+2], \Xi_{t+2})$
+      
+      \If{latent = continuous}
+        \State $\mathcal{L}_{\text{reg}} \gets \beta \cdot D_{KL}(q(z|y) \| p(z))$
+      \Else
+        \State $\mathcal{L}_{\text{reg}} \gets \mathcal{L}_{\text{VQ}} + \mathcal{L}_{\text{commit}}$
+      \EndIf
+      
+      \State $\mathcal{L} \gets \mathcal{L}_{\text{rec}} + \lambda_1 \mathcal{L}_{\text{interp}} + \lambda_2 \mathcal{L}_{\text{dyn}} + \lambda_3 \mathcal{L}_{\text{reg}}$
+    \EndFor
+    \State Update parameters: $w \gets w - \eta \nabla_w \mathcal{L}$
+  \EndFor
+\EndFor
+\State \Return $w$
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Training Procedure}
+
+Algorithm~\ref{alg:piwm} summarizes our unified training framework for PIWM, which integrates the learning of interpretable representations with dynamics modeling. The training operates on a dataset $$\mathcal{S} = \{(y_{1:M}, a_{1:M}, \Xi_{1:M})\}_{i=1}^N$$ consisting of $N$ trajectories, where each trajectory contains $M$ time steps of observations $y$, actions $a$, and weak supervision samples $\Xi$. The model parameters $w$ are optimized using mini-batch gradient descent with batch size $B$ and learning rate $\eta$ over $n_{\text{epochs}}$ epochs.
+
+The training follows a four-stage process within each time step:
+
+\textbf{Stage 1: Encoding.} For intrinsic architectures, observations are directly encoded to interpretable states $z^*$ via encoder $\mathcal{E}$. For extrinsic architectures, a two-stage process first encodes observations to intermediate representations $z$ using vision encoder $\mathcal{E}_v$, then maps them to physical states $z^*_p$ via physical encoder $\mathcal{E}_p$. Discrete variants apply quantization after encoding.
+
+\textbf{Stage 2: Dynamics Prediction.} The learnable dynamics model $\phi_\theta$ takes two consecutive physical states $z^*_p[t], z^*_p[t+1]$ and action $a_t = h(y_t)$ from controller $h$ to predict the next state $\hat{z}^*_p[t+2]$. This enables the model to internally compute velocities and other derivatives necessary for physical prediction.
+
+\textbf{Stage 3: Decoding.} Intrinsic models decode by combining predicted physical states with visual features. Extrinsic models first decode to intermediate representations via $\mathcal{D}_p$, then to observations via $\mathcal{D}_v$.
+
+\textbf{Stage 4: Loss Computation.} The total loss combines reconstruction error $\mathcal{L}_{\text{rec}}$, interpretability alignment $\mathcal{L}_{\text{interp}}$ with weak supervision $\Xi$, dynamics prediction accuracy $\mathcal{L}_{\text{dyn}}$, and regularization $\mathcal{L}_{\text{reg}}$ (KL divergence for continuous, VQ losses for discrete):
+\begin{equation}
+    \mathcal{L} = \mathcal{L}_{\text{rec}} + \lambda_1 \mathcal{L}_{\text{interp}} + \lambda_2 \mathcal{L}_{\text{dyn}} + \lambda_3 \mathcal{L}_{\text{reg}}
+\end{equation}
+where $\{\lambda_i\}$ are hyperparameters balancing the loss components.
+
+The key distinction from standard world models lies in the explicit alignment of latent representations with physical quantities through weak supervision, enabling both accurate prediction and physical interpretability.
+
+\section{Experimental Evaluation}\label{sec:results}
+To validate our PIWM approach, we experiment on three environments: CartPole, Lunar Lander, and the DonkeyCar autonomous racing platform~\cite[]{brockman2016openai,viitala2021learning}. These environments differ in the observation dimensionality, action space, and underlying dynamics.
+
+% \noindent
+% \textbf{Experimental Setup.}
+
+\subsection{Experimental Setup}
+
+For each environment, we collect a dataset of 60,000 trajectories, each with at least 50 time steps. To ensure diverse state space coverage, trajectories are generated by executing both random actions and those generated by well-trained neural controllers. The weak supervision signals are generated by perturbing the ground-truth physical states for different noise levels $\delta \in \{0, 5\%, 10\%\}$. For each, the weak supervision given by a uniform distribution over an interval constructed as follows. Its width is equal to the \(\delta\) fraction of the full range of the respective state dimension. The interval's center is randomly shifted from the ground truth by an amount drawn from a uniform distribution over \([-\delta/2, \delta/2]\) of the full state range.
+For the experiments, our vision encoder $\mathcal{E}_v$ uses two convolutional layers with channel projection to a 64-dimensional latent space. Discrete variants employ a 512-entry codebook with commitment loss weight $\beta = 0.25$. The physical encoder $\mathcal{E}_p$ is a 2-layer Transformer (4 heads, 512 feedforward dimension) with mean pooling and linear projection to physical states. The decoder $\mathcal{D}_p$ mirrors this architecture, using cross-entropy loss for discrete index prediction. 
+We apply early stopping based on validation loss to prevent overfitting and to ensure stable convergence across environments. 
+In addition, we use a cosine learning-rate decay schedule, which improves long-horizon rollout stability for the second-order latent dynamics model. 
+These training settings follow standard practice in world-model and VQ-VAE training. 
+We performed a small-scale sweep over candidate learning rates and regularization magnitudes and selected the configuration that yielded stable reconstruction loss, non-diverging rollouts, and consistent convergence across datasets.
+
+
+% \begin{wrapfigure}{r}{0.45\textwidth} 
+%   \centering
+%   \includegraphics[width=0.45\textwidth]{iclr2026/imgs/para3.pdf} 
+%   \caption{test}
+% \end{wrapfigure}
+
+
+
+We evaluate our PIWM variants (Intrinsic/Extrinsic, Continuous/Discrete) against a suite of strong baselines under 5-fold cross-validation. We first include data-driven sequence models, an LSTM and a Transformer, which serve as non-physical benchmarks. Our primary comparisons are to state-of-the-art models in two categories. For the {intrinsic} approach, we compare against Vid2Para~\cite[]{asenov2019vid2param} and GokuNet~\cite[]{linial_generative_2021}. For the {extrinsic} approach, we evaluate against DVBF~\cite[]{karl2016deep}. To specifically isolate and compare the performance of the latent dynamics predictors, we also include SindyC~\cite[]{BRUNTON2016710} --- a classic state-based method for dynamics discovery. For a fair comparison, both the DVBF and SindyC dynamics models operate on the interpretable latent representations produced by our continuous autoencoder. All models are configured to have a comparable parameter count to focus the comparison on architectural efficacy rather than model capacity. The controller used in all experiments is pretrained and kept fixed throughout the training of PIWM. It is not jointly optimized with the image encoder, the physical encoder, or the dynamics model. Instead, it is trained separately using ground-truth states under a standard supervised imitation-learning objective. During PIWM training, the controller serves only as an action generator, and its parameters remain frozen so that the learning of the latent physical representations and dynamics is not influenced by updates to the control policy.
+
+% We compare the performance of our PIWM variants (Intrinsic/Extrinsic, Continuous/Discrete) against a suite of strong baselines. These include purely data-driven models, such as standard LSTM and Transformer-based sequence predictors without explicit physical structure; state-of-the-art \textbf{intrinsic baselines} that learn a direct mapping from images to physical parameters, including Vid2Para and GokuNet; and \textbf{extrinsic baselines} that use a two-stage approach, such as DVBF and SindyC. All models are trained with a comparable parameter count to ensure a fair comparison of architectural efficacy rather than model capacity. Further implementation details are provided in the Appendix.
+
+% \paragraph{Baselines and Ablations.} We compare the performance of our PIWM variants (Intrinsic/Extrinsic, Continuous/Discrete) against a suite of strong baselines.
+% \begin{itemize}
+%     \item \textbf{Data-Driven Models:} Standard LSTM and Transformer-based sequence models that predict future states directly from encoded image features, without any explicit physical structure.
+%     \item \textbf{Intrinsic Baselines:} State-of-the-art models that learn a direct mapping from images to physical parameters, including Vid2Para and GokuNet.
+%     \item \textbf{Extrinsic Baselines:} Models that use a two-stage approach, including DVBF and SindyC.
+% \end{itemize}
+% All models are trained with a comparable parameter count to ensure a fair comparison of architectural efficacy rather than model capacity. Further implementation details are provided in the Appendix.
+% \noindent
+% \textbf{Predictive Performance.}
+
+\begin{figure}[t]
+	\centering         \includegraphics[width=\columnwidth]{imgs/cart3.pdf}
+\caption{Prediction performance of CartPole. The Root Mean Square Error (RMSE) of our PIWM variants (extrinsic methods, left; intrinsic methods, right) is compared against baselines over a 30-step prediction horizon in the CartPole across varying levels of weak supervision ($\delta$).}	\label{fig:para}
+ \end{figure}
+
+
+ \begin{figure*}[t]
+  \centering
+  \includegraphics[width=0.78\textwidth]{imgs/allpara.pdf} 
+  \caption{Learned Physical Parameters vs. Ground Truth. The parameters learned by our model (colored bars) are compared against the ground-truth values (yellow lines) under varying noise levels ($\delta$).}
+\label{fig:3}
+ \end{figure*}
+\subsection{Predictive Performance}
+
+
+We first evaluate the primary task of long-horizon trajectory prediction. Figure~\ref{fig:2} shows the root mean square error (RMSE) for 30-step future state prediction in the challenging Donkey Car environment, comparing both extrinsic and intrinsic methods across different levels of supervision noise, \(\delta\).
+The results for extrinsic methods (Fig.~\ref{fig:2}) show a clear performance hierarchy. Our PIWM variants consistently outperform all baselines. The {quantized extrinsic model (purple line)} achieves the lowest and most stable prediction error, maintaining accuracy even as the prediction horizon extends. Our continuous extrinsic model (red line) is the second-best performer. Both significantly surpass the extrinsic baselines (DVBF, SindyC) and the purely data-driven models (LSTM, Transformer), whose errors escalate rapidly.
+
+
+% \begin{figure}[t]
+%   \centering
+%   \includegraphics[width=0.45\textwidth]{imgs/parax2.pdf} 
+%   \caption{Learned Physical Parameters vs. Ground Truth. The parameters learned by our model (colored bars) are compared against the ground-truth values (dashed lines) under varying noise levels ($\delta$).}
+% \label{fig:3}
+%  \end{figure}
+
+ 
+
+ 
+% \begin{wrapfigure}{r}{0.45\textwidth} 
+%   \centering
+%   \includegraphics[width=0.45\textwidth]{imgs/parax2.pdf} 
+%   \caption{Learned Physical Parameters vs. Ground Truth. The parameters learned by our model (colored bars) are compared against the ground-truth values (dashed lines) under varying noise levels ($\delta$).}
+%   \label{fig:3}
+% \end{wrapfigure}
+
+A more nuanced picture emerges for the intrinsic methods (Fig.~\ref{fig:2}, right). Our PIWM models again demonstrate a clear advantage over the Vid2Para and GokuNet baselines. Strikingly, our continuous intrinsic model (red line) achieves a predictive accuracy that is highly competitive with, and in some cases even surpasses, our top-performing extrinsic models. This suggests that a well-regularized, end-to-end continuous architecture can be highly effective. In contrast, the quantized intrinsic model (purple line) exhibits less stability and higher error in this configuration, indicating that the optimization challenge of aligning a discrete codebook within a single, unified encoder is considerable. Nevertheless, both of our intrinsic variants outperform the baseline models, confirming the overall benefit of our training methodology.
+A key insight from these results is that {decoupling visual perception from physical state inference (the extrinsic approach) is a critical design choice for achieving robust, long-term prediction.} An important observation from our results is the different strengths exhibited by continuous and discrete latent parameterizations across the intrinsic and extrinsic settings. In the intrinsic (one-stage) architecture, the encoder must jointly learn visual abstractions and physically structured representations. This joint optimization benefits from the flexibility and smooth gradients of a continuous latent space, which can more easily adapt to the coupled visual–physical objectives. In contrast, the extrinsic (two-stage) architecture decouples visual encoding from physical interpretation. In this setting, the discrete latent space acts as a strong regularizer: the quantization suppresses visual noise, stabilizes the mapping to physical states, and improves generalization of the dynamics model. Consequently, the continuous variant performs better under the intrinsic setup, while the discrete variant achieves superior performance under the extrinsic setup. This phenomenon reveals a key insight of our framework: the optimal latent parameterization depends on whether physical structure is learned jointly with perception or inferred from a pre-learned visual representation.
+Furthermore, across both architectures, the quantized (discrete) latent space provides a powerful regularization effect, leading to more stable predictions than the continuous alternative, especially under noisy supervision.
+
+
+
+
+
+
+% \begin{figure}[t]
+% 	\centering         \includegraphics[width=\columnwidth]{iclr2026/imgs/para4.pdf}
+% \caption{}	\label{fig:3}
+% \vspace{-5mm}
+%  \end{figure}
+
+
+
+
+ 
+\subsection{Quality of the Learned Physical Representation}
+
+% \textbf{Quality of the Learned Physical Representation.} 
+
+Strong predictive performance should stem from an accurate underlying state representation. We validate this by evaluating the static encoding quality and the model's ability to recover the true physical parameters of the simulation.
+
+Table~\ref{tab:static_rmse_all_noise} presents the static encoding RMSE, measuring how accurately each model can infer the physical state from a single observation. The results strongly correlate with the predictive findings. Our {quantized extrinsic PIWM achieves the highest encoding accuracy}, confirming that its superior representation is the foundation of its predictive power. The intrinsic continuous models, while competitive, exhibit higher encoding error, consistent with their weaker predictive performance.
+
+Finally, we assess whether the dynamics model can learn the true physical parameters (e.g., car length, pole mass) within the learned latent space. As reported in Figure~\ref{fig:3}, PIWM successfully recovers the ground-truth parameters with low relative error across all environments. This provides direct evidence that our framework learns a genuinely interpretable representation that is not merely correlated with the physics but is structured in a way that is consistent with them.
+
+
+
+
+
+
+
+
+% \textbf{Setup.}
+% We evaluate PIWM on three simulated environments of increasing complexity: CartPole, Lunar Lander, and Donkey Car~\cite[]{brockman2016openai,viitala2021learning}. These benchmarks differ in observation size, action space, and dynamics. For each, we collect a dataset of 60,000 trajectories, each with at least 50 time steps, by executing random actions to ensure state diversity. Physical state distributions for weak supervision are generated with widths of 2.5\%, 5\%, and 10\% of the full state range added on the ground truth, and their distribution centers are perturbed to introduce noise to the placement. For each setting, we compare PIWM against baselines that include LSTM-based predictors, transformer-based models, and autoencoder variants (iVAE, $\beta$-VAE, iVQVAE) trained with and without a dynamics layer.
+
+
+% \noindent
+% \textbf{Predictive Performance.}
+% Table~\ref{tab:lunar} presents a comprehensive comparison of root mean square error (RMSE) of state predictions across three environments and prediction horizons \( k = 10, 20, 30 \). PIWM consistently outperforms all the baselines.
+% Models that incorporate a dynamical layer, such as iVAE+Dyna and i$\beta$VAE+Dyna, consistently perform better than purely data-driven sequence models such as LSTM and Transformer.
+% PIWM’s two-stage latent modeling strategy demonstrates superior encoding compared to interpretable VAE and interpretable $\beta$-VAE. 
+% Across varying task complexities, PIWM consistently achieves high accuracy. For example, in the DonkeyCar environment, data-driven baselines suffer from large errors while PIWM maintains lower RMSE in the same setting, showing its stability in complex control scenarios.
+% Prediction quality degrades for all models as supervision distributions become wider and noisier, yet PIWM remains the most robust. These results demonstrate that PIWM achieves robust long-term state prediction across a variety of conditions. Additionally, the improved performance is not merely due to added model capacity. As shown in Table 1, we control for total parameter count across models. The iVQVAE and PIWM architectures distribute the same capacity between vision and physical encoders. This design choice reflects a representational bottleneck observed in prior works: even VAEs with structured latents and strong decoders fail to disentangle physical variables without explicit physical priors or supervision. For example, cadence and stride length may be entangled in the same latent dimension, or extra dimensions may encode abstract visual features. In contrast, our two-stage architecture mitigates such entanglement by isolating physical inference and dedicating additional capacity to the downstream dynamics module.
+
+
+
+% \noindent
+% \textbf{Physical Meaning.}
+% We also assess PIWM’s ability to learn the ground-truth physical parameters such as mass, length, and force, reported in Table~\ref{tab:combined_sideways_tables}. PIWM learns accurate parameters in all three environments, showing low error even with noisy supervision. In CartPole, it avoids the scaling ambiguity seen in baselines like iVAE and $\beta$-VAE, which recover parameters \textit{several times larger} than the ground truth. In Donkey Car, PIWM recovers the car length with less than 4\% relative error, while baselines exhibit instability as supervision weakens. These results show PIWM indeed learns physically interpretable representations, which can indirectly infer the true physical parameters. Experiments on the encoding accuracy and reconstruction quality are presented in the Appendix.
+\begin{table*}[ht!]
+\centering
+\caption{Static Encoding RMSE (mean \(\pm\) std) Comparison of MSE and KL Losses}
+\label{tab:static_rmse_all_noise}
+\footnotesize % Use \small or \footnotesize to adjust the font size
+\begin{tabular}{@{}llcccccc@{}}
+\toprule
+\multirow{2}{*}{\textbf{Case}} & \multirow{2}{*}{\textbf{Model}} & \multicolumn{2}{c}{\textbf{$\delta = 0\%$}} & \multicolumn{2}{c}{\textbf{$\delta = 5\%$}} & \multicolumn{2}{c}{\textbf{$\delta = 10\%$}} \\
+\cmidrule(lr){3-4} \cmidrule(lr){5-6} \cmidrule(lr){7-8}
+ &  & \textbf{MSE} & \textbf{KL} & \textbf{MSE} & \textbf{KL} & \textbf{MSE} & \textbf{KL} \\ \midrule
+\multirow{4}{*}{Donkey Car} & Intrinsic (Cont.) & $0.13 \pm 0.05$ & $0.45 \pm 0.06$ & $0.16 \pm 0.06$ & $0.52 \pm 0.07$ & $0.20 \pm 0.07$ & $0.58 \pm 0.08$ \\
+ & Intrinsic (Disc.) & $0.18 \pm 0.04$ & $0.42 \pm 0.05$ & $0.21 \pm 0.05$ & $0.55 \pm 0.06$ & $0.22 \pm 0.06$ & $0.64 \pm 0.07$ \\
+ & Extrinsic (Cont.) & $0.11 \pm 0.05$ & $0.24 \pm 0.04$ & $0.15 \pm 0.04$ & $0.28 \pm 0.05$ & $0.16 \pm 0.05$ & $0.33 \pm 0.06$ \\
+ & \textbf{Extrinsic (Disc.)} & {$0.03 \pm 0.02$} & $0.19 \pm 0.03$ & {$0.05 \pm 0.03$} & $0.23 \pm 0.04$ & {$0.06 \pm 0.04$} & $0.28 \pm 0.05$ \\ \midrule
+\multirow{4}{*}{Lunar Lander} & Intrinsic (Cont.) & $0.07 \pm 0.05$ & $0.56 \pm 0.26$ & $0.08 \pm 0.15$ & {$0.58 \pm 0.37$} & $0.21 \pm 0.07$ & $0.77 \pm 0.38$ \\
+ & Intrinsic (Disc.) & $0.06 \pm 0.04$ & $0.44 \pm 0.11$ & $0.03 \pm 0.05$ & $0.53 \pm 0.12$ & $0.16 \pm 0.06$ & $0.64 \pm 0.17$ \\
+ & Extrinsic (Cont.) & $0.11 \pm 0.07$ & $0.33 \pm 0.14$ & $0.14 \pm 0.04$ & $0.39 \pm 0.16$ & $0.15 \pm 0.05$ & $0.45 \pm 0.26$ \\
+ & \textbf{Extrinsic (Disc.)} & \textbf{$0.03 \pm 0.02$} & $0.24 \pm 0.14$ & \textbf{$0.09 \pm 0.03$} & $0.29 \pm 0.11$ & \textbf{$0.12 \pm 0.04$} & $0.35 \pm 0.23$ \\ \bottomrule
+\end{tabular}
+\end{table*}
+
+
+
+
+\subsection{Analysis and Discussion}
+
+% \textbf{Analysis and Discussion.}
+
+
+Our experiment demonstrates that the extrinsic architecture with a discrete latent space is optimal for learning physically interpretable world models from weak supervision. This approach achieves superior prediction accuracy (Figure~\ref{fig:2}) by decoupling perception from physical state abstraction and leveraging quantization as a powerful regularizer against visual noise. The learned representations are not only predictive but also genuinely physically grounded, as evidenced by the model's ability to recover true system parameters (Figure~\ref{fig:3}) and generate qualitatively plausible visual rollouts that far exceed baseline performance (Figure~\ref{fig:4}). Crucially, the substantial gains in interpretability and prediction accuracy come at a minimal cost to downstream controller performance (Table~\ref{tab:2}), validating our architecture as a robust and practical solution. DVBF performs poorly in our settings because its Gaussian latent space and amortized inference provide no physical inductive bias, causing the learned states to drift and quickly accumulate errors during multi-step rollouts. This makes DVBF unstable in visually rich or discontinuous dynamics environments, which explains its large performance gap relative to structured models such as PIWM.
+
+
+While our framework is effective, future work should focus on scaling its representational capacity and enhancing its use of supervision. For complex, open-world scenarios like autonomous driving, our approach could be extended from predicting simple state vectors to building structured world representations, such as dynamic 3D occupancy grids, where physical priors can be applied to multiple agents. Furthermore, the rich temporal nature of weak supervision signals is currently underutilized. Future methods could process sequences of noisy supervisory signals using filtering or sequence modeling techniques to produce a more refined, temporally coherent learning target, thereby improving the model's robustness and accuracy. Also, the experiments in this work focus on Markovian dynamical systems, where transitions depend only on the most recent latent state and action. This setting aligns with the majority of prior work on world models and enables a clean evaluation of the proposed physically interpretable latent dynamics. Extending PIWM to non-Markovian or delayed-effect systems, where temporal dependencies span multiple steps, represents an interesting direction for future research. Evaluating such scenarios would require augmenting the dynamics model with additional memory mechanisms or explicitly modeling higher-order temporal dependencies.
+
+
+
+
+% \begin{figure}[t]
+% 	\centering         \includegraphics[width=\columnwidth]{imgs/parax1.pdf}
+% \caption{Learned Physical Parameters vs. Ground Truth. The parameters learned by our model (colored bars) are compared against the ground-truth values (dashed lines) under varying noise levels ($\delta$).}	\label{fig:para}
+%  \end{figure}
+
+ 
+
+\section{Related Work}
+
+
+\subsection{Trajectory Prediction}
+
+% \noindent
+% \textbf{Trajectory Prediction.}
+
+
+Predicting trajectories is critical for safe planning and control~\cite[]{fridovich2020confidence}, but existing methods present trade-offs. While approaches like Hamilton-Jacobi (HJ) reachability offer formal guarantees~\cite[]{li2021prediction,nakamura2023online}, they are computationally expensive for online settings. Conversely, mainstream deep learning models are powerful but often rely on handcrafted scene representations~\cite[]{salzmann2020trajectron++} or high-precision maps~\cite[]{itkina2023interpretable, hsu2023interpretable}, and typically do not produce physically interpretable predictions~\cite[]{lu2024towards, lindemann2023conformal, ruchkin2022confidence}. In contrast, our approach learns directly from raw images with distribution-based weak supervision without requiring handcrafted inputs or goal conditioning.
+% Predicting trajectories is critical for anticipating hazards like vehicle collisions, thus providing essential inputs to planning and control~\cite[]{fridovich2020confidence}. Methods such as Hamilton-Jacobi (HJ) reachability~\cite[]{li2021prediction,nakamura2023online} offer formal guarantees but require detailed dynamics knowledge and significant computations, limiting their scalability to high-dimensional online settings.  Online approaches, such as confidence-aware models~\cite[]{ruchkin2022confidence} and conformal prediction~\cite[]{lindemann2023conformal}, improve reliability but do not directly enhance physical interpretability. Deep architectures like Trajectron++~\cite[]{salzmann2020trajectron++} integrate scene graphs with conditional VAEs for multi-agent forecasting, though they still depend on handcrafted scene representations. To reduce the reliance on handcrafted features, Goal-based Neural Variational Agent (GNeVA)~\cite[]{lu2024towards} models spatial goal distributions using learnable priors, but it does not explicitly model interpretable physical variables, and thus offers limited insight into the physical dynamics underlying its predictions. Meanwhile, interpretable predictors like ISAP~\cite[]{itkina2023interpretable} use semantic information such as historical trajectories and high-precision maps, guided by human-aligned metrics~\cite[]{hsu2023interpretable}. In contrast, our approach learns directly from raw images with distribution-based weak supervision without requiring handcrafted inputs or goal conditioning.
+
+\begin{figure*}[t]
+	\centering         \includegraphics[width=1.8\columnwidth]{imgs/vis.pdf}
+\caption{Qualitative Comparison of 30-Step Trajectory Rollouts under $\delta=5\%$.}	\label{fig:4}
+
+ \end{figure*}
+
+
+\subsection{Representation Learning}
+
+
+ % \noindent\textbf{Representation Learning.}
+
+ 
+A central challenge in learning from high-dimensional sequences is creating compact and meaningful latent representations~\cite[]{shi2015convolutional,bai2018empirical}. While Variational Autoencoders (VAEs)~\cite[]{kingma2013auto} are foundational, their standard form learns unstructured latents. A significant line of research attempts to impose structure, either by encouraging disentanglement in continuous spaces with methods like \(\beta\)-VAE, FactorVAE, and TCVAE~\cite[]{higgins2017beta, kim2018disentangling, chen2018isolating}, or by enforcing causality~\cite[]{yang2021causalvae}. However, these methods often fall short of ensuring a direct correspondence with real-world physical states or require precisely labeled data. An alternative is to impose structure via discretization with Vector-Quantized VAEs (VQ-VAEs) and their extensions~\cite[]{van2017neural, razavi2019generating, xue2019supervised}. While effective, their application to physical prediction has been limited due to abstract latent codes and reliance on exact supervision. Even in robotic applications like DVQ-VAE that model structured systems, encoding external environmental factors remains a challenge~\cite[]{zhao2024decomposed}. GOKU-net constrains variables to plausible physical ranges but does not tie them to specific, interpretable quantities~\cite[]{linial_generative_2021}.
+
+Other works incorporate structured priors to enhance learning. Object-centric world models like FOCUS and foundation world models improve efficiency by structuring latents around discrete entities~\cite[]{ferraro2023focus, mao2024zero}. Models like SPARTAN provide outputs that are interpretable by construction but do not incorporate known physical dynamics or action-conditioned prediction~\cite[]{lei2024spartan}. Priors can also be introduced as task-related rules in Bayesian neural networks~\cite[]{sam2024bayesian} or through human and self-supervision to guide abstraction~\cite[]{fu2021learning, wen2023any, konidaris2018skills, peng2024human, chen2022automated}. These approaches, however, often yield abstract representations that lack physical grounding without strong external priors. Closer to our work, Deep Variational Bayes Filters (DVBFs) extend VAEs with a latent dynamics module~\cite[]{karl2016deep}. Yet, without explicit physical supervision, they often fail to recover interpretable variables—a limitation our work addresses by leveraging weak supervision.
+% \textcolor{red}{
+% \noindent\textbf{Representation Learning from introduction}
+% Various architectures have been developed for sequence prediction from high-dimensional data. Convolutional LSTMs (ConvLSTMs), for instance, directly predict future observation sequences but can be complex and struggle with long-term temporal coherence~\cite[]{shi2015convolutional,bai2018empirical}. To create more compact and meaningful representations, a significant body of work has focused on improving the structure of latent spaces in Variational Autoencoders (VAEs). One major research thrust aims to learn disentangled representations in a continuous space, where individual latent dimensions correspond to independent data factors. Prominent methods in this area, including \(\beta\)-VAE, FactorVAE, and TCVAE, modify the VAE objective to enforce this separation~\cite[]{higgins2017beta, kim2018disentangling, chen2018isolating}. An alternative strategy imposes structure by discretizing the latent space. The Vector-Quantized VAE (VQ-VAE) achieves this by mapping representations to a learned, finite codebook, which can encourage the emergence of semantically meaningful latent codes~\cite[]{van2017neural}.}
+
+% \noindent
+% \textbf{Learning Latent Representations.}
+% Latent representations enable neural networks to distill key features from high-dimensional data such as images, text, and audio~\cite[]{goodfellow2020generative,xie2016unsupervised,mao2024language,gatys2016image}. VAEs~\cite[]{kingma2013auto} learn compact latent spaces by encoding and reconstructing input data --- but lack interpretability and structure. Overcoming this, $\beta$-VAE~\cite[]{higgins2017beta} introduces a hyperparameter to encourage disentanglement, while CausalVAE~\cite[]{yang2021causalvae} further enforces causal relationships via a causal graph. However, both approaches often fail to ensure direct correspondence between latent variables and real-world physical states. They also require precisely labeled causal states, which can be difficult to obtain. 
+% Another variant, GOKU-net~\cite[]{linial2021generative}, replaces the standard Gaussian prior with a learnable transformation that constrains the latent variables to lie within plausible physical ranges. However, these variables are not tied to specific physical quantities and thus are not interpretable.
+% Unlike standard VAEs with continuous latents, VQ-VAEs~\cite[]{van2017neural} map inputs to discrete codebook entries. Their extensions, such as VQ-VAE-2~\cite[]{razavi2019generating} with hierarchical codebooks and S-VQ-VAE~\cite[]{xue2019supervised} with class-aligned supervision, improve reconstruction and feature alignment --- but have seen limited application to physical prediction due to abstract latents and reliance on exact supervision.
+% % Variants such as DVQ-VAE~\cite[]{zhao2024decomposed}
+% The closest robotic application is DVQ-VAE~\cite[]{zhao2024decomposed}, which employs multiple codebooks to model different parts of structured systems, such as using separate embeddings to represent robotic fingers and palms. However, such approaches still struggle to encode external environmental factors, limiting their physical interpretability.
+
+
+
+
+ 
+% Structured priors are widespread in representation learning. For instance, task-related rules have been integrated into Bayesian neural networks~\cite[]{sam2024bayesian} to enhance performance. Similarly, object-centric world models like FOCUS~\cite[]{ferraro2023focus} and foundation world models~\cite[]{mao2024zero} structure latent spaces around discrete entities and interactions, improving learning efficiency and interpretability. 
+% Other object-centric models like SPARTAN~\cite[]{lei2024spartan} provide semantically structured outputs interpretable by construction, but do not incorporate known physical dynamics or action-conditioned prediction.
+% Human supervision can guide abstraction techniques~\cite[]{fu2021learning,wen2023any} to distill high-dimensional data into essential motion features to support policy learning~\cite[]{konidaris2018skills,peng2024human}. %  --- but usually rely on  and are difficult to map back to raw observations. 
+% Self-supervision can learn minimal neural states~\cite[]{chen2022automated} with abstract representations that lack physical interpretability without external priors. Building on these ideas, we leverage task-relevant constraints in the form of dynamical equations and weak physical supervision to improve physical interpretability and accuracy. %, limiting their utility for interoperable trajectory prediction. 
+% Deep variational Bayes filters (DVBF)~\cite[]{karl2016deep} extend VAE-based world models by introducing a latent dynamics module and an auxiliary physical value estimator. However, without explicit physical supervision, they often fail to recover interpretable variables, as we also observed in early experiments.
+
+
+\subsection{World Models}
+
+
+% \looseness=-1
+% \noindent
+% \textbf{World Models.}
+
+
+Classical world models like Dreamer~\cite[]{hafner2020mastering} and DayDreamer~\cite[]{wu2023daydreamer} excel at learning from experience for policy learning, but their latent representations are typically uninterpretable~\cite[]{peper2025four}. Many approaches seek to improve physical grounding by incorporating priors, such as bounds on states and actions~\cite[]{tumu2023physics,sridhar2023guaranteed}, physics-aware loss functions~\cite[]{djeumou2023learn}, or kinematics-inspired layers~\cite[]{cui2020deep}. However, these methods are often designed for low-dimensional systems and do not scale well to learning from noisy, high-dimensional images. Other physics-informed methods leverage differential equations to stabilize learning~\cite[]{ZHONG2023115664,linial_generative_2021}, with frameworks like Phy-Taylor using Taylor monomials to structure the latent dynamics~\cite[]{mao_phy-taylor_2025}. Approaches like sparse identification and differentiable physics require access to the underlying state variables and are not designed to learn from raw visual inputs~\cite[]{yao2024marrying,BRUNTON2016710,de2018end}.
+
+Recent advances have produced powerful but distinct world models. For instance, 3D occupancy-based models improve forecasting but their internal states are not explicitly aligned with physical variables~\cite[]{zheng2024occworld,min2023uniworld,yan2024renderworld,zuo2024gaussianworld}. Concurrently, neuro-symbolic models enhance generalization but require predefined symbolic inputs not available from raw sensor data~\cite[]{balloch2023neuro,liang2024visualpredicator}. Our approach is distinct from these paradigms as it learns physically interpretable representations directly from images using weak supervision. This also contrasts with the most closely related work, Vid2Param~\cite[]{asenov2019vid2param}, which requires full supervision and struggles with dynamics prediction.
+
+
+
+
+
+\begin{table}[ht!]
+\centering
+\caption{Controller Performance on Reconstructed Observations Across All Variants and Noise Levels}
+\label{tab:2}
+\tiny % Using a smaller font size for this dense table
+\begin{tabular}{@{}ll l ccc@{}}
+\toprule
+\multirow{2}{*}{\textbf{Case}} & \multirow{2}{*}{\textbf{Input Type}} & \multirow{2}{*}{\textbf{Latent Space}} & \multicolumn{3}{c}{\textbf{Supervision Noise Level ($\delta$)}} \\
+\cmidrule(l){4-6}
+& & & \textbf{0\%} & \textbf{5\%} & \textbf{10\%} \\
+\midrule
+\multirow{5}{*}{\shortstack{Donkey Car \\ (Action RMSE $\downarrow$)}}
+& \multirow{2}{*}{One-Stage (Intrinsic)} & Continuous & $0.12 \pm 0.04$ & $0.13 \pm 0.04$ & $0.15 \pm 0.05$ \\
+& & Discrete & $0.21 \pm 0.15$ & $0.29 \pm 0.16$ & $0.32 \pm 0.20$ \\
+\cmidrule(l){2-6}
+& \multirow{2}{*}{Two-Stage (Extrinsic)} & Continuous & $0.15 \pm 0.05$ & $0.16 \pm 0.05$ & $0.22 \pm 0.06$ \\
+& & Discrete & $0.15 \pm 0.04$ & $0.17 \pm 0.05$ & $0.19 \pm 0.05$ \\
+\midrule
+\multirow{5}{*}{\shortstack{Lunar Lander \\ (Action Acc. $\uparrow$)}}
+& \multirow{2}{*}{One-Stage (Intrinsic)} & Continuous & $93.0\% \pm 1.8\%$ & $90.5\% \pm 2.0\%$ & $87.1\% \pm 2.2\%$ \\
+& & Discrete & $85.5\% \pm 2.5\%$ & $82.1\% \pm 2.8\%$ & $78.3\% \pm 3.1\%$ \\
+\cmidrule(l){2-6}
+& \multirow{2}{*}{Two-Stage (Extrinsic)} & Continuous & $86.2\% \pm 2.4\%$ & $83.5\% \pm 2.6\%$ & $80.0\% \pm 2.9\%$ \\
+& & Discrete & $91.5\% \pm 2.1\%$ & $88.6\% \pm 2.3\%$ & $84.5\% \pm 2.5\%$ \\
+\midrule
+\multirow{5}{*}{\shortstack{Cart Pole \\ (Action Acc. $\uparrow$)}}
+& \multirow{2}{*}{One-Stage (Intrinsic)} & Continuous & $98.0\% \pm 1.0\%$ & $96.5\% \pm 1.2\%$ & $94.0\% \pm 1.5\%$ \\
+& & Discrete & $95.0\% \pm 1.6\%$ & $91.5\% \pm 2.0\%$ & $87.2\% \pm 2.5\%$ \\
+\cmidrule(l){2-6}
+& \multirow{2}{*}{Two-Stage (Extrinsic)} & Continuous & $95.5\% \pm 1.5\%$ & $92.0\% \pm 1.8\%$ & $88.0\% \pm 2.2\%$ \\
+& & Discrete & $97.2\% \pm 1.1\%$ & $95.0\% \pm 1.4\%$ & $92.5\% \pm 1.8\%$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+% \section{Limitations}\label{sec:limit}
+
+\section{Conclusion and Broader Impact}\label{sec:conclusion}
+We presented the Physically Interpretable World Model, a framework that learns physically-grounded latent representations from images using only weak distributional supervision. Our systematic evaluation demonstrates that an extrinsic architecture with a discrete latent space yields accurate and robust predictions and successfully recovers the system's true physical parameters. This work not only provides direct evidence of a genuinely interpretable model but also offers a practical path toward more trustworthy and reliable autonomous systems in high-stakes applications. 
+
+
+% \begin{acks}
+% To Robert, for the bagels and explaining CMYK and color spaces.
+% \end{acks}
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{sample-base}
+
+
+
+
+% \newpage
+
+% \appendix
+
+% \section*{Appendix}
+
+
+
+
+% \subsection*{A. Training  Algorithms}
+
+
+% The training procedures for the ablation and proposed models are summarized in Algorithm~\ref{alg:ablated_train} and Algorithm~\ref{alg:piwm_train}, respectively.
+
+% For the PIWM model (Algorithm~\ref{alg:piwm_train}), observations are first encoded into discrete latent representations using a Vision VQ-VAE module. These discrete latents are further mapped into interpretable physical states via a physical encoder $\mathcal{E}_p$. The dynamics model $\phi_\theta$ predicts the future physical state based on the current and next physical states. The predicted physical state is decoded back into the latent space and finally reconstructed into the future observation. The loss is computed similarly, with both reconstruction and weak supervision terms.
+
+% For the ablation model (Algorithm~\ref{alg:ablated_train}), consecutive observations are first encoded using the encoder $\mathcal{E}$ into latent variables. The dynamics model $\phi_\theta$ predicts the future latent state by taking as input the latent representations from two consecutive frames. The decoder $\mathcal{D}$ reconstructs the observation at the future time step, and a reconstruction loss is computed. In addition, a weak supervision loss is applied to regularize the encoded latents based on interval labels.
+
+
+
+% The main difference between the ablation and proposed models lies in the latent structure and dynamics modeling: the ablation model operates directly in the visual latent space, while the proposed model enforces a structured, interpretable physical latent space for dynamics prediction.
+
+% We further include additional data-driven ablation variants, where the dynamics predictor $\phi_\theta$ in the ablation model is replaced by a sequential model, such as an LSTM or Transformer network. These models are trained to predict the next latent state given the previous two latent representations. The rest of the architecture (encoder, decoder, and loss computation) remains identical to the basic ablation setup.
+
+% The inference procedure is similar across all variants, using a sequence of encoded observations to roll out future predictions recursively over multiple horizons.
+
+% \begin{algorithm}[t]
+% \caption{General Training Framework for PIWM}
+% \label{alg:piwm_train_general}
+% \begin{algorithmic}[1]
+% \Require Training set $\mathcal{S} = \{(y_{1:M}, a_{1:M}, \Xi_{1:M})\}_{i=1}^N$, architecture type, latent type, batch size $B$, weights $\{\lambda_i\}$
+% \Ensure Trained model parameters $w$
+% \State Initialize model parameters $w$ randomly
+% \For{epoch $= 1$ \textbf{to} $n_{\text{epochs}}$}
+%   \For{each batch of $B$ sequences from $\mathcal{S}$}
+%     \For{$t = 1$ \textbf{to} $M - 2$}
+%       \State \textbf{Stage 1: Encode observations to latent space}
+%       \If{architecture = intrinsic}
+%         \State $z^*_t \gets \mathcal{E}(y_t)$; \quad $z^*_{t+1} \gets \mathcal{E}(y_{t+1})$
+%         \If{latent = discrete}
+%           \State $z^*_t \gets \text{Quantize}(z^*_t)$
+%         \EndIf
+%         \State $z^*_p[t] \gets \text{ExtractPhysical}(z^*_t)$
+%       \Else
+%         \State $z_t \gets \mathcal{E}_v(y_t)$; \quad $z_{t+1} \gets \mathcal{E}_v(y_{t+1})$
+%         \If{latent = discrete}
+%           \State $z_t \gets \text{Quantize}(z_t)$
+%         \EndIf
+%         \State $z^*_p[t] \gets \mathcal{E}_p(z_t)$
+%       \EndIf
+      
+%       \State \textbf{Stage 2: Predict dynamics}
+%       \State $a_t \gets h(y_t)$
+%       \State $\hat{z}^*_p[t+2] \gets \phi_\theta(z^*_p[t], z^*_p[t+1], a_t)$
+      
+%       \State \textbf{Stage 3: Decode for reconstruction}
+%       \If{architecture = intrinsic}
+%         \State $\hat{y}_{t+2} \gets \mathcal{D}(\text{Combine}(\hat{z}^*_p[t+2], z^*_v[t+2]))$
+%       \Else
+%         \State $\hat{z}_{t+2} \gets \mathcal{D}_p(\hat{z}^*_p[t+2])$
+%         \State $\hat{y}_{t+2} \gets \mathcal{D}_v(\hat{z}_{t+2})$
+%       \EndIf
+      
+%       \State \textbf{Stage 4: Compute losses}
+%       \State $\mathcal{L}_{\text{rec}} \gets \|y_{t+2} - \hat{y}_{t+2}\|^2_2$
+%       \State $\mathcal{L}_{\text{interp}} \gets \text{InterpLoss}(z^*_p[t], \Xi_t)$
+%       \State $\mathcal{L}_{\text{dyn}} \gets \text{InterpLoss}(\hat{z}^*_p[t+2], \Xi_{t+2})$
+      
+%       \If{latent = continuous}
+%         \State $\mathcal{L}_{\text{reg}} \gets \beta \cdot D_{KL}(q(z|y) \| p(z))$
+%       \Else
+%         \State $\mathcal{L}_{\text{reg}} \gets \mathcal{L}_{\text{VQ}} + \mathcal{L}_{\text{commit}}$
+%       \EndIf
+      
+%       \State $\mathcal{L} \gets \mathcal{L}_{\text{rec}} + \lambda_1 \mathcal{L}_{\text{interp}} + \lambda_2 \mathcal{L}_{\text{dyn}} + \lambda_3 \mathcal{L}_{\text{reg}}$
+%     \EndFor
+%     \State Update parameters: $w \gets w - \eta \nabla_w \mathcal{L}$
+%   \EndFor
+% \EndFor
+% \State \Return $w$
+% \end{algorithmic}
+% \end{algorithm}
+
+
+
+% \subsection*{B. Backpropagation Through Dynamics}
+% \label{appendix:gradients}
+
+% To optimize the parameters \( \theta \) in the structured dynamics model \( \phi(\cdot; \theta) \), we compute gradients of the loss using the chain rule. The loss may depend on the predicted interpretable state \( \hat{x}_{t+2} \) (e.g., prediction error or safety violation), or on the sequence \( \{x'_t, x'_{t+1}, x'_{t+2}\} \) for temporal consistency. We compute the gradient as:
+% \[
+% \frac{\partial \mathcal{L}}{\partial \theta} = \frac{\partial \mathcal{L}}{\partial \hat{x}_{t+2}} \cdot \frac{\partial \hat{x}_{t+2}}{\partial \theta}.
+% \]
+
+% Since \( \hat{x}_{t+2} \) is computed as \( \phi(x'_{t+1}, a_{t+1}; \theta) \), which in turn depends on previous states through recursive application of \( \phi \), we expand the gradient recursively:
+% \[
+% \frac{\partial \hat{x}_{t+2}}{\partial \theta} = 
+% \frac{\partial \phi(x'_{t+1}, a_{t+1}; \theta)}{\partial \theta} + 
+% \frac{\partial \phi(x'_{t+1}, a_{t+1}; \theta)}{\partial x'_{t+1}} \cdot 
+% \frac{\partial x'_{t+1}}{\partial \theta}.
+% \]
+
+% This recursion can be unrolled through multiple time steps, enabling gradients to propagate through interpretable state sequences and support end-to-end learning of both state representations and dynamics parameters.
+
+
+% \subsection*{C. Experiment Setup}
+
+% We evaluate our approach on three control benchmarks of increasing complexity: CartPole, Lunar Lander, and Donkey Car. These tasks differ in state dimensionality, control difficulty, and underlying dynamics. CartPole requires balancing a pole on a moving cart using discrete left/right forces. The system has a four-dimensional state space (position, velocity, angle, angular velocity) and a binary discrete action space. It includes four dynamics parameters: cart mass, pole mass, pole length, and applied force magnitude.
+% Lunar Lander involves landing a spacecraft on flat terrain using main and side engines. It has an eight-dimensional state space (positions, velocities, angle, angular velocity, contact flags) and a four-dimensional continuous action space for engine thrust. Two key parameters govern the dynamics: main engine power and side engine power.
+% Donkey Car simulates autonomous vehicle control with continuous throttle and steering inputs. We adopt a bicycle dynamics model, where the primary physical parameter to learn is the effective car length. This task presents additional complexity due to nonlinear dynamics and tight coupling between steering and acceleration.
+
+
+
+% The vision encoder uses two convolutional layers followed by a channel projection. The latent space has 64 dimensions and is quantized using a codebook with 512 entries. The total loss includes reconstruction loss, codebook update loss, and a commitment loss weighted by a factor of 0.25.
+% The interpretable encoder is implemented as a 2-layer Transformer with 4 attention heads and a feedforward dimension of 512. Each codebook index is embedded into a 16-dimensional vector. The encoder output is mean-pooled and passed through a linear layer to regress physical states. The decoder mirrors the encoder and predicts discrete latent indices, optimized with a cross-entropy loss. The total loss includes state regression loss and index reconstruction loss.
+
+
+
+
+% \subsection*{D. Interpretable Codebook in VQVAE}
+% For our intrinsic architecture, we aimed to design a VQ-VAE where the discrete codebook itself would be physically interpretable, allowing a single encoder to map directly from images to a structured, meaningful latent space. To this end, we explored several variants.
+
+% Our first attempt involved making the physical dimensions of the codebook learnable. In this configuration, a partition of each codebook vector was initialized with values from a discretized grid of physical states, but these values were allowed to be updated via backpropagation during end-to-end training. We hypothesized that the model could learn an optimal embedding for the physical states. However, this approach proved to be unstable. Under the guidance of only weak supervision, the values in these dimensions would often drift significantly from their intended physical semantics, leading to a failure to learn a coherent physical representation.
+
+% To enforce a stronger semantic structure and encourage disentanglement, we next designed concept-specific codebooks. This approach assigned separate, independent embedding tables to different physical variables (e.g., one codebook for position, another for angle). These models were trained with modified loss functions that incorporated regularization terms to encourage semantic alignment and penalize mismatches between predicted states and codebook semantics. Despite this stronger structural prior, all variants still suffered from severe codebook utilization collapse, where the model would rely on only a very small subset of the available codebook entries during both training and testing. This resulted in poor diversity in the latent representations and a failure to capture the full range of physical states.
+
+% We attribute the failure of these explorations to the lack of a sufficiently strong signal from the weak supervision to guide such a complex and under-constrained optimization problem. Although we adjusted the commitment loss and interpretability regularization weights, the issue persisted.
+
+% Given the limitations of these more flexible, learnable designs, we ultimately adopted the simpler and more constrained approach for the intrinsic-discrete model described in Section 3.1, which yielded better and more stable results. In that architecture, we partition each codebook vector $\mathbf{e}_k$ into a physical part $\mathbf{e}_k^p$ and a visual part $\mathbf{e}_k^v$, but the physical part $\mathbf{e}_k^p$ is fixed as a non-learnable constant representing a specific point on the physical state grid. This method, while sacrificing the flexibility of a learnable physical embedding, proved far more robust against codebook collapse and provided the necessary stability for the model to learn effectively.
+
+
+% \subsection*{E. Additional Results}
+
+
+
+% This section provides supplementary results that further validate the conclusions presented in the main paper. We include detailed prediction performance for the CartPole environment, an analysis of the learned physical parameters for CartPole.
+
+
+% Figure 5 displays the 30-step prediction Root Mean Square Error (RMSE) for the CartPole environment. The results are consistent with the findings from the Donkey Car and Lunar Lander environments discussed in the main text. The extrinsic models, particularly our quantized (discrete) variant, consistently achieve lower prediction error across all noise levels ($\delta$) compared to intrinsic models and data-driven baselines like LSTM and Transformer. This reinforces our conclusion that decoupling perception from physical state inference through an extrinsic architecture provides superior long-horizon prediction stability.
+
+% To further demonstrate that our model learns a genuinely interpretable representation, we evaluated its ability to recover the true physical parameters of the CartPole simulation. As shown in Figure 6, our PIWM framework successfully identifies the ground-truth values for the pole's mass, the pole's length, the cart's length, and the applied force with high accuracy, especially under low noise conditions ($\delta$=0). While the variance of the learned parameters increases with higher levels of supervision noise, the model's estimates remain centered around the true values, providing strong evidence that the latent space is structured in a physically meaningful way.
+
+
+
+
+
+
+% \subsection*{F. Dynamics of Cart Pole, Lunar Lander, and Donkey Car}
+
+
+
+
+
+% Algorithms~\ref{alg:pendulum_dynamics},~\ref{alg:lunar_lander_dynamics}, and~\ref{alg:bicycle_dynamics} describe the dynamics of the Cart Pole, Lunar Lander, and Donkey Car environments, respectively.
+
+% Algorithm~\ref{alg:pendulum_dynamics} models the Cart Pole system, capturing the relationships between the cart's horizontal motion and the pole's angular motion. The dynamics incorporate applied forces and resulting accelerations, governing how the position, velocity, pole angle, and angular velocity evolve over time.
+
+% Algorithm~\ref{alg:lunar_lander_dynamics} presents the dynamics of the Lunar Lander, where discrete actions determine the firing of the main and side engines. The equations govern the lander's position, velocity, orientation, and angular velocity, enabling simulation of its flight behavior under various control inputs.
+
+% Algorithm~\ref{alg:bicycle_dynamics} introduces a simplified learnable bicycle model used to approximate the Donkey Car's dynamics. While the true Donkey Car system implemented in Unity involves complex physics and interactions, this model captures essential relationships between the vehicle's position, heading, and speed under steering and acceleration commands, allowing efficient learning and prediction without requiring access to the full simulation engine.
+% \begin{algorithm}[t]
+% \caption{Dynamics of Cart Pole}
+% \label{alg:pendulum_dynamics}
+% \begin{algorithmic}[1]
+% \Require Current state $z = [x, \dot{x}, \theta, \dot{\theta}]$, action $a$
+% \Ensure Updated state $z_{\text{new}} = [x_{\text{new}}, \dot{x}_{\text{new}}, \theta_{\text{new}}, \dot{\theta}_{\text{new}}]$
+
+% \State \Comment{Extract State Variables}
+% \State $x, \dot{x}, \theta, \dot{\theta} \gets z_1, z_2, z_3, z_4$
+
+% \State \Comment{Convert Action to Force}
+% \State $F \gets \text{force\_mag} \times (2a - 1)$
+
+% \State \Comment{Compute Trigonometric Values}
+% \State $\text{costheta} \gets \cos(\theta)$
+% \State $\text{sintheta} \gets \sin(\theta)$
+
+% \State \Comment{Compute Intermediate Variable}
+% \State $\text{temp} \gets \dfrac{F + m_p l \dot{\theta}^2 \text{sintheta}}{m_p + m_c}$
+
+% \State \Comment{Calculate Angular Acceleration}
+% \State $\ddot{\theta} \gets 
+% \dfrac{g \text{sintheta} - \text{costheta} \cdot \text{temp}}
+% {l \left(\tfrac{4}{3} - \tfrac{m_p \text{costheta}^2}{m_p + m_c}\right)}$
+
+% \State \Comment{Calculate Linear Acceleration}
+% \State $\ddot{x} \gets \text{temp} - \dfrac{m_p l \ddot{\theta} \text{costheta}}{m_p + m_c}$
+
+% \State \Comment{Update State Variables}
+% \State $x_{\text{new}} \gets x + \tau \dot{x}$
+% \State $\dot{x}_{\text{new}} \gets \dot{x} + \tau \ddot{x}$
+% \State $\theta_{\text{new}} \gets \theta + \tau \dot{\theta}$
+% \State $\dot{\theta}_{\text{new}} \gets \dot{\theta} + \tau \ddot{\theta}$
+
+% \State \Comment{Return Updated State}
+% \State $z_{\text{new}} \gets [x_{\text{new}}, \dot{x}_{\text{new}}, \theta_{\text{new}}, \dot{\theta}_{\text{new}}]$
+% \State \Return $z_{\text{new}}$
+% \end{algorithmic}
+% \end{algorithm}
+
+%  \begin{algorithm}[t]
+% \caption{ Dynamics of Cart Pole}
+% \label{alg:pendulum_dynamics}
+
+% \KwIn{Current state $z = [x, \dot{x}, \theta, \dot{\theta}]$, action $a$}
+% \KwOut{Updated state $z_{\text{new}} = [x_{\text{new}}, \dot{x}_{\text{new}}, \theta_{\text{new}}, \dot{\theta}_{\text{new}}]$}
+
+% \tcp{Extract State Variables}
+% $x, \dot{x}, \theta, \dot{\theta} \gets z[:, 0], z[:, 1], z[:, 2], z[:, 3]$\
+
+% \tcp{Convert Action to Force}
+% $F \gets \text{force\_mag} \times (2 \cdot a - 1)$\
+
+% \tcp{Compute Trigonometric Values}
+% $\cos(\theta) \gets \text{costheta}, \quad \sin(\theta) \gets \text{sintheta}$\
+
+% \tcp{Compute Intermediate Variable}
+% $\text{temp} \gets \frac{F + m_p \cdot l \cdot \dot{\theta}^2 \cdot \sin(\theta)}{m_p + m_c}$\
+
+% \tcp{Calculate Angular Acceleration}
+% $\ddot{\theta} \gets \frac{g \cdot \sin(\theta) - \cos(\theta) \cdot \text{temp}}{l \cdot \left(\frac{4}{3} - \frac{m_p \cdot \cos^2(\theta)}{m_p + m_c}\right)}$\
+
+% \tcp{Calculate Linear Acceleration}
+% $\ddot{x} \gets \text{temp} - \frac{m_p \cdot l \cdot \ddot{\theta} \cdot \cos(\theta)}{m_p + m_c}$\
+
+% \tcp{Update State Variables}
+% $x_{\text{new}} \gets x + \tau \cdot \dot{x}$\
+% $\dot{x}_{\text{new}} \gets \dot{x} + \tau \cdot \ddot{x}$\
+% $\theta_{\text{new}} \gets \theta + \tau \cdot \dot{\theta}$\
+% $\dot{\theta}_{\text{new}} \gets \dot{\theta} + \tau \cdot \ddot{\theta}$\
+
+% \tcp{Return Updated State}
+% $z_{\text{new}} \gets [x_{\text{new}}, \dot{x}_{\text{new}}, \theta_{\text{new}}, \dot{\theta}_{\text{new}}]$\
+% \Return $z_{\text{new}}$\;
+
+% \end{algorithm}
+
+
+% \begin{algorithm}[t]
+% \caption{Dynamics of Lunar Lander }
+% \label{alg:lunar_lander_dynamics}
+
+% \KwIn{Current states $\mathbf{s} = [x, y, \dot{x}, \dot{y}, \theta, \dot{\theta}]$, actions $\mathbf{a}$ (0: do nothing, 1: fire left, 2: fire main, 3: fire right)}
+% \KwOut{Updated states $\mathbf{s}_{\text{new}} = [x_{\text{new}}, y_{\text{new}}, \dot{x}_{\text{new}}, \dot{y}_{\text{new}}, \theta_{\text{new}}, \dot{\theta}_{\text{new}}]$}
+
+% \tcp{Unpack State Variables}
+% $x \gets \mathbf{s}[:, 0], \quad y \gets \mathbf{s}[:, 1]$\
+% $\dot{x} \gets \mathbf{s}[:, 2], \quad \dot{y} \gets \mathbf{s}[:, 3]$\
+% $\theta \gets \mathbf{s}[:, 4], \quad \dot{\theta} \gets \mathbf{s}[:, 5]$\
+
+% \tcp{Calculate Engine Direction and Dispersion}
+% $\text{tip} \gets [\sin(\theta), \cos(\theta)]$\
+% $\text{side} \gets [-\cos(\theta), \sin(\theta)]$\
+
+% \tcp{Process Actions}
+% $\text{fire\_main} \gets (\mathbf{a} == 2)$\
+% $\text{fire\_left} \gets (\mathbf{a} == 1)$\
+% $\text{fire\_right} \gets (\mathbf{a} == 3)$\
+
+% \tcp{Compute Main Engine Thrust}
+% $m_{\text{power}} \gets \text{fire\_main}$\
+% $\dot{x} \gets \dot{x} - \text{tip}[:, 0] \cdot \text{main\_power} \cdot m_{\text{power}} / \text{FPS}$\
+% $\dot{y} \gets \dot{y} + \text{tip}[:, 1] \cdot \text{main\_power} \cdot m_{\text{power}} / \text{FPS}$\
+
+% \tcp{Compute Side Engine Thrust}
+% $s_{\text{power}} \gets \text{fire\_left} + \text{fire\_right}$\
+% $\text{direction} \gets \text{fire\_right} - \text{fire\_left}$\
+% $\dot{x} \gets \dot{x} + \text{side}[:, 0] \cdot \text{side\_power} \cdot s_{\text{power}} \cdot \text{direction} / \text{FPS}$\
+% $\dot{\theta} \gets \dot{\theta} + \text{side\_power} \cdot s_{\text{power}} \cdot \text{direction} / \text{FPS}$\
+
+% \tcp{Update Position and Angle}
+% $x \gets x + \dot{x} / \text{FPS}$\
+% $y \gets y + \dot{y} / \text{FPS}$\
+% $\theta \gets \theta + \dot{\theta} / \text{FPS}$\
+
+% \tcp{Create Updated States}
+% $\mathbf{s}_{\text{new}} \gets [x, y, \dot{x}, \dot{y}, \theta, \dot{\theta}]$\
+% \Return $\mathbf{s}_{\text{new}}$\;
+
+% \end{algorithm}
+
+
+
+
+
+% \begin{algorithm}[t]
+% \caption{Dynamics of Bicycle Model}
+% \label{alg:bicycle_dynamics}
+
+% \KwIn{Current state $s = [x, y, \theta, v]$, action $a = [\delta, a_{\text{acc}}]$}
+% \KwOut{Updated state $s_{\text{new}} = [x_{\text{new}}, y_{\text{new}}, \theta_{\text{new}}, v_{\text{new}}]$}
+
+% \tcp{Extract State Variables}
+% $x, y, \theta, v \gets s[:, 0], s[:, 1], s[:, 2], s[:, 3]$\
+
+% \tcp{Extract Action Variables}
+% $\delta, a_{\text{acc}} \gets a[:, 0], a[:, 1]$\
+
+% \tcp{Update State Variables}
+% $x_{\text{new}} \gets x + v \cdot \cos(\theta) \cdot \tau$\
+% $y_{\text{new}} \gets y + v \cdot \sin(\theta) \cdot \tau$\
+% $\theta_{\text{new}} \gets \theta + \frac{v}{L} \cdot \tan(\delta) \cdot \tau$\
+% $v_{\text{new}} \gets v + a_{\text{acc}} \cdot \tau$\
+
+% \tcp{Return Updated State}
+% $s_{\text{new}} \gets [x_{\text{new}}, y_{\text{new}}, \theta_{\text{new}}, v_{\text{new}}]$\
+% \Return $s_{\text{new}}$\;
+
+% \end{algorithm}
+
+
+
+
+
+\end{document}
+\endinput
+%%
+%% End of file `sample-sigconf.tex'.

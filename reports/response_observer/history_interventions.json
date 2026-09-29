@@ -1,0 +1,963 @@
+{
+  "protocol_sha256": "843b8bd6eef26d0c2ee59290f1ea32574ebfb3117d5e14db0cc20493dce7f814",
+  "results": {
+    "temporal/seed0/observer/flat_states": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.20705148577690125,
+      "E50": 0.5443171262741089,
+      "E100": 1.1306415796279907,
+      "ADE": 0.5498315691947937
+    },
+    "temporal/seed0/observer/flat_states_actions": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.20949485898017883,
+      "E50": 0.5518828630447388,
+      "E100": 1.1447237730026245,
+      "ADE": 0.5569829940795898
+    },
+    "temporal/seed0/observer/permute_old_pairs": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.20211733877658844,
+      "E50": 0.5313249230384827,
+      "E100": 1.1089798212051392,
+      "ADE": 0.5383068323135376
+    },
+    "temporal/seed0/history_mlp/flat_states": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.14558885991573334,
+      "E50": 0.39342576265335083,
+      "E100": 0.9474958181381226,
+      "ADE": 0.4254729151725769
+    },
+    "temporal/seed0/history_mlp/flat_states_actions": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.15054747462272644,
+      "E50": 0.4132506251335144,
+      "E100": 0.9770490527153015,
+      "ADE": 0.4425117075443268
+    },
+    "temporal/seed0/history_mlp/permute_old_pairs": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.1707250475883484,
+      "E50": 0.4775114059448242,
+      "E100": 1.08665931224823,
+      "ADE": 0.5010234713554382
+    },
+    "temporal/seed1/observer/flat_states": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.2090914398431778,
+      "E50": 0.5505602955818176,
+      "E100": 1.142303466796875,
+      "ADE": 0.5558678507804871
+    },
+    "temporal/seed1/observer/flat_states_actions": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.2114962637424469,
+      "E50": 0.5580242872238159,
+      "E100": 1.1561473608016968,
+      "ADE": 0.5629046559333801
+    },
+    "temporal/seed1/observer/permute_old_pairs": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.20417946577072144,
+      "E50": 0.5376361012458801,
+      "E100": 1.12078058719635,
+      "ADE": 0.5444185733795166
+    },
+    "temporal/seed1/history_mlp/flat_states": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.151056706905365,
+      "E50": 0.41001203656196594,
+      "E100": 0.9602788686752319,
+      "ADE": 0.437649667263031
+    },
+    "temporal/seed1/history_mlp/flat_states_actions": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.15712586045265198,
+      "E50": 0.4338778853416443,
+      "E100": 1.001420021057129,
+      "ADE": 0.4592439830303192
+    },
+    "temporal/seed1/history_mlp/permute_old_pairs": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.1798081248998642,
+      "E50": 0.5019828081130981,
+      "E100": 1.118729829788208,
+      "ADE": 0.521729588508606
+    },
+    "temporal/seed2/observer/flat_states": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.20895853638648987,
+      "E50": 0.5502827763557434,
+      "E100": 1.1408286094665527,
+      "ADE": 0.5554091334342957
+    },
+    "temporal/seed2/observer/flat_states_actions": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.21137985587120056,
+      "E50": 0.5578001141548157,
+      "E100": 1.1547986268997192,
+      "ADE": 0.5625026226043701
+    },
+    "temporal/seed2/observer/permute_old_pairs": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.20405136048793793,
+      "E50": 0.5373449325561523,
+      "E100": 1.119352102279663,
+      "ADE": 0.5439633727073669
+    },
+    "temporal/seed2/history_mlp/flat_states": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.15694260597229004,
+      "E50": 0.4238851070404053,
+      "E100": 0.9911120533943176,
+      "ADE": 0.4518347978591919
+    },
+    "temporal/seed2/history_mlp/flat_states_actions": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.16286730766296387,
+      "E50": 0.44720301032066345,
+      "E100": 1.0276169776916504,
+      "ADE": 0.47215840220451355
+    },
+    "temporal/seed2/history_mlp/permute_old_pairs": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.1830529123544693,
+      "E50": 0.5063729882240295,
+      "E100": 1.1264748573303223,
+      "ADE": 0.5256858468055725
+    },
+    "outer0/seed0/observer/flat_states": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.19329029321670532,
+      "E50": 0.5287449359893799,
+      "E100": 1.1009107828140259,
+      "ADE": 0.5307198762893677
+    },
+    "outer0/seed0/observer/flat_states_actions": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.19464653730392456,
+      "E50": 0.5329535007476807,
+      "E100": 1.1101419925689697,
+      "ADE": 0.5349805355072021
+    },
+    "outer0/seed0/observer/permute_old_pairs": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.19157259166240692,
+      "E50": 0.5242552757263184,
+      "E100": 1.0933524370193481,
+      "ADE": 0.5266837477684021
+    },
+    "outer0/seed0/history_mlp/flat_states": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.08350023627281189,
+      "E50": 0.2885635197162628,
+      "E100": 0.939547598361969,
+      "ADE": 0.3666437864303589
+    },
+    "outer0/seed0/history_mlp/flat_states_actions": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.08750693500041962,
+      "E50": 0.2842749357223511,
+      "E100": 0.9126977324485779,
+      "ADE": 0.3600849211215973
+    },
+    "outer0/seed0/history_mlp/permute_old_pairs": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.10924974828958511,
+      "E50": 0.34590601921081543,
+      "E100": 1.0281336307525635,
+      "ADE": 0.41788119077682495
+    },
+    "outer0/seed1/observer/flat_states": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.19492337107658386,
+      "E50": 0.5316569209098816,
+      "E100": 1.1037451028823853,
+      "ADE": 0.5329767465591431
+    },
+    "outer0/seed1/observer/flat_states_actions": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.19625182449817657,
+      "E50": 0.5357749462127686,
+      "E100": 1.1127843856811523,
+      "ADE": 0.5371478199958801
+    },
+    "outer0/seed1/observer/permute_old_pairs": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.1932198405265808,
+      "E50": 0.5272400975227356,
+      "E100": 1.0963325500488281,
+      "ADE": 0.5290073156356812
+    },
+    "outer0/seed1/history_mlp/flat_states": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.10304491966962814,
+      "E50": 0.3583132028579712,
+      "E100": 0.9001291394233704,
+      "ADE": 0.3922148048877716
+    },
+    "outer0/seed1/history_mlp/flat_states_actions": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.10351336747407913,
+      "E50": 0.35870394110679626,
+      "E100": 0.9004228711128235,
+      "ADE": 0.3925442099571228
+    },
+    "outer0/seed1/history_mlp/permute_old_pairs": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.1020071730017662,
+      "E50": 0.36222150921821594,
+      "E100": 0.911323606967926,
+      "ADE": 0.39600807428359985
+    },
+    "outer0/seed2/observer/flat_states": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.19356511533260345,
+      "E50": 0.5299472212791443,
+      "E100": 1.1033443212509155,
+      "ADE": 0.531900942325592
+    },
+    "outer0/seed2/observer/flat_states_actions": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.19497808814048767,
+      "E50": 0.5343471765518188,
+      "E100": 1.1130397319793701,
+      "ADE": 0.5363636016845703
+    },
+    "outer0/seed2/observer/permute_old_pairs": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.1918197125196457,
+      "E50": 0.5253965258598328,
+      "E100": 1.0956884622573853,
+      "ADE": 0.5278124809265137
+    },
+    "outer0/seed2/history_mlp/flat_states": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.10523370653390884,
+      "E50": 0.3716411888599396,
+      "E100": 0.9900916218757629,
+      "ADE": 0.41655468940734863
+    },
+    "outer0/seed2/history_mlp/flat_states_actions": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.10653781145811081,
+      "E50": 0.37163251638412476,
+      "E100": 0.9913453459739685,
+      "ADE": 0.4171200692653656
+    },
+    "outer0/seed2/history_mlp/permute_old_pairs": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.1054774671792984,
+      "E50": 0.37974563241004944,
+      "E100": 1.0062216520309448,
+      "ADE": 0.42428144812583923
+    },
+    "outer1/seed0/observer/flat_states": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.30576685070991516,
+      "E50": 0.6809107661247253,
+      "E100": 1.326740026473999,
+      "ADE": 0.6718416810035706
+    },
+    "outer1/seed0/observer/flat_states_actions": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.31298521161079407,
+      "E50": 0.703340470790863,
+      "E100": 1.3660304546356201,
+      "ADE": 0.692870557308197
+    },
+    "outer1/seed0/observer/permute_old_pairs": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.28772610425949097,
+      "E50": 0.6362506747245789,
+      "E100": 1.2243409156799316,
+      "ADE": 0.6238788366317749
+    },
+    "outer1/seed0/history_mlp/flat_states": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.22651083767414093,
+      "E50": 0.4602490961551666,
+      "E100": 0.9677063822746277,
+      "ADE": 0.4729984402656555
+    },
+    "outer1/seed0/history_mlp/flat_states_actions": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.23299665749073029,
+      "E50": 0.47957319021224976,
+      "E100": 0.9967859387397766,
+      "ADE": 0.4900127649307251
+    },
+    "outer1/seed0/history_mlp/permute_old_pairs": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.23877070844173431,
+      "E50": 0.5052536129951477,
+      "E100": 1.0148875713348389,
+      "ADE": 0.5066967010498047
+    },
+    "outer1/seed1/observer/flat_states": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.30562224984169006,
+      "E50": 0.6807199716567993,
+      "E100": 1.3250216245651245,
+      "ADE": 0.6714251637458801
+    },
+    "outer1/seed1/observer/flat_states_actions": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.3128727376461029,
+      "E50": 0.7032563090324402,
+      "E100": 1.3645871877670288,
+      "ADE": 0.6925559639930725
+    },
+    "outer1/seed1/observer/permute_old_pairs": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.28759461641311646,
+      "E50": 0.6361066102981567,
+      "E100": 1.222503423690796,
+      "ADE": 0.6234870553016663
+    },
+    "outer1/seed1/history_mlp/flat_states": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.24570877850055695,
+      "E50": 0.5155104398727417,
+      "E100": 1.0642261505126953,
+      "ADE": 0.5245874524116516
+    },
+    "outer1/seed1/history_mlp/flat_states_actions": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.24899864196777344,
+      "E50": 0.5245959758758545,
+      "E100": 1.0803828239440918,
+      "ADE": 0.5330083966255188
+    },
+    "outer1/seed1/history_mlp/permute_old_pairs": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.2498781830072403,
+      "E50": 0.5373201370239258,
+      "E100": 1.098007082939148,
+      "ADE": 0.5427974462509155
+    },
+    "outer1/seed2/observer/flat_states": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.30573031306266785,
+      "E50": 0.6808609366416931,
+      "E100": 1.3258135318756104,
+      "ADE": 0.6716444492340088
+    },
+    "outer1/seed2/observer/flat_states_actions": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.31296679377555847,
+      "E50": 0.7033483982086182,
+      "E100": 1.365238904953003,
+      "ADE": 0.6927276849746704
+    },
+    "outer1/seed2/observer/permute_old_pairs": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.28773483633995056,
+      "E50": 0.6363435983657837,
+      "E100": 1.223583459854126,
+      "ADE": 0.6238117814064026
+    },
+    "outer1/seed2/history_mlp/flat_states": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.24473103880882263,
+      "E50": 0.5151156187057495,
+      "E100": 1.0814718008041382,
+      "ADE": 0.5275437235832214
+    },
+    "outer1/seed2/history_mlp/flat_states_actions": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.2492828220129013,
+      "E50": 0.5276334285736084,
+      "E100": 1.1011087894439697,
+      "ADE": 0.5386390686035156
+    },
+    "outer1/seed2/history_mlp/permute_old_pairs": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.24935825169086456,
+      "E50": 0.5370875597000122,
+      "E100": 1.1050971746444702,
+      "ADE": 0.5435730814933777
+    }
+  },
+  "changes": {
+    "temporal/seed0/observer/flat_states": {
+      "E100_difference_from_normal_m": -0.0001756926067173481,
+      "latent_delta_RMSE": [
+        0.11355642229318619,
+        0.43273723125457764
+      ],
+      "negative_speed_fraction": 0.0
+    },
+    "temporal/seed0/observer/flat_states_actions": {
+      "E100_difference_from_normal_m": 0.01390642486512661,
+      "latent_delta_RMSE": [
+        0.11350718885660172,
+        0.49959811568260193
+      ],
+      "negative_speed_fraction": 0.0
+    },
+    "temporal/seed0/observer/permute_old_pairs": {
+      "E100_difference_from_normal_m": -0.021837500855326653,
+      "latent_delta_RMSE": [
+        0.0414203517138958,
+        0.461575984954834
+      ],
+      "negative_speed_fraction": 0.0
+    },
+    "temporal/seed0/history_mlp/flat_states": {
+      "E100_difference_from_normal_m": -0.021419530734419823,
+      "latent_delta_RMSE": [
+        0.14102254807949066,
+        0.4712966978549957
+      ],
+      "negative_speed_fraction": 0.0
+    },
+    "temporal/seed0/history_mlp/flat_states_actions": {
+      "E100_difference_from_normal_m": 0.008133621886372566,
+      "latent_delta_RMSE": [
+        0.14240795373916626,
+        1.161789059638977
+      ],
+      "negative_speed_fraction": 0.0
+    },
+    "temporal/seed0/history_mlp/permute_old_pairs": {
+      "E100_difference_from_normal_m": 0.11774390935897827,
+      "latent_delta_RMSE": [
+        0.1111699715256691,
+        1.4803322553634644
+      ],
+      "negative_speed_fraction": 0.0
+    },
+    "temporal/seed1/observer/flat_states": {
+      "E100_difference_from_normal_m": -0.00011447716678958386,
+      "latent_delta_RMSE": [
+        0.1136525422334671,
+        0.42480501532554626
+      ],
+      "negative_speed_fraction": 0.0
+    },
+    "temporal/seed1/observer/flat_states_actions": {
+      "E100_difference_from_normal_m": 0.01372956857085228,
+      "latent_delta_RMSE": [
+        0.11360176652669907,
+        0.4933149814605713
+      ],
+      "negative_speed_fraction": 0.0
+    },
+    "temporal/seed1/observer/permute_old_pairs": {
+      "E100_difference_from_normal_m": -0.02163735404610634,
+      "latent_delta_RMSE": [
+        0.04149332642555237,
+        0.45748773217201233
+      ],
+      "negative_speed_fraction": 0.0
+    },
+    "temporal/seed1/history_mlp/flat_states": {
+      "E100_difference_from_normal_m": -0.02472696825861931,
+      "latent_delta_RMSE": [
+        0.1366918981075287,
+        0.44619420170783997
+      ],
+      "negative_speed_fraction": 0.0
+    },
+    "temporal/seed1/history_mlp/flat_states_actions": {
+      "E100_difference_from_normal_m": 0.016414331272244453,
+      "latent_delta_RMSE": [
+        0.13942497968673706,
+        1.2344779968261719
+      ],
+      "negative_speed_fraction": 0.0
+    },
+    "temporal/seed1/history_mlp/permute_old_pairs": {
+      "E100_difference_from_normal_m": 0.13372404873371124,
+      "latent_delta_RMSE": [
+        0.10585804283618927,
+        1.581009030342102
+      ],
+      "negative_speed_fraction": 0.0
+    },
+    "temporal/seed2/observer/flat_states": {
+      "E100_difference_from_normal_m": -0.00020985137962270528,
+      "latent_delta_RMSE": [
+        0.1141180470585823,
+        0.42963749170303345
+      ],
+      "negative_speed_fraction": 0.0
+    },
+    "temporal/seed2/observer/flat_states_actions": {
+      "E100_difference_from_normal_m": 0.013760121539235115,
+      "latent_delta_RMSE": [
+        0.11406706273555756,
+        0.4972814917564392
+      ],
+      "negative_speed_fraction": 0.0
+    },
+    "temporal/seed2/observer/permute_old_pairs": {
+      "E100_difference_from_normal_m": -0.021686311811208725,
+      "latent_delta_RMSE": [
+        0.04168832302093506,
+        0.4606887698173523
+      ],
+      "negative_speed_fraction": 0.0
+    },
+    "temporal/seed2/history_mlp/flat_states": {
+      "E100_difference_from_normal_m": -0.026388198137283325,
+      "latent_delta_RMSE": [
+        0.1334029883146286,
+        0.5007742643356323
+      ],
+      "negative_speed_fraction": 0.0
+    },
+    "temporal/seed2/history_mlp/flat_states_actions": {
+      "E100_difference_from_normal_m": 0.010116676799952984,
+      "latent_delta_RMSE": [
+        0.13880568742752075,
+        1.2614152431488037
+      ],
+      "negative_speed_fraction": 0.0
+    },
+    "temporal/seed2/history_mlp/permute_old_pairs": {
+      "E100_difference_from_normal_m": 0.10897450894117355,
+      "latent_delta_RMSE": [
+        0.10614071041345596,
+        1.5105141401290894
+      ],
+      "negative_speed_fraction": 0.0
+    },
+    "outer0/seed0/observer/flat_states": {
+      "E100_difference_from_normal_m": -0.0031781126745045185,
+      "latent_delta_RMSE": [
+        0.08551149815320969,
+        0.336344450712204
+      ],
+      "negative_speed_fraction": 0.0
+    },
+    "outer0/seed0/observer/flat_states_actions": {
+      "E100_difference_from_normal_m": 0.006053095683455467,
+      "latent_delta_RMSE": [
+        0.08551149815320969,
+        0.3949163258075714
+      ],
+      "negative_speed_fraction": 0.0
+    },
+    "outer0/seed0/observer/permute_old_pairs": {
+      "E100_difference_from_normal_m": -0.010736514814198017,
+      "latent_delta_RMSE": [
+        0.03125526010990143,
+        0.3587383031845093
+      ],
+      "negative_speed_fraction": 0.0
+    },
+    "outer0/seed0/history_mlp/flat_states": {
+      "E100_difference_from_normal_m": 0.008513296023011208,
+      "latent_delta_RMSE": [
+        0.16390974819660187,
+        0.3953969478607178
+      ],
+      "negative_speed_fraction": 0.0
+    },
+    "outer0/seed0/history_mlp/flat_states_actions": {
+      "E100_difference_from_normal_m": -0.018336497247219086,
+      "latent_delta_RMSE": [
+        0.21941281855106354,
+        0.9568742513656616
+      ],
+      "negative_speed_fraction": 0.0
+    },
+    "outer0/seed0/history_mlp/permute_old_pairs": {
+      "E100_difference_from_normal_m": 0.0970994159579277,
+      "latent_delta_RMSE": [
+        0.18792928755283356,
+        1.6177613735198975
+      ],
+      "negative_speed_fraction": 0.0
+    },
+    "outer0/seed1/observer/flat_states": {
+      "E100_difference_from_normal_m": -0.0031238330993801355,
+      "latent_delta_RMSE": [
+        0.08450587093830109,
+        0.3341626524925232
+      ],
+      "negative_speed_fraction": 0.0
+    },
+    "outer0/seed1/observer/flat_states_actions": {
+      "E100_difference_from_normal_m": 0.005915573798120022,
+      "latent_delta_RMSE": [
+        0.08450587093830109,
+        0.39197173714637756
+      ],
+      "negative_speed_fraction": 0.0
+    },
+    "outer0/seed1/observer/permute_old_pairs": {
+      "E100_difference_from_normal_m": -0.010536271147429943,
+      "latent_delta_RMSE": [
+        0.030671579763293266,
+        0.3557848036289215
+      ],
+      "negative_speed_fraction": 0.0
+    },
+    "outer0/seed1/history_mlp/flat_states": {
+      "E100_difference_from_normal_m": -0.001617635483853519,
+      "latent_delta_RMSE": [
+        0.09494657814502716,
+        0.17151425778865814
+      ],
+      "negative_speed_fraction": 0.0
+    },
+    "outer0/seed1/history_mlp/flat_states_actions": {
+      "E100_difference_from_normal_m": -0.0013238806277513504,
+      "latent_delta_RMSE": [
+        0.1054309830069542,
+        0.19521702826023102
+      ],
+      "negative_speed_fraction": 0.0
+    },
+    "outer0/seed1/history_mlp/permute_old_pairs": {
+      "E100_difference_from_normal_m": 0.009576769545674324,
+      "latent_delta_RMSE": [
+        0.05778024345636368,
+        0.09403420984745026
+      ],
+      "negative_speed_fraction": 0.0
+    },
+    "outer0/seed2/observer/flat_states": {
+      "E100_difference_from_normal_m": -0.0034027518704533577,
+      "latent_delta_RMSE": [
+        0.08684326708316803,
+        0.3449436128139496
+      ],
+      "negative_speed_fraction": 0.0
+    },
+    "outer0/seed2/observer/flat_states_actions": {
+      "E100_difference_from_normal_m": 0.006292650010436773,
+      "latent_delta_RMSE": [
+        0.08684326708316803,
+        0.4040296971797943
+      ],
+      "negative_speed_fraction": 0.0
+    },
+    "outer0/seed2/observer/permute_old_pairs": {
+      "E100_difference_from_normal_m": -0.011058636009693146,
+      "latent_delta_RMSE": [
+        0.031820643693208694,
+        0.366050124168396
+      ],
+      "negative_speed_fraction": 0.0
+    },
+    "outer0/seed2/history_mlp/flat_states": {
+      "E100_difference_from_normal_m": 0.00039013876812532544,
+      "latent_delta_RMSE": [
+        0.1748780608177185,
+        0.49779102206230164
+      ],
+      "negative_speed_fraction": 0.0
+    },
+    "outer0/seed2/history_mlp/flat_states_actions": {
+      "E100_difference_from_normal_m": 0.0016439727041870356,
+      "latent_delta_RMSE": [
+        0.22138887643814087,
+        0.5841533541679382
+      ],
+      "negative_speed_fraction": 0.0
+    },
+    "outer0/seed2/history_mlp/permute_old_pairs": {
+      "E100_difference_from_normal_m": 0.01652018539607525,
+      "latent_delta_RMSE": [
+        0.13001742959022522,
+        0.2875474691390991
+      ],
+      "negative_speed_fraction": 0.0
+    },
+    "outer1/seed0/observer/flat_states": {
+      "E100_difference_from_normal_m": 0.01892549730837345,
+      "latent_delta_RMSE": [
+        0.16705168783664703,
+        1.0637834072113037
+      ],
+      "negative_speed_fraction": 0.0
+    },
+    "outer1/seed0/observer/flat_states_actions": {
+      "E100_difference_from_normal_m": 0.05821598693728447,
+      "latent_delta_RMSE": [
+        0.1670454740524292,
+        1.1157288551330566
+      ],
+      "negative_speed_fraction": 0.0
+    },
+    "outer1/seed0/observer/permute_old_pairs": {
+      "E100_difference_from_normal_m": -0.08347362279891968,
+      "latent_delta_RMSE": [
+        0.06549356132745743,
+        1.0836948156356812
+      ],
+      "negative_speed_fraction": 0.0
+    },
+    "outer1/seed0/history_mlp/flat_states": {
+      "E100_difference_from_normal_m": -0.030956709757447243,
+      "latent_delta_RMSE": [
+        0.13606496155261993,
+        0.4086277484893799
+      ],
+      "negative_speed_fraction": 0.0
+    },
+    "outer1/seed0/history_mlp/flat_states_actions": {
+      "E100_difference_from_normal_m": -0.0018771957838907838,
+      "latent_delta_RMSE": [
+        0.14090964198112488,
+        0.5535966157913208
+      ],
+      "negative_speed_fraction": 0.0
+    },
+    "outer1/seed0/history_mlp/permute_old_pairs": {
+      "E100_difference_from_normal_m": 0.016224421560764313,
+      "latent_delta_RMSE": [
+        0.08801298588514328,
+        0.9217303395271301
+      ],
+      "negative_speed_fraction": 0.0
+    },
+    "outer1/seed1/observer/flat_states": {
+      "E100_difference_from_normal_m": 0.018816620111465454,
+      "latent_delta_RMSE": [
+        0.1678033322095871,
+        1.0694037675857544
+      ],
+      "negative_speed_fraction": 0.0
+    },
+    "outer1/seed1/observer/flat_states_actions": {
+      "E100_difference_from_normal_m": 0.05838211998343468,
+      "latent_delta_RMSE": [
+        0.16779713332653046,
+        1.1206036806106567
+      ],
+      "negative_speed_fraction": 0.0
+    },
+    "outer1/seed1/observer/permute_old_pairs": {
+      "E100_difference_from_normal_m": -0.08370174467563629,
+      "latent_delta_RMSE": [
+        0.06586813926696777,
+        1.0863492488861084
+      ],
+      "negative_speed_fraction": 0.0
+    },
+    "outer1/seed1/history_mlp/flat_states": {
+      "E100_difference_from_normal_m": -0.017983781173825264,
+      "latent_delta_RMSE": [
+        0.126888707280159,
+        0.27509620785713196
+      ],
+      "negative_speed_fraction": 0.0
+    },
+    "outer1/seed1/history_mlp/flat_states_actions": {
+      "E100_difference_from_normal_m": -0.0018270397558808327,
+      "latent_delta_RMSE": [
+        0.1325075924396515,
+        0.32486486434936523
+      ],
+      "negative_speed_fraction": 0.0
+    },
+    "outer1/seed1/history_mlp/permute_old_pairs": {
+      "E100_difference_from_normal_m": 0.015797121450304985,
+      "latent_delta_RMSE": [
+        0.08752188831567764,
+        0.5464871525764465
+      ],
+      "negative_speed_fraction": 0.0
+    },
+    "outer1/seed2/observer/flat_states": {
+      "E100_difference_from_normal_m": 0.018810519948601723,
+      "latent_delta_RMSE": [
+        0.16740870475769043,
+        1.0653897523880005
+      ],
+      "negative_speed_fraction": 0.0
+    },
+    "outer1/seed2/observer/flat_states_actions": {
+      "E100_difference_from_normal_m": 0.0582360178232193,
+      "latent_delta_RMSE": [
+        0.16740252077579498,
+        1.1166647672653198
+      ],
+      "negative_speed_fraction": 0.0
+    },
+    "outer1/seed2/observer/permute_old_pairs": {
+      "E100_difference_from_normal_m": -0.08341960608959198,
+      "latent_delta_RMSE": [
+        0.0657314658164978,
+        1.0827056169509888
+      ],
+      "negative_speed_fraction": 0.0
+    },
+    "outer1/seed2/history_mlp/flat_states": {
+      "E100_difference_from_normal_m": -0.020572781562805176,
+      "latent_delta_RMSE": [
+        0.1386592537164688,
+        0.3723357319831848
+      ],
+      "negative_speed_fraction": 0.0
+    },
+    "outer1/seed2/history_mlp/flat_states_actions": {
+      "E100_difference_from_normal_m": -0.0009357553790323436,
+      "latent_delta_RMSE": [
+        0.14608092606067657,
+        0.4299317002296448
+      ],
+      "negative_speed_fraction": 0.0
+    },
+    "outer1/seed2/history_mlp/permute_old_pairs": {
+      "E100_difference_from_normal_m": 0.0030526157934218645,
+      "latent_delta_RMSE": [
+        0.0960388258099556,
+        0.7496164441108704
+      ],
+      "negative_speed_fraction": 0.0
+    }
+  },
+  "audit": {
+    "temporal/seed0/observer": {
+      "current_history_endpoint_unchanged": true,
+      "current_state_unchanged": true,
+      "future_actions_unchanged": true
+    },
+    "temporal/seed0/history_mlp": {
+      "current_history_endpoint_unchanged": true,
+      "current_state_unchanged": true,
+      "future_actions_unchanged": true
+    },
+    "temporal/seed1/observer": {
+      "current_history_endpoint_unchanged": true,
+      "current_state_unchanged": true,
+      "future_actions_unchanged": true
+    },
+    "temporal/seed1/history_mlp": {
+      "current_history_endpoint_unchanged": true,
+      "current_state_unchanged": true,
+      "future_actions_unchanged": true
+    },
+    "temporal/seed2/observer": {
+      "current_history_endpoint_unchanged": true,
+      "current_state_unchanged": true,
+      "future_actions_unchanged": true
+    },
+    "temporal/seed2/history_mlp": {
+      "current_history_endpoint_unchanged": true,
+      "current_state_unchanged": true,
+      "future_actions_unchanged": true
+    },
+    "outer0/seed0/observer": {
+      "current_history_endpoint_unchanged": true,
+      "current_state_unchanged": true,
+      "future_actions_unchanged": true
+    },
+    "outer0/seed0/history_mlp": {
+      "current_history_endpoint_unchanged": true,
+      "current_state_unchanged": true,
+      "future_actions_unchanged": true
+    },
+    "outer0/seed1/observer": {
+      "current_history_endpoint_unchanged": true,
+      "current_state_unchanged": true,
+      "future_actions_unchanged": true
+    },
+    "outer0/seed1/history_mlp": {
+      "current_history_endpoint_unchanged": true,
+      "current_state_unchanged": true,
+      "future_actions_unchanged": true
+    },
+    "outer0/seed2/observer": {
+      "current_history_endpoint_unchanged": true,
+      "current_state_unchanged": true,
+      "future_actions_unchanged": true
+    },
+    "outer0/seed2/history_mlp": {
+      "current_history_endpoint_unchanged": true,
+      "current_state_unchanged": true,
+      "future_actions_unchanged": true
+    },
+    "outer1/seed0/observer": {
+      "current_history_endpoint_unchanged": true,
+      "current_state_unchanged": true,
+      "future_actions_unchanged": true
+    },
+    "outer1/seed0/history_mlp": {
+      "current_history_endpoint_unchanged": true,
+      "current_state_unchanged": true,
+      "future_actions_unchanged": true
+    },
+    "outer1/seed1/observer": {
+      "current_history_endpoint_unchanged": true,
+      "current_state_unchanged": true,
+      "future_actions_unchanged": true
+    },
+    "outer1/seed1/history_mlp": {
+      "current_history_endpoint_unchanged": true,
+      "current_state_unchanged": true,
+      "future_actions_unchanged": true
+    },
+    "outer1/seed2/observer": {
+      "current_history_endpoint_unchanged": true,
+      "current_state_unchanged": true,
+      "future_actions_unchanged": true
+    },
+    "outer1/seed2/history_mlp": {
+      "current_history_endpoint_unchanged": true,
+      "current_state_unchanged": true,
+      "future_actions_unchanged": true
+    }
+  }
+}

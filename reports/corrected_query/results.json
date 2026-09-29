@@ -1,0 +1,1591 @@
+{
+  "protocol_sha256": "40bb370a06aa256b55266dccb7b96aeaa08f691f4281a833bc9bb21fbe2758df",
+  "results": {
+    "temporal/seed0/kinematic": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.17852512001991272,
+      "E50": 0.4281584322452545,
+      "E100": 0.892535388469696,
+      "ADE": 0.4331494867801666
+    },
+    "temporal/seed0/cartesian_road": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.15539304912090302,
+      "E50": 0.3842877745628357,
+      "E100": 1.1550252437591553,
+      "ADE": 0.4664381742477417
+    },
+    "temporal/seed0/cartesian_guarded": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.1552145779132843,
+      "E50": 0.3792831301689148,
+      "E100": 1.126319408416748,
+      "ADE": 0.4576983153820038
+    },
+    "temporal/seed0/guarded_full": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.13321956992149353,
+      "E50": 0.19699354469776154,
+      "E100": 0.362339586019516,
+      "ADE": 0.20136237144470215
+    },
+    "temporal/seed0/guarded_fixed_query": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.15677998960018158,
+      "E50": 0.2611393332481384,
+      "E100": 0.4909440875053406,
+      "ADE": 0.2602382004261017
+    },
+    "temporal/seed0/guarded_static_context": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.15527024865150452,
+      "E50": 0.22066360712051392,
+      "E100": 0.4020513892173767,
+      "ADE": 0.22727246582508087
+    },
+    "temporal/seed0/geometry_midpoint": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.13487333059310913,
+      "E50": 0.19212593138217926,
+      "E100": 0.3692370355129242,
+      "ADE": 0.20326334238052368
+    },
+    "temporal/seed0/arc_full": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.11403607577085495,
+      "E50": 0.1917552798986435,
+      "E100": 0.39049163460731506,
+      "ADE": 0.20148327946662903
+    },
+    "temporal/seed1/kinematic": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.18162916600704193,
+      "E50": 0.4377165734767914,
+      "E100": 0.9035797119140625,
+      "ADE": 0.4409421682357788
+    },
+    "temporal/seed1/cartesian_road": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.11682910472154617,
+      "E50": 0.2887306809425354,
+      "E100": 1.1644736528396606,
+      "ADE": 0.4065937101840973
+    },
+    "temporal/seed1/cartesian_guarded": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.1267652064561844,
+      "E50": 0.29231247305870056,
+      "E100": 0.8973280787467957,
+      "ADE": 0.3538396656513214
+    },
+    "temporal/seed1/guarded_full": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.13043983280658722,
+      "E50": 0.19199839234352112,
+      "E100": 0.35250264406204224,
+      "ADE": 0.19745653867721558
+    },
+    "temporal/seed1/guarded_fixed_query": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.1486520767211914,
+      "E50": 0.2584700286388397,
+      "E100": 0.48233965039253235,
+      "ADE": 0.25372514128685
+    },
+    "temporal/seed1/guarded_static_context": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.14402472972869873,
+      "E50": 0.21364931762218475,
+      "E100": 0.41303160786628723,
+      "ADE": 0.22173650562763214
+    },
+    "temporal/seed1/geometry_midpoint": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.13199007511138916,
+      "E50": 0.18986710906028748,
+      "E100": 0.34803006052970886,
+      "ADE": 0.19863787293434143
+    },
+    "temporal/seed1/arc_full": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.12424558401107788,
+      "E50": 0.19948431849479675,
+      "E100": 0.3918702006340027,
+      "ADE": 0.20934976637363434
+    },
+    "temporal/seed2/kinematic": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.1808130294084549,
+      "E50": 0.43377721309661865,
+      "E100": 0.8971884846687317,
+      "ADE": 0.4373936057090759
+    },
+    "temporal/seed2/cartesian_road": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.13642315566539764,
+      "E50": 0.31693586707115173,
+      "E100": 0.9637841582298279,
+      "ADE": 0.38793638348579407
+    },
+    "temporal/seed2/cartesian_guarded": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.13208971917629242,
+      "E50": 0.29953476786613464,
+      "E100": 0.9256905913352966,
+      "ADE": 0.37021076679229736
+    },
+    "temporal/seed2/guarded_full": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.12678879499435425,
+      "E50": 0.19827082753181458,
+      "E100": 0.36114948987960815,
+      "ADE": 0.2024134248495102
+    },
+    "temporal/seed2/guarded_fixed_query": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.14770716428756714,
+      "E50": 0.26248037815093994,
+      "E100": 0.46823400259017944,
+      "ADE": 0.25494661927223206
+    },
+    "temporal/seed2/guarded_static_context": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.13325825333595276,
+      "E50": 0.20309355854988098,
+      "E100": 0.37960270047187805,
+      "ADE": 0.20972880721092224
+    },
+    "temporal/seed2/geometry_midpoint": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.1274680346250534,
+      "E50": 0.19816908240318298,
+      "E100": 0.37981635332107544,
+      "ADE": 0.20515406131744385
+    },
+    "temporal/seed2/arc_full": {
+      "n": 527,
+      "nonfinite_windows": 0,
+      "E25": 0.11295704543590546,
+      "E50": 0.1929980218410492,
+      "E100": 0.37831470370292664,
+      "ADE": 0.1987026333808899
+    },
+    "outer0/seed0/kinematic": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.17534418404102325,
+      "E50": 0.45474040508270264,
+      "E100": 0.9352185726165771,
+      "ADE": 0.45437055826187134
+    },
+    "outer0/seed0/cartesian_road": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.2613863945007324,
+      "E50": 0.6551501154899597,
+      "E100": 1.3803138732910156,
+      "ADE": 0.6585811376571655
+    },
+    "outer0/seed0/cartesian_guarded": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.2534421980381012,
+      "E50": 0.6370298266410828,
+      "E100": 1.3868128061294556,
+      "ADE": 0.6515527367591858
+    },
+    "outer0/seed0/guarded_full": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.1785789281129837,
+      "E50": 0.45709502696990967,
+      "E100": 1.1129732131958008,
+      "ADE": 0.5027705430984497
+    },
+    "outer0/seed0/guarded_fixed_query": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.16324754059314728,
+      "E50": 0.3720955550670624,
+      "E100": 0.9694349765777588,
+      "ADE": 0.43304839730262756
+    },
+    "outer0/seed0/guarded_static_context": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.21039968729019165,
+      "E50": 0.463437020778656,
+      "E100": 1.0524178743362427,
+      "ADE": 0.49605125188827515
+    },
+    "outer0/seed0/geometry_midpoint": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.1667913943529129,
+      "E50": 0.4047746956348419,
+      "E100": 0.9936271905899048,
+      "ADE": 0.4496592581272125
+    },
+    "outer0/seed0/arc_full": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.1909739375114441,
+      "E50": 0.49453622102737427,
+      "E100": 1.1348634958267212,
+      "ADE": 0.5309237837791443
+    },
+    "outer0/seed1/kinematic": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.175003319978714,
+      "E50": 0.45418137311935425,
+      "E100": 0.9322084784507751,
+      "ADE": 0.45360246300697327
+    },
+    "outer0/seed1/cartesian_road": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.2646302580833435,
+      "E50": 0.625271201133728,
+      "E100": 1.3392661809921265,
+      "ADE": 0.6306498050689697
+    },
+    "outer0/seed1/cartesian_guarded": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.2610775828361511,
+      "E50": 0.6209505796432495,
+      "E100": 1.3436435461044312,
+      "ADE": 0.630173921585083
+    },
+    "outer0/seed1/guarded_full": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.16560114920139313,
+      "E50": 0.39339694380760193,
+      "E100": 1.0292807817459106,
+      "ADE": 0.45226678252220154
+    },
+    "outer0/seed1/guarded_fixed_query": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.15670016407966614,
+      "E50": 0.3860246539115906,
+      "E100": 0.8917091488838196,
+      "ADE": 0.4115123748779297
+    },
+    "outer0/seed1/guarded_static_context": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.19976958632469177,
+      "E50": 0.42682498693466187,
+      "E100": 0.9576981663703918,
+      "ADE": 0.458326131105423
+    },
+    "outer0/seed1/geometry_midpoint": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.16368965804576874,
+      "E50": 0.38459187746047974,
+      "E100": 0.9382418990135193,
+      "ADE": 0.4215725362300873
+    },
+    "outer0/seed1/arc_full": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.2045159786939621,
+      "E50": 0.5077932476997375,
+      "E100": 1.1320959329605103,
+      "ADE": 0.5348122119903564
+    },
+    "outer0/seed2/kinematic": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.17640773952007294,
+      "E50": 0.4567863941192627,
+      "E100": 0.9411357045173645,
+      "ADE": 0.4565378427505493
+    },
+    "outer0/seed2/cartesian_road": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.24087080359458923,
+      "E50": 0.6242855191230774,
+      "E100": 1.340215802192688,
+      "ADE": 0.637857973575592
+    },
+    "outer0/seed2/cartesian_guarded": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.28964895009994507,
+      "E50": 0.6697021722793579,
+      "E100": 1.3337041139602661,
+      "ADE": 0.6581800580024719
+    },
+    "outer0/seed2/guarded_full": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.1777806580066681,
+      "E50": 0.40500566363334656,
+      "E100": 0.9729763269424438,
+      "ADE": 0.4526131749153137
+    },
+    "outer0/seed2/guarded_fixed_query": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.16341909766197205,
+      "E50": 0.40144437551498413,
+      "E100": 0.8766317963600159,
+      "ADE": 0.4214904308319092
+    },
+    "outer0/seed2/guarded_static_context": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.13350814580917358,
+      "E50": 0.32719722390174866,
+      "E100": 0.843806266784668,
+      "ADE": 0.3815224766731262
+    },
+    "outer0/seed2/geometry_midpoint": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.21551673114299774,
+      "E50": 0.49067220091819763,
+      "E100": 1.0415290594100952,
+      "ADE": 0.5131300091743469
+    },
+    "outer0/seed2/arc_full": {
+      "n": 844,
+      "nonfinite_windows": 0,
+      "E25": 0.220892995595932,
+      "E50": 0.5459761023521423,
+      "E100": 1.202488899230957,
+      "ADE": 0.5753694772720337
+    },
+    "outer1/seed0/kinematic": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.28493455052375793,
+      "E50": 0.6080133318901062,
+      "E100": 1.1610263586044312,
+      "ADE": 0.5953019857406616
+    },
+    "outer1/seed0/cartesian_road": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.2895801365375519,
+      "E50": 0.6166929602622986,
+      "E100": 1.6340543031692505,
+      "ADE": 0.682850182056427
+    },
+    "outer1/seed0/cartesian_guarded": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.295501172542572,
+      "E50": 0.6337374448776245,
+      "E100": 1.6727266311645508,
+      "ADE": 0.7001868486404419
+    },
+    "outer1/seed0/guarded_full": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.29196882247924805,
+      "E50": 0.601433515548706,
+      "E100": 1.3519461154937744,
+      "ADE": 0.6326990723609924
+    },
+    "outer1/seed0/guarded_fixed_query": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.28019407391548157,
+      "E50": 0.5914390683174133,
+      "E100": 1.338901400566101,
+      "ADE": 0.6253127455711365
+    },
+    "outer1/seed0/guarded_static_context": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.29314061999320984,
+      "E50": 0.5905492305755615,
+      "E100": 1.3003240823745728,
+      "ADE": 0.6116461753845215
+    },
+    "outer1/seed0/geometry_midpoint": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.2868676781654358,
+      "E50": 0.5802557468414307,
+      "E100": 1.234163761138916,
+      "ADE": 0.6007400155067444
+    },
+    "outer1/seed0/arc_full": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.29082852602005005,
+      "E50": 0.5694324374198914,
+      "E100": 1.3407024145126343,
+      "ADE": 0.6173362731933594
+    },
+    "outer1/seed1/kinematic": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.28569549322128296,
+      "E50": 0.6097121238708496,
+      "E100": 1.1622519493103027,
+      "ADE": 0.5965741872787476
+    },
+    "outer1/seed1/cartesian_road": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.312269002199173,
+      "E50": 0.6190006732940674,
+      "E100": 1.549358606338501,
+      "ADE": 0.6661269068717957
+    },
+    "outer1/seed1/cartesian_guarded": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.30716243386268616,
+      "E50": 0.5959194898605347,
+      "E100": 1.4439146518707275,
+      "ADE": 0.6321007013320923
+    },
+    "outer1/seed1/guarded_full": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.2893529534339905,
+      "E50": 0.608751118183136,
+      "E100": 1.2617584466934204,
+      "ADE": 0.6130927205085754
+    },
+    "outer1/seed1/guarded_fixed_query": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.2688693404197693,
+      "E50": 0.5821317434310913,
+      "E100": 1.2621972560882568,
+      "ADE": 0.6005446314811707
+    },
+    "outer1/seed1/guarded_static_context": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.2919934391975403,
+      "E50": 0.6114552617073059,
+      "E100": 1.2347944974899292,
+      "ADE": 0.6110687851905823
+    },
+    "outer1/seed1/geometry_midpoint": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.28528016805648804,
+      "E50": 0.5639960169792175,
+      "E100": 1.2078090906143188,
+      "ADE": 0.5763660073280334
+    },
+    "outer1/seed1/arc_full": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.27220475673675537,
+      "E50": 0.5562630891799927,
+      "E100": 1.2488181591033936,
+      "ADE": 0.5935631394386292
+    },
+    "outer1/seed2/kinematic": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.2847955524921417,
+      "E50": 0.6073929667472839,
+      "E100": 1.1519885063171387,
+      "ADE": 0.5933319330215454
+    },
+    "outer1/seed2/cartesian_road": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.29969069361686707,
+      "E50": 0.6538566946983337,
+      "E100": 1.695369839668274,
+      "ADE": 0.7206768989562988
+    },
+    "outer1/seed2/cartesian_guarded": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.29869040846824646,
+      "E50": 0.6518579721450806,
+      "E100": 1.695894479751587,
+      "ADE": 0.7194802761077881
+    },
+    "outer1/seed2/guarded_full": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.26386430859565735,
+      "E50": 0.5846286416053772,
+      "E100": 1.3683977127075195,
+      "ADE": 0.6244302988052368
+    },
+    "outer1/seed2/guarded_fixed_query": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.28433889150619507,
+      "E50": 0.6378649473190308,
+      "E100": 1.4311567544937134,
+      "ADE": 0.6669757962226868
+    },
+    "outer1/seed2/guarded_static_context": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.29767554998397827,
+      "E50": 0.6122240424156189,
+      "E100": 1.3795188665390015,
+      "ADE": 0.643194854259491
+    },
+    "outer1/seed2/geometry_midpoint": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.26062363386154175,
+      "E50": 0.522345781326294,
+      "E100": 1.2615230083465576,
+      "ADE": 0.5694786310195923
+    },
+    "outer1/seed2/arc_full": {
+      "n": 1653,
+      "nonfinite_windows": 0,
+      "E25": 0.27790793776512146,
+      "E50": 0.5893443822860718,
+      "E100": 1.420283317565918,
+      "ADE": 0.6434441804885864
+    }
+  },
+  "diagnostics": {
+    "temporal/seed0/kinematic": {
+      "samples": 0,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": null,
+      "max_abs_state": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "temporal/seed0/cartesian_road": {
+      "samples": 0,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": null,
+      "max_abs_state": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "temporal/seed0/cartesian_guarded": {
+      "samples": 0,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": null,
+      "max_abs_state": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "temporal/seed0/guarded_full": {
+      "samples": 52700,
+      "invalid_chart_fraction": 0.0013282732447817836,
+      "near_singular_fraction": 0.00269449715370019,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -1.106572151184082,
+      "max_abs_state": [
+        4.346685409545898,
+        0.4490058720111847,
+        1.8135392665863037,
+        0.9963970184326172,
+        2.869999647140503
+      ]
+    },
+    "temporal/seed0/guarded_fixed_query": {
+      "samples": 52700,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": 0.36496996879577637,
+      "max_abs_state": [
+        4.034075736999512,
+        0.38540470600128174,
+        1.8135392665863037,
+        0.9982079863548279,
+        3.07712721824646
+      ]
+    },
+    "temporal/seed0/guarded_static_context": {
+      "samples": 52700,
+      "invalid_chart_fraction": 0.000588235294117647,
+      "near_singular_fraction": 0.0005502846299810247,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -0.9709212779998779,
+      "max_abs_state": [
+        4.197883129119873,
+        0.4324294924736023,
+        1.8135392665863037,
+        1.0072816610336304,
+        3.222862482070923
+      ]
+    },
+    "temporal/seed0/geometry_midpoint": {
+      "samples": 52700,
+      "invalid_chart_fraction": 0.0022580645161290325,
+      "near_singular_fraction": 0.0034724857685009486,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -2.3372788429260254,
+      "max_abs_state": [
+        4.760542869567871,
+        0.4245017170906067,
+        2.6015639305114746,
+        0.9735130071640015,
+        3.6970582008361816
+      ]
+    },
+    "temporal/seed0/arc_full": {
+      "samples": 52700,
+      "invalid_chart_fraction": 0.00011385199240986717,
+      "near_singular_fraction": 0.0003984819734345351,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -0.13116097450256348,
+      "max_abs_state": [
+        4.412021636962891,
+        0.41790762543678284,
+        1.8135392665863037,
+        1.004427194595337,
+        3.018979549407959
+      ]
+    },
+    "temporal/seed1/kinematic": {
+      "samples": 0,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": null,
+      "max_abs_state": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "temporal/seed1/cartesian_road": {
+      "samples": 0,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": null,
+      "max_abs_state": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "temporal/seed1/cartesian_guarded": {
+      "samples": 0,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": null,
+      "max_abs_state": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "temporal/seed1/guarded_full": {
+      "samples": 52700,
+      "invalid_chart_fraction": 0.0020113851992409866,
+      "near_singular_fraction": 0.0037191650853889945,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -0.6926436424255371,
+      "max_abs_state": [
+        4.135123252868652,
+        0.4350048303604126,
+        1.8135392665863037,
+        0.9870595932006836,
+        2.6034529209136963
+      ]
+    },
+    "temporal/seed1/guarded_fixed_query": {
+      "samples": 52700,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": 0.2576764225959778,
+      "max_abs_state": [
+        3.864452600479126,
+        0.7127683162689209,
+        3.11684513092041,
+        0.9735130071640015,
+        4.007044315338135
+      ]
+    },
+    "temporal/seed1/guarded_static_context": {
+      "samples": 52700,
+      "invalid_chart_fraction": 0.0003415559772296015,
+      "near_singular_fraction": 0.000588235294117647,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -0.4444476366043091,
+      "max_abs_state": [
+        4.010617256164551,
+        0.47253403067588806,
+        1.8135392665863037,
+        0.9735130071640015,
+        2.967132806777954
+      ]
+    },
+    "temporal/seed1/geometry_midpoint": {
+      "samples": 52700,
+      "invalid_chart_fraction": 0.004573055028462998,
+      "near_singular_fraction": 0.004667931688804554,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -2.301515579223633,
+      "max_abs_state": [
+        4.654748439788818,
+        0.45754605531692505,
+        1.8135392665863037,
+        0.9775542616844177,
+        3.000272035598755
+      ]
+    },
+    "temporal/seed1/arc_full": {
+      "samples": 52700,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.00017077798861480075,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": 0.015586495399475098,
+      "max_abs_state": [
+        4.408370018005371,
+        0.4434543550014496,
+        1.8135392665863037,
+        1.053634524345398,
+        2.7167532444000244
+      ]
+    },
+    "temporal/seed2/kinematic": {
+      "samples": 0,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": null,
+      "max_abs_state": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "temporal/seed2/cartesian_road": {
+      "samples": 0,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": null,
+      "max_abs_state": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "temporal/seed2/cartesian_guarded": {
+      "samples": 0,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": null,
+      "max_abs_state": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "temporal/seed2/guarded_full": {
+      "samples": 52700,
+      "invalid_chart_fraction": 0.0014231499051233396,
+      "near_singular_fraction": 0.0028462998102466793,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -0.7255736589431763,
+      "max_abs_state": [
+        4.0600810050964355,
+        0.3983227014541626,
+        1.8135392665863037,
+        0.9904966950416565,
+        2.7062432765960693
+      ]
+    },
+    "temporal/seed2/guarded_fixed_query": {
+      "samples": 52700,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": 0.36180686950683594,
+      "max_abs_state": [
+        3.9655730724334717,
+        0.5137758851051331,
+        1.8135392665863037,
+        0.9852967262268066,
+        2.4494638442993164
+      ]
+    },
+    "temporal/seed2/guarded_static_context": {
+      "samples": 52700,
+      "invalid_chart_fraction": 0.00045540796963946866,
+      "near_singular_fraction": 0.0006072106261859583,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -0.7608487606048584,
+      "max_abs_state": [
+        4.1144938468933105,
+        0.5781387686729431,
+        1.8135392665863037,
+        1.0253909826278687,
+        3.0763659477233887
+      ]
+    },
+    "temporal/seed2/geometry_midpoint": {
+      "samples": 52700,
+      "invalid_chart_fraction": 0.004022770398481973,
+      "near_singular_fraction": 0.004079696394686907,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -6.962953567504883,
+      "max_abs_state": [
+        5.00703239440918,
+        0.826034665107727,
+        2.307816743850708,
+        0.9846270084381104,
+        3.457274913787842
+      ]
+    },
+    "temporal/seed2/arc_full": {
+      "samples": 52700,
+      "invalid_chart_fraction": 5.692599620493358e-05,
+      "near_singular_fraction": 0.0005502846299810247,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -0.008866190910339355,
+      "max_abs_state": [
+        4.375301837921143,
+        0.4146976172924042,
+        1.8135392665863037,
+        0.9948038458824158,
+        2.6624703407287598
+      ]
+    },
+    "outer0/seed0/kinematic": {
+      "samples": 0,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": null,
+      "max_abs_state": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "outer0/seed0/cartesian_road": {
+      "samples": 0,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": null,
+      "max_abs_state": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "outer0/seed0/cartesian_guarded": {
+      "samples": 0,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": null,
+      "max_abs_state": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "outer0/seed0/guarded_full": {
+      "samples": 84400,
+      "invalid_chart_fraction": 0.00245260663507109,
+      "near_singular_fraction": 0.0052843601895734595,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -0.8235204219818115,
+      "max_abs_state": [
+        3.832852602005005,
+        0.5008013248443604,
+        1.4334386587142944,
+        0.9193969964981079,
+        2.83965802192688
+      ]
+    },
+    "outer0/seed0/guarded_fixed_query": {
+      "samples": 84400,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": 0.2937714457511902,
+      "max_abs_state": [
+        3.8276965618133545,
+        0.6002147793769836,
+        1.4334386587142944,
+        0.9171214699745178,
+        1.8194494247436523
+      ]
+    },
+    "outer0/seed0/guarded_static_context": {
+      "samples": 84400,
+      "invalid_chart_fraction": 0.0009123222748815166,
+      "near_singular_fraction": 0.0021682464454976305,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -0.7191448211669922,
+      "max_abs_state": [
+        3.683712959289551,
+        0.8859660029411316,
+        1.4896364212036133,
+        0.9396620988845825,
+        3.4316184520721436
+      ]
+    },
+    "outer0/seed0/geometry_midpoint": {
+      "samples": 84400,
+      "invalid_chart_fraction": 0.0034715639810426542,
+      "near_singular_fraction": 0.004419431279620853,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -2.688782215118408,
+      "max_abs_state": [
+        4.406335353851318,
+        0.5157275795936584,
+        1.9928776025772095,
+        0.944774329662323,
+        3.890632152557373
+      ]
+    },
+    "outer0/seed0/arc_full": {
+      "samples": 84400,
+      "invalid_chart_fraction": 0.0008767772511848341,
+      "near_singular_fraction": 0.003921800947867299,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -0.43140196800231934,
+      "max_abs_state": [
+        4.327815532684326,
+        0.537743866443634,
+        1.4334386587142944,
+        0.936019778251648,
+        2.7418437004089355
+      ]
+    },
+    "outer0/seed1/kinematic": {
+      "samples": 0,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": null,
+      "max_abs_state": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "outer0/seed1/cartesian_road": {
+      "samples": 0,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": null,
+      "max_abs_state": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "outer0/seed1/cartesian_guarded": {
+      "samples": 0,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": null,
+      "max_abs_state": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "outer0/seed1/guarded_full": {
+      "samples": 84400,
+      "invalid_chart_fraction": 0.0011966824644549763,
+      "near_singular_fraction": 0.00231042654028436,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -0.617540717124939,
+      "max_abs_state": [
+        3.7668023109436035,
+        0.48591017723083496,
+        1.4334386587142944,
+        0.9462300539016724,
+        2.336676597595215
+      ]
+    },
+    "outer0/seed1/guarded_fixed_query": {
+      "samples": 84400,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": 0.5066910982131958,
+      "max_abs_state": [
+        3.5863521099090576,
+        0.5297553539276123,
+        1.4334386587142944,
+        0.9163792133331299,
+        1.747589111328125
+      ]
+    },
+    "outer0/seed1/guarded_static_context": {
+      "samples": 84400,
+      "invalid_chart_fraction": 0.004383886255924171,
+      "near_singular_fraction": 0.005639810426540284,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -2.22289776802063,
+      "max_abs_state": [
+        3.9140167236328125,
+        0.8539789319038391,
+        3.140205144882202,
+        0.9179672002792358,
+        5.118124961853027
+      ]
+    },
+    "outer0/seed1/geometry_midpoint": {
+      "samples": 84400,
+      "invalid_chart_fraction": 0.005604265402843602,
+      "near_singular_fraction": 0.0034834123222748817,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -45.50141143798828,
+      "max_abs_state": [
+        4.6896257400512695,
+        1.195854663848877,
+        3.1193923950195312,
+        0.9093537330627441,
+        4.4771342277526855
+      ]
+    },
+    "outer0/seed1/arc_full": {
+      "samples": 84400,
+      "invalid_chart_fraction": 0.0002132701421800948,
+      "near_singular_fraction": 0.0024407582938388624,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -0.30597829818725586,
+      "max_abs_state": [
+        4.176826477050781,
+        0.47316884994506836,
+        1.4334386587142944,
+        0.9261701703071594,
+        2.723172664642334
+      ]
+    },
+    "outer0/seed2/kinematic": {
+      "samples": 0,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": null,
+      "max_abs_state": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "outer0/seed2/cartesian_road": {
+      "samples": 0,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": null,
+      "max_abs_state": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "outer0/seed2/cartesian_guarded": {
+      "samples": 0,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": null,
+      "max_abs_state": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "outer0/seed2/guarded_full": {
+      "samples": 84400,
+      "invalid_chart_fraction": 0.001872037914691943,
+      "near_singular_fraction": 0.0030213270142180094,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -0.8147259950637817,
+      "max_abs_state": [
+        4.162622451782227,
+        0.518581211566925,
+        1.4334386587142944,
+        0.9403501152992249,
+        2.48199725151062
+      ]
+    },
+    "outer0/seed2/guarded_fixed_query": {
+      "samples": 84400,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": 0.3895869255065918,
+      "max_abs_state": [
+        3.7760767936706543,
+        0.6508315205574036,
+        1.4334386587142944,
+        0.8937400579452515,
+        1.90635085105896
+      ]
+    },
+    "outer0/seed2/guarded_static_context": {
+      "samples": 84400,
+      "invalid_chart_fraction": 0.0013507109004739337,
+      "near_singular_fraction": 0.0018364928909952608,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -0.7028275728225708,
+      "max_abs_state": [
+        3.732811450958252,
+        0.46902164816856384,
+        1.4334386587142944,
+        0.9343867897987366,
+        2.614649534225464
+      ]
+    },
+    "outer0/seed2/geometry_midpoint": {
+      "samples": 84400,
+      "invalid_chart_fraction": 0.006220379146919431,
+      "near_singular_fraction": 0.0067772511848341235,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -26.76116180419922,
+      "max_abs_state": [
+        4.6472978591918945,
+        1.1402673721313477,
+        3.073371171951294,
+        0.9254598021507263,
+        3.958441734313965
+      ]
+    },
+    "outer0/seed2/arc_full": {
+      "samples": 84400,
+      "invalid_chart_fraction": 0.0005450236966824645,
+      "near_singular_fraction": 0.00268957345971564,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -0.17911958694458008,
+      "max_abs_state": [
+        4.197340965270996,
+        0.4663606882095337,
+        1.4334386587142944,
+        0.9352438449859619,
+        2.200829029083252
+      ]
+    },
+    "outer1/seed0/kinematic": {
+      "samples": 0,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": null,
+      "max_abs_state": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "outer1/seed0/cartesian_road": {
+      "samples": 0,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": null,
+      "max_abs_state": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "outer1/seed0/cartesian_guarded": {
+      "samples": 0,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": null,
+      "max_abs_state": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "outer1/seed0/guarded_full": {
+      "samples": 165300,
+      "invalid_chart_fraction": 0.006388384754990925,
+      "near_singular_fraction": 0.004972776769509982,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -4.021633148193359,
+      "max_abs_state": [
+        3.4254040718078613,
+        1.6820045709609985,
+        1.8773226737976074,
+        1.152014970779419,
+        2.7942821979522705
+      ]
+    },
+    "outer1/seed0/guarded_fixed_query": {
+      "samples": 165300,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": 0.5093765258789062,
+      "max_abs_state": [
+        3.3404107093811035,
+        1.9228284358978271,
+        2.6146938800811768,
+        1.152014970779419,
+        3.449894428253174
+      ]
+    },
+    "outer1/seed0/guarded_static_context": {
+      "samples": 165300,
+      "invalid_chart_fraction": 0.00690865093768905,
+      "near_singular_fraction": 0.004016938898971567,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -5.603701114654541,
+      "max_abs_state": [
+        4.000182628631592,
+        2.528139591217041,
+        2.5275990962982178,
+        1.152014970779419,
+        4.065612316131592
+      ]
+    },
+    "outer1/seed0/geometry_midpoint": {
+      "samples": 165300,
+      "invalid_chart_fraction": 0.005499092558983666,
+      "near_singular_fraction": 0.004791288566243194,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -8.468320846557617,
+      "max_abs_state": [
+        4.019947528839111,
+        1.8723268508911133,
+        3.1414198875427246,
+        1.152014970779419,
+        7.257165908813477
+      ]
+    },
+    "outer1/seed0/arc_full": {
+      "samples": 165300,
+      "invalid_chart_fraction": 0.011264367816091954,
+      "near_singular_fraction": 0.007555958862673926,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -5.527883529663086,
+      "max_abs_state": [
+        4.852837562561035,
+        3.682368278503418,
+        3.0326058864593506,
+        1.152014970779419,
+        2.7942821979522705
+      ]
+    },
+    "outer1/seed1/kinematic": {
+      "samples": 0,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": null,
+      "max_abs_state": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "outer1/seed1/cartesian_road": {
+      "samples": 0,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": null,
+      "max_abs_state": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "outer1/seed1/cartesian_guarded": {
+      "samples": 0,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": null,
+      "max_abs_state": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "outer1/seed1/guarded_full": {
+      "samples": 165300,
+      "invalid_chart_fraction": 0.01161524500907441,
+      "near_singular_fraction": 0.012141560798548095,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -2.2362403869628906,
+      "max_abs_state": [
+        4.442730903625488,
+        1.5518907308578491,
+        1.8135392665863037,
+        1.152014970779419,
+        2.7942821979522705
+      ]
+    },
+    "outer1/seed1/guarded_fixed_query": {
+      "samples": 165300,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": 0.4785820245742798,
+      "max_abs_state": [
+        4.10851526260376,
+        0.9809074997901917,
+        1.8135392665863037,
+        1.152014970779419,
+        2.90706729888916
+      ]
+    },
+    "outer1/seed1/guarded_static_context": {
+      "samples": 165300,
+      "invalid_chart_fraction": 0.012534785238959468,
+      "near_singular_fraction": 0.012262552934059286,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -3.2853469848632812,
+      "max_abs_state": [
+        4.748836994171143,
+        1.85138738155365,
+        2.1698477268218994,
+        1.152014970779419,
+        4.158130645751953
+      ]
+    },
+    "outer1/seed1/geometry_midpoint": {
+      "samples": 165300,
+      "invalid_chart_fraction": 0.01411373260738052,
+      "near_singular_fraction": 0.00836660617059891,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -232.64871215820312,
+      "max_abs_state": [
+        4.1680474281311035,
+        1.2047786712646484,
+        3.133638858795166,
+        5.467499732971191,
+        48.666954040527344
+      ]
+    },
+    "outer1/seed1/arc_full": {
+      "samples": 165300,
+      "invalid_chart_fraction": 0.0026678765880217784,
+      "near_singular_fraction": 0.0035329703569267996,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -0.6771038770675659,
+      "max_abs_state": [
+        3.1128289699554443,
+        0.9542538523674011,
+        2.1760642528533936,
+        1.152014970779419,
+        5.523999214172363
+      ]
+    },
+    "outer1/seed2/kinematic": {
+      "samples": 0,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": null,
+      "max_abs_state": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "outer1/seed2/cartesian_road": {
+      "samples": 0,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": null,
+      "max_abs_state": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "outer1/seed2/cartesian_guarded": {
+      "samples": 0,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": null,
+      "max_abs_state": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "outer1/seed2/guarded_full": {
+      "samples": 165300,
+      "invalid_chart_fraction": 0.0022625529340592862,
+      "near_singular_fraction": 0.002377495462794918,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -1.4458622932434082,
+      "max_abs_state": [
+        2.92305588722229,
+        0.529924750328064,
+        1.8135392665863037,
+        1.152014970779419,
+        2.7942821979522705
+      ]
+    },
+    "outer1/seed2/guarded_fixed_query": {
+      "samples": 165300,
+      "invalid_chart_fraction": 0.0,
+      "near_singular_fraction": 0.0,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": 0.4883587956428528,
+      "max_abs_state": [
+        2.6062445640563965,
+        0.4915079176425934,
+        1.8135392665863037,
+        1.152014970779419,
+        2.7942821979522705
+      ]
+    },
+    "outer1/seed2/guarded_static_context": {
+      "samples": 165300,
+      "invalid_chart_fraction": 0.004192377495462795,
+      "near_singular_fraction": 0.0050635208711433755,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -2.0194075107574463,
+      "max_abs_state": [
+        3.069681167602539,
+        0.7464842796325684,
+        1.9450992345809937,
+        1.152014970779419,
+        2.7942821979522705
+      ]
+    },
+    "outer1/seed2/geometry_midpoint": {
+      "samples": 165300,
+      "invalid_chart_fraction": 0.004222625529340593,
+      "near_singular_fraction": 0.0033877797943133695,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -16.724851608276367,
+      "max_abs_state": [
+        4.269155025482178,
+        0.6350383758544922,
+        2.837137222290039,
+        1.152014970779419,
+        3.1122384071350098
+      ]
+    },
+    "outer1/seed2/arc_full": {
+      "samples": 165300,
+      "invalid_chart_fraction": 0.0002782819116757411,
+      "near_singular_fraction": 0.0006231094978826376,
+      "psi_outside_pi_fraction": 0.0,
+      "raw_den_min": -0.3263782262802124,
+      "max_abs_state": [
+        3.0765888690948486,
+        0.6919581890106201,
+        1.9440630674362183,
+        1.152014970779419,
+        2.7942821979522705
+      ]
+    }
+  }
+}

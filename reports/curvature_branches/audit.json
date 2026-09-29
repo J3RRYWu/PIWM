@@ -1,0 +1,198 @@
+{
+  "status": "PASS",
+  "new_fits": 27,
+  "reused_reference_rows": 45,
+  "rows": 72,
+  "checkpoint_spotchecks": {
+    "temporal/seed0/curvature_response_off": {
+      "windows": 24,
+      "max_absolute_difference_m": 5.662441253662109e-07,
+      "map_buffer_independence": true
+    },
+    "temporal/seed0/curvature_pose_off": {
+      "windows": 24,
+      "max_absolute_difference_m": 1.9669532775878906e-06,
+      "map_buffer_independence": true
+    },
+    "temporal/seed0/curvature_both_off": {
+      "windows": 24,
+      "max_absolute_difference_m": 7.152557373046875e-07,
+      "map_buffer_independence": true
+    },
+    "temporal/seed0/guarded_full": {
+      "windows": 24,
+      "max_absolute_difference_m": 1.9073486328125e-06,
+      "map_buffer_independence": true
+    },
+    "temporal/seed1/curvature_response_off": {
+      "windows": 24,
+      "max_absolute_difference_m": 7.599592208862305e-07,
+      "map_buffer_independence": true
+    },
+    "temporal/seed1/curvature_pose_off": {
+      "windows": 24,
+      "max_absolute_difference_m": 8.642673492431641e-07,
+      "map_buffer_independence": true
+    },
+    "temporal/seed1/curvature_both_off": {
+      "windows": 24,
+      "max_absolute_difference_m": 1.0132789611816406e-06,
+      "map_buffer_independence": true
+    },
+    "temporal/seed1/guarded_full": {
+      "windows": 24,
+      "max_absolute_difference_m": 5.364418029785156e-07,
+      "map_buffer_independence": true
+    },
+    "temporal/seed2/curvature_response_off": {
+      "windows": 24,
+      "max_absolute_difference_m": 7.152557373046875e-07,
+      "map_buffer_independence": true
+    },
+    "temporal/seed2/curvature_pose_off": {
+      "windows": 24,
+      "max_absolute_difference_m": 7.152557373046875e-07,
+      "map_buffer_independence": true
+    },
+    "temporal/seed2/curvature_both_off": {
+      "windows": 24,
+      "max_absolute_difference_m": 7.972121238708496e-07,
+      "map_buffer_independence": true
+    },
+    "temporal/seed2/guarded_full": {
+      "windows": 24,
+      "max_absolute_difference_m": 1.087784767150879e-06,
+      "map_buffer_independence": true
+    },
+    "outer0/seed0/curvature_response_off": {
+      "windows": 24,
+      "max_absolute_difference_m": 1.3113021850585938e-06,
+      "map_buffer_independence": true
+    },
+    "outer0/seed0/curvature_pose_off": {
+      "windows": 24,
+      "max_absolute_difference_m": 8.344650268554688e-07,
+      "map_buffer_independence": true
+    },
+    "outer0/seed0/curvature_both_off": {
+      "windows": 24,
+      "max_absolute_difference_m": 7.152557373046875e-07,
+      "map_buffer_independence": true
+    },
+    "outer0/seed0/guarded_full": {
+      "windows": 24,
+      "max_absolute_difference_m": 4.470348358154297e-06,
+      "map_buffer_independence": true
+    },
+    "outer0/seed1/curvature_response_off": {
+      "windows": 24,
+      "max_absolute_difference_m": 9.5367431640625e-07,
+      "map_buffer_independence": true
+    },
+    "outer0/seed1/curvature_pose_off": {
+      "windows": 24,
+      "max_absolute_difference_m": 1.0728836059570312e-06,
+      "map_buffer_independence": true
+    },
+    "outer0/seed1/curvature_both_off": {
+      "windows": 24,
+      "max_absolute_difference_m": 8.344650268554688e-07,
+      "map_buffer_independence": true
+    },
+    "outer0/seed1/guarded_full": {
+      "windows": 24,
+      "max_absolute_difference_m": 5.364418029785156e-07,
+      "map_buffer_independence": true
+    },
+    "outer0/seed2/curvature_response_off": {
+      "windows": 24,
+      "max_absolute_difference_m": 8.940696716308594e-07,
+      "map_buffer_independence": true
+    },
+    "outer0/seed2/curvature_pose_off": {
+      "windows": 24,
+      "max_absolute_difference_m": 6.556510925292969e-07,
+      "map_buffer_independence": true
+    },
+    "outer0/seed2/curvature_both_off": {
+      "windows": 24,
+      "max_absolute_difference_m": 6.556510925292969e-07,
+      "map_buffer_independence": true
+    },
+    "outer0/seed2/guarded_full": {
+      "windows": 24,
+      "max_absolute_difference_m": 1.0728836059570312e-06,
+      "map_buffer_independence": true
+    },
+    "outer1/seed0/curvature_response_off": {
+      "windows": 24,
+      "max_absolute_difference_m": 3.0994415283203125e-06,
+      "map_buffer_independence": true
+    },
+    "outer1/seed0/curvature_pose_off": {
+      "windows": 24,
+      "max_absolute_difference_m": 2.086162567138672e-06,
+      "map_buffer_independence": true
+    },
+    "outer1/seed0/curvature_both_off": {
+      "windows": 24,
+      "max_absolute_difference_m": 7.152557373046875e-07,
+      "map_buffer_independence": true
+    },
+    "outer1/seed0/guarded_full": {
+      "windows": 24,
+      "max_absolute_difference_m": 7.152557373046875e-07,
+      "map_buffer_independence": true
+    },
+    "outer1/seed1/curvature_response_off": {
+      "windows": 24,
+      "max_absolute_difference_m": 8.940696716308594e-07,
+      "map_buffer_independence": true
+    },
+    "outer1/seed1/curvature_pose_off": {
+      "windows": 24,
+      "max_absolute_difference_m": 5.960464477539062e-07,
+      "map_buffer_independence": true
+    },
+    "outer1/seed1/curvature_both_off": {
+      "windows": 24,
+      "max_absolute_difference_m": 8.940696716308594e-07,
+      "map_buffer_independence": true
+    },
+    "outer1/seed1/guarded_full": {
+      "windows": 24,
+      "max_absolute_difference_m": 7.152557373046875e-07,
+      "map_buffer_independence": true
+    },
+    "outer1/seed2/curvature_response_off": {
+      "windows": 24,
+      "max_absolute_difference_m": 5.066394805908203e-07,
+      "map_buffer_independence": true
+    },
+    "outer1/seed2/curvature_pose_off": {
+      "windows": 24,
+      "max_absolute_difference_m": 3.5762786865234375e-07,
+      "map_buffer_independence": true
+    },
+    "outer1/seed2/curvature_both_off": {
+      "windows": 24,
+      "max_absolute_difference_m": 4.76837158203125e-07,
+      "map_buffer_independence": true
+    },
+    "outer1/seed2/guarded_full": {
+      "windows": 24,
+      "max_absolute_difference_m": 4.172325134277344e-07,
+      "map_buffer_independence": true
+    }
+  },
+  "checks": [
+    "parent and source fingerprints",
+    "frozen input weights/normalizers/histories",
+    "all 40 epochs and validation minima",
+    "identical test windows",
+    "all stored metrics recomputed",
+    "all 27 checkpoints and 9 inherited full models recomputed on 24 windows",
+    "map-buffer independence",
+    "branch full implementation reproduces inherited full checkpoints"
+  ]
+}

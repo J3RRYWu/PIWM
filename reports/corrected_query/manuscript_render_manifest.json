@@ -1,0 +1,19 @@
+{
+  "pages": 37,
+  "pdf_sha256": "1ef09d340041d25b9870269baef2617382deba3eed03750a52a4e3d2a23dd3af",
+  "selected_pages": [
+    1,
+    6,
+    12,
+    13,
+    19,
+    22
+  ],
+  "rendered_all_pages": true,
+  "visual_review": "PASS: all 37 pages inspected as contact sheets; architecture and corrected comparison/sensitivity tables inspected full-size on pages 6, 12 and 13. No clipping or overlap found.",
+  "latex_undefined_references": 0,
+  "latex_overfull_warnings": 0,
+  "latex_duplicate_labels": 0,
+  "bibtex_empty_page_warnings": 2,
+  "submission_metadata": "author list and declarations require author confirmation"
+}

@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "rows": 279,
+  "checks": [
+    "unchanged frozen parent, code and checkpoints",
+    "all declared scenarios, models and seeds",
+    "shared reproducible noise draws",
+    "zero initial xy error",
+    "clean predictions reproduce parent",
+    "all metrics recalculated, both sources retained"
+  ]
+}

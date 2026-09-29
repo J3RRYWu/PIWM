@@ -1,0 +1,45 @@
+{
+  "status": "PASS",
+  "rows": {
+    "temporal/seed0": {
+      "one_vs_eight_max_position_m": 0.0004600607988454594,
+      "four_vs_eight_max_position_m": 2.029135790892732e-05
+    },
+    "temporal/seed1": {
+      "one_vs_eight_max_position_m": 0.0004574975141257753,
+      "four_vs_eight_max_position_m": 2.0179320049012965e-05
+    },
+    "temporal/seed2": {
+      "one_vs_eight_max_position_m": 0.0004586565198290093,
+      "four_vs_eight_max_position_m": 2.0229973925792043e-05
+    },
+    "outer0/seed0": {
+      "one_vs_eight_max_position_m": 0.0004782887788299031,
+      "four_vs_eight_max_position_m": 2.1077779021975347e-05
+    },
+    "outer0/seed1": {
+      "one_vs_eight_max_position_m": 0.0004864948128423647,
+      "four_vs_eight_max_position_m": 2.1449786375125547e-05
+    },
+    "outer0/seed2": {
+      "one_vs_eight_max_position_m": 0.00047919833379859165,
+      "four_vs_eight_max_position_m": 2.112368694340109e-05
+    },
+    "outer1/seed0": {
+      "one_vs_eight_max_position_m": 0.00025694264951164826,
+      "four_vs_eight_max_position_m": 1.152908799638794e-05,
+      "constant_throttle_drive_gain_gradient": 0.0
+    },
+    "outer1/seed1": {
+      "one_vs_eight_max_position_m": 0.0002563726227532703,
+      "four_vs_eight_max_position_m": 1.1507396036047857e-05,
+      "constant_throttle_drive_gain_gradient": 0.0
+    },
+    "outer1/seed2": {
+      "one_vs_eight_max_position_m": 0.00025628811358249516,
+      "four_vs_eight_max_position_m": 1.1499465443511188e-05,
+      "constant_throttle_drive_gain_gradient": 0.0
+    }
+  },
+  "interpretation": "Validation-only integration sensitivity, plus exact zero gradient confirming unidentifiable drive gain at constant training throttle. Small discretization error is not a stability guarantee."
+}

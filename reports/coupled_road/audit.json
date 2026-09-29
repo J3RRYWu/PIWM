@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "rows": 12,
+  "checks": [
+    "frozen temporal split and implementation hashes",
+    "all raw/prepared data hashes",
+    "all seeds retained",
+    "25/40 epochs, validation-only checkpoint selection",
+    "identical test windows",
+    "all pooled/per-source metrics recomputed",
+    "zero initial errors"
+  ]
+}

@@ -1,0 +1,123 @@
+{
+  "status": "Finite exploratory synthetic mechanism pilot, fixed before training and test generation; no real-car or camera validation.",
+  "train": {
+    "seed": 99711,
+    "n": 384,
+    "plant": "nominal",
+    "regime": "within",
+    "noise": 0.025
+  },
+  "validation": {
+    "seed": 99721,
+    "n": 128,
+    "plant": "nominal",
+    "regime": "within",
+    "noise": 0.025
+  },
+  "test": {
+    "seed": 99731,
+    "n": 128,
+    "plants": [
+      "nominal",
+      "shifted"
+    ],
+    "regimes": [
+      "within",
+      "outside"
+    ],
+    "noise_amplitudes": {
+      "clean": 0.0,
+      "mild": 0.025,
+      "strong": 0.1
+    }
+  },
+  "plants": {
+    "nominal": {
+      "mass": 3.0,
+      "inertia": 0.055,
+      "lf": 0.13,
+      "lr": 0.13,
+      "cf": 12.0,
+      "cr": 14.0,
+      "mu": 0.9,
+      "tau": 0.12
+    },
+    "shifted": {
+      "mass": 3.6,
+      "inertia": 0.07,
+      "lf": 0.13,
+      "lr": 0.13,
+      "cf": 8.0,
+      "cr": 10.0,
+      "mu": 0.7,
+      "tau": 0.2
+    }
+  },
+  "truth": "Independent 7-state dynamic bicycle, saturating tire forces, steering lag, quadratic drag, RK4 16 substeps per 1/22 s. Toy parameters, not calibrated. No road input to plant RHS.",
+  "initial_state": "same complete generator initial state across paired test cells; predictors receive only d/psi/speed/yaw rate, no lateral speed or steering actuator state",
+  "road": "kappa(s)=k0+k1*sin(freq*s+phase), independently generated before trajectories. Smooth normal perturbation with zero initial offset/slope, reparameterized by its arc length. Ten 0.5 m knots; discrete representational error remains.",
+  "actions": "Feedforward steering correlated with road kappa at nominal .7 m/s plus sinusoid, clipped [-.25,.25]. Training/within throttle [.46,.58]; outside adds .22, giving [.68,.80]. Steering and initial state unchanged by regime.",
+  "models": [
+    "kinematic",
+    "cartesian_road",
+    "cartesian_blind",
+    "guarded_full",
+    "curvature_both_off",
+    "geometry_midpoint"
+  ],
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "epochs": 40,
+  "train_horizon": 32,
+  "evaluation_horizon": 100,
+  "batch": 128,
+  "lr": 0.001,
+  "kinematic_lr": 0.01,
+  "training": "Adam, cosine 40, gradient clip 1, same seed initialization/batch order; minimum validation E100; all histories retained, no hyperparameter search",
+  "normalization": "Train only. Initial d/psi scales floor .05/.1; full training trajectories supply v/omega scales with floors .05/.1. 99.5-percentile train increments floored .01 for bounded neural models.",
+  "primary_model": "guarded_full",
+  "primary_metric": "mean E100 (m) on 128 paired independent synthetic episodes; source generation seeds disjoint",
+  "secondary": "ADE/E25/E50; p95 endpoint; motion errors; full and midpoint chart counts; all 216 model/seed/condition rows",
+  "decision": {
+    "candidates": [
+      "curvature_both_off",
+      "geometry_midpoint"
+    ],
+    "targets": [
+      "within/strong",
+      "outside/clean"
+    ],
+    "go": "Any one prelisted candidate on any one prelisted target reduces full E100 >=20% in BOTH plants; all three paired model seeds improve; paired-episode bootstrap lower improvement bound >0; candidate clean-within E100 <=110% of full in BOTH plants; candidate target E100 <=110% of the best of kinematic/cartesian_road/cartesian_blind in BOTH plants.",
+    "mechanism": "For the full model, strong-minus-clean road effect at within actions OR outside-minus-within effect at clean road exceeds max(.02 m,20% of clean-within E100), lower paired bootstrap bound >0 and positive in all model seeds, in BOTH plants.",
+    "stop": "If GO false: no automatic new architecture or parameter search; mechanism-only evidence may justify a narrower question, not a claimed successful method or acceptance.",
+    "disclaimer": "Engineering pilot gates, not RAS standards. Bootstrap intervals are conditional exploratory simulation summaries, not real-environment confidence or multiplicity-adjusted confirmatory tests."
+  },
+  "bootstrap": {
+    "draws": 2000,
+    "seed": 99741,
+    "percentiles": [
+      2.5,
+      97.5
+    ],
+    "unit": "episode after averaging three model seeds; same sampled episode indices across paired conditions"
+  },
+  "sources": {
+    "scripts/run_synthetic_mechanism.py": "6ecba029c3945e6cf72b048dd8cc3bcd40f1bc50fe429f4a0fed0bab8cfac2c6",
+    "src/synthetic_vehicle.py": "1730619dd3905e80eaa8d9475c423299523464c1d74d774269fe92d9070d7af0",
+    "scripts/run_controlled_holdout.py": "62168a985c9ed43c38f15857fd2cb27ea9383edfde0f633dd707747a67efb8ad",
+    "scripts/diagnose_road_branches.py": "be7d1eb4fb7c392376262d7c4dd662146fec943588f60154ba114ec5141ac169",
+    "src/models/frenet_dynamics.py": "14a845bcb6c094fe6bdfb52711d9f956145f1177414db2ff1de0582c71a7a568",
+    "src/baselines/controlled_dynamics.py": "e85f6bad84db9531c250096cfaa8fc8e20bbc847d43d22aef254b7f55bf251cb",
+    "src/baselines/query_controls.py": "199326a30482bf02074512af46e183f47595a41f86c2c22df28807b1cc29191a",
+    "src/baselines/branch_query.py": "eabae6e581058c823e48f16c48a0fe8c7758b6ef24cb9f6680936e0102888c56",
+    "src/baselines/geometric_frenet.py": "8e7b70b57766f1a7889998625745edb5c06401f318335bd336b72df8fdae9c7a",
+    "src/baselines/consistent_road_geometry.py": "890bbbd7a6a3b7ba383347ec64e907087ab2db94d3cec014258b29749259b21f"
+  },
+  "sources_read": [
+    "https://commonroad.in.tum.de/static/media/LA17.8f9d9dc3.pdf"
+  ],
+  "scope": "Dynamical interface only; no images, CNN fits, new DonkeyCar logs, closed-loop driving, or real-world robustness claim."
+}

@@ -71,3 +71,13 @@ papers/
 *.out
 *.blg
 *.synctex.gz
+
+# Paper revision previews and delivery bundles
+tmp/pdfs/
+output/
+
+# Reproducible local experiment arrays; see reports/LOCAL_ARTIFACTS.md
+reports/**/*.npz
+reports/**/*.npy
+# Page rasterizations are local QA previews
+reports/manuscript_audit/render/

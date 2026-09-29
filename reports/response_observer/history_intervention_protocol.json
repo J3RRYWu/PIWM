@@ -1,0 +1,32 @@
+{
+  "status": "Post-hoc diagnostic specified after primary test results; no independent confirmation or new training.",
+  "primary_protocol_sha256": "b65f700e6c6a720a72191ac58705379fd922de00c0ba7ccd9695fe053aecfa77",
+  "results_sha256": "12b43360788c37a31eeb683f6201aa561f3377d573a04ef3c4288101c42334f8",
+  "source_sha256": "53d332e18e1fbc99cb546f14d37307873ed5aa652dbcc959a8e93ef3042bbe54",
+  "models": [
+    "observer",
+    "history_mlp"
+  ],
+  "modes": [
+    "flat_states",
+    "flat_states_actions",
+    "permute_old_pairs"
+  ],
+  "permutation": [
+    11,
+    3,
+    5,
+    12,
+    2,
+    1,
+    7,
+    13,
+    8,
+    4,
+    10,
+    6,
+    9,
+    0
+  ],
+  "interpretation": "Current v/r, initial pose, future actions and current history endpoint stay fixed. flat_states retains actual past actions; flat_states_actions repeats last available PAST action, not future action. permute_old_pairs uses one fixed permutation of 14 old state/action pairs and retains current state at end. These create shifted/off-manifold inputs, not fair retrained current-state baselines. No causal sufficiency or parameter identification claims."
+}

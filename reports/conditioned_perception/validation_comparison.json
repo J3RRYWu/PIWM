@@ -1,0 +1,98 @@
+{
+  "outer0_seed0": {
+    "original": {
+      "epoch": 22,
+      "train_loss": 0.03780229218974949,
+      "val_loss": 0.1219591502546337
+    },
+    "conditioned": {
+      "epoch": 25,
+      "train_loss": 0.05455013886470558,
+      "val_loss": 0.13710865197619235,
+      "max_gradient": 3.122739791870117,
+      "val_curvature_RMSE": 0.4081205427646637,
+      "val_shape_RMSE": 0.2563536465167999,
+      "val_mean_curvature_output_std": 0.8056783676147461
+    }
+  },
+  "outer0_seed1": {
+    "original": {
+      "epoch": 11,
+      "train_loss": 0.9339261227755794,
+      "val_loss": 0.8383918973743266
+    },
+    "conditioned": {
+      "epoch": 24,
+      "train_loss": 0.208604689381185,
+      "val_loss": 0.2952705001571501,
+      "max_gradient": 12.655241966247559,
+      "val_curvature_RMSE": 0.6018891334533691,
+      "val_shape_RMSE": 0.3727904260158539,
+      "val_mean_curvature_output_std": 0.6768162846565247
+    }
+  },
+  "outer0_seed2": {
+    "original": {
+      "epoch": 21,
+      "train_loss": 0.03762799267155291,
+      "val_loss": 0.12798849679819346
+    },
+    "conditioned": {
+      "epoch": 15,
+      "train_loss": 0.03580240888515086,
+      "val_loss": 0.09000776942187853,
+      "max_gradient": 7.119386672973633,
+      "val_curvature_RMSE": 0.3074532151222229,
+      "val_shape_RMSE": 0.2265111356973648,
+      "val_mean_curvature_output_std": 0.8363822102546692
+    }
+  },
+  "outer1_seed0": {
+    "original": {
+      "epoch": 24,
+      "train_loss": 0.04957902695420043,
+      "val_loss": 0.04083437914770793
+    },
+    "conditioned": {
+      "epoch": 23,
+      "train_loss": 0.012015156278511413,
+      "val_loss": 0.014422982719128693,
+      "max_gradient": 1.6699960231781006,
+      "val_curvature_RMSE": 0.1274227350950241,
+      "val_shape_RMSE": 0.06873276829719543,
+      "val_mean_curvature_output_std": 0.8841888308525085
+    }
+  },
+  "outer1_seed1": {
+    "original": {
+      "epoch": 25,
+      "train_loss": 0.056039044220132075,
+      "val_loss": 0.04836645013675457
+    },
+    "conditioned": {
+      "epoch": 25,
+      "train_loss": 0.018499137734543605,
+      "val_loss": 0.01833907113508965,
+      "max_gradient": 2.4832777976989746,
+      "val_curvature_RMSE": 0.1444920301437378,
+      "val_shape_RMSE": 0.08084672689437866,
+      "val_mean_curvature_output_std": 0.8894345164299011
+    }
+  },
+  "outer1_seed2": {
+    "original": {
+      "epoch": 24,
+      "train_loss": 0.04294991122070713,
+      "val_loss": 0.040411379339733745
+    },
+    "conditioned": {
+      "epoch": 19,
+      "train_loss": 0.007820360311962425,
+      "val_loss": 0.0097890539867122,
+      "max_gradient": 0.44457271695137024,
+      "val_curvature_RMSE": 0.11308848857879639,
+      "val_shape_RMSE": 0.05207124352455139,
+      "val_mean_curvature_output_std": 0.8750770688056946
+    }
+  }
+}

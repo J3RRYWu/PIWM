@@ -1,0 +1,279 @@
+{
+  "status": "PASS",
+  "raw_prepared_corrected_hashes": true,
+  "checks": {
+    "temporal/seed0/global": {
+      "validation_windows": 24,
+      "fine_integration_max_position_difference_m": 0.0004604661591994061,
+      "scene_inverse_error_m": 2.220446049250313e-15
+    },
+    "temporal/seed0/observer": {
+      "validation_windows": 24,
+      "fine_integration_max_position_difference_m": 0.0007026561801636851,
+      "scene_inverse_error_m": 1.7763568394002505e-15
+    },
+    "temporal/seed0/history_mlp": {
+      "validation_windows": 24,
+      "fine_integration_max_position_difference_m": 0.0006039726886575422,
+      "scene_inverse_error_m": 1.7763568394002505e-15
+    },
+    "temporal/seed1/global": {
+      "validation_windows": 24,
+      "fine_integration_max_position_difference_m": 0.00045813603640225604,
+      "scene_inverse_error_m": 1.7763568394002505e-15
+    },
+    "temporal/seed1/observer": {
+      "validation_windows": 24,
+      "fine_integration_max_position_difference_m": 0.0007025606330606198,
+      "scene_inverse_error_m": 1.7763568394002505e-15
+    },
+    "temporal/seed1/history_mlp": {
+      "validation_windows": 24,
+      "fine_integration_max_position_difference_m": 0.0006068665225789001,
+      "scene_inverse_error_m": 2.220446049250313e-15
+    },
+    "temporal/seed2/global": {
+      "validation_windows": 24,
+      "fine_integration_max_position_difference_m": 0.00045757670741276445,
+      "scene_inverse_error_m": 2.220446049250313e-15
+    },
+    "temporal/seed2/observer": {
+      "validation_windows": 24,
+      "fine_integration_max_position_difference_m": 0.0007057979152522942,
+      "scene_inverse_error_m": 2.220446049250313e-15
+    },
+    "temporal/seed2/history_mlp": {
+      "validation_windows": 24,
+      "fine_integration_max_position_difference_m": 0.0006443969431933965,
+      "scene_inverse_error_m": 1.7763568394002505e-15
+    },
+    "outer0/seed0/global": {
+      "validation_windows": 24,
+      "fine_integration_max_position_difference_m": 0.0004603382217850905,
+      "scene_inverse_error_m": 1.7763568394002505e-15
+    },
+    "outer0/seed0/observer": {
+      "validation_windows": 24,
+      "fine_integration_max_position_difference_m": 0.0008938809173683663,
+      "scene_inverse_error_m": 2.220446049250313e-15
+    },
+    "outer0/seed0/history_mlp": {
+      "validation_windows": 24,
+      "fine_integration_max_position_difference_m": 0.001669689948247728,
+      "scene_inverse_error_m": 1.7763568394002505e-15
+    },
+    "outer0/seed1/global": {
+      "validation_windows": 24,
+      "fine_integration_max_position_difference_m": 0.00047517914377871186,
+      "scene_inverse_error_m": 1.7763568394002505e-15
+    },
+    "outer0/seed1/observer": {
+      "validation_windows": 24,
+      "fine_integration_max_position_difference_m": 0.0008966160685220485,
+      "scene_inverse_error_m": 1.7763568394002505e-15
+    },
+    "outer0/seed1/history_mlp": {
+      "validation_windows": 24,
+      "fine_integration_max_position_difference_m": 0.0004147581156153348,
+      "scene_inverse_error_m": 1.7763568394002505e-15
+    },
+    "outer0/seed2/global": {
+      "validation_windows": 24,
+      "fine_integration_max_position_difference_m": 0.00045577031879441804,
+      "scene_inverse_error_m": 1.7763568394002505e-15
+    },
+    "outer0/seed2/observer": {
+      "validation_windows": 24,
+      "fine_integration_max_position_difference_m": 0.0008972243608055141,
+      "scene_inverse_error_m": 1.7763568394002505e-15
+    },
+    "outer0/seed2/history_mlp": {
+      "validation_windows": 24,
+      "fine_integration_max_position_difference_m": 0.0006030950698266672,
+      "scene_inverse_error_m": 1.7763568394002505e-15
+    },
+    "outer1/seed0/global": {
+      "validation_windows": 24,
+      "fine_integration_max_position_difference_m": 0.0002584711936393879,
+      "scene_inverse_error_m": 1.7763568394002505e-15
+    },
+    "outer1/seed0/observer": {
+      "validation_windows": 24,
+      "fine_integration_max_position_difference_m": 0.00025349260306552814,
+      "scene_inverse_error_m": 1.3322676295501878e-15
+    },
+    "outer1/seed0/history_mlp": {
+      "validation_windows": 24,
+      "fine_integration_max_position_difference_m": 0.000249320372323506,
+      "scene_inverse_error_m": 1.7763568394002505e-15
+    },
+    "outer1/seed1/global": {
+      "validation_windows": 24,
+      "fine_integration_max_position_difference_m": 0.00025574179364985843,
+      "scene_inverse_error_m": 1.7763568394002505e-15
+    },
+    "outer1/seed1/observer": {
+      "validation_windows": 24,
+      "fine_integration_max_position_difference_m": 0.00025659748712023115,
+      "scene_inverse_error_m": 1.3322676295501878e-15
+    },
+    "outer1/seed1/history_mlp": {
+      "validation_windows": 24,
+      "fine_integration_max_position_difference_m": 0.00025586602916006444,
+      "scene_inverse_error_m": 1.7763568394002505e-15
+    },
+    "outer1/seed2/global": {
+      "validation_windows": 24,
+      "fine_integration_max_position_difference_m": 0.00025807071948219144,
+      "scene_inverse_error_m": 1.7763568394002505e-15
+    },
+    "outer1/seed2/observer": {
+      "validation_windows": 24,
+      "fine_integration_max_position_difference_m": 0.00025429217637823904,
+      "scene_inverse_error_m": 1.7763568394002505e-15
+    },
+    "outer1/seed2/history_mlp": {
+      "validation_windows": 24,
+      "fine_integration_max_position_difference_m": 0.00025861453656405897,
+      "scene_inverse_error_m": 1.3322676295501878e-15
+    }
+  },
+  "observer_contraction": {
+    "temporal/seed0/observer": {
+      "contraction": [
+        0.7652170176643093,
+        0.7630142435666417
+      ],
+      "gain": [
+        0.11808736377087622,
+        0.10754244030769193
+      ],
+      "decay_seconds": [
+        0.32025235962197063,
+        0.2900694926038709
+      ],
+      "response_bound_verified": true
+    },
+    "temporal/seed1/observer": {
+      "contraction": [
+        0.7650595732458867,
+        0.7630979261251907
+      ],
+      "gain": [
+        0.11816184796890769,
+        0.10713553217143505
+      ],
+      "decay_seconds": [
+        0.31997887192018465,
+        0.289430115033998
+      ],
+      "response_bound_verified": true
+    },
+    "temporal/seed2/observer": {
+      "contraction": [
+        0.7649674051828077,
+        0.7629253388372359
+      ],
+      "gain": [
+        0.11848252654339202,
+        0.1074968664344006
+      ],
+      "decay_seconds": [
+        0.32052769913483053,
+        0.28975960248867316
+      ],
+      "response_bound_verified": true
+    },
+    "outer0/seed0/observer": {
+      "contraction": [
+        0.7705686387461531,
+        0.763228470158308
+      ],
+      "gain": [
+        0.11890151127686929,
+        0.10754511761467872
+      ],
+      "decay_seconds": [
+        0.33911008440882623,
+        0.290595643155747
+      ],
+      "response_bound_verified": true
+    },
+    "outer0/seed1/observer": {
+      "contraction": [
+        0.7715536581171093,
+        0.7632495090777607
+      ],
+      "gain": [
+        0.1186543549591179,
+        0.10659496733193156
+      ],
+      "decay_seconds": [
+        0.34165134077997716,
+        0.28868267102724393
+      ],
+      "response_bound_verified": true
+    },
+    "outer0/seed2/observer": {
+      "contraction": [
+        0.7701441481592233,
+        0.7633541276923178
+      ],
+      "gain": [
+        0.1209811132145225,
+        0.10958746486651366
+      ],
+      "decay_seconds": [
+        0.343757080337972,
+        0.29523064606741917
+      ],
+      "response_bound_verified": true
+    },
+    "outer1/seed0/observer": {
+      "contraction": [
+        0.7599651755062081,
+        0.7566513748291853
+      ],
+      "gain": [
+        0.14961850991195097,
+        0.14639437434211686
+      ],
+      "decay_seconds": [
+        0.40435508165259,
+        0.3770075287585213
+      ],
+      "response_bound_verified": true
+    },
+    "outer1/seed1/observer": {
+      "contraction": [
+        0.7598074531981417,
+        0.7568343217811584
+      ],
+      "gain": [
+        0.14955039103430892,
+        0.14621452800776213
+      ],
+      "decay_seconds": [
+        0.40332298660413834,
+        0.37710476414118077
+      ],
+      "response_bound_verified": true
+    },
+    "outer1/seed2/observer": {
+      "contraction": [
+        0.7597376888761875,
+        0.7568421498153015
+      ],
+      "gain": [
+        0.14954252231271203,
+        0.14622734152355588
+      ],
+      "decay_seconds": [
+        0.402961590765323,
+        0.3771840935887745
+      ],
+      "response_bound_verified": true
+    }
+  },
+  "scope": "Fine integration and curve transport checked on validation windows. Observer contraction concerns latent filter only, not full vehicle stability."
+}

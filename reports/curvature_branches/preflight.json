@@ -1,0 +1,26 @@
+{
+  "status": "PASS",
+  "checks": {
+    "curvature_response_off": {
+      "parameters": 14276,
+      "finite_backward": true,
+      "branch_feature_independence": true,
+      "geometric_progress_unchanged": true
+    },
+    "curvature_pose_off": {
+      "parameters": 14276,
+      "finite_backward": true,
+      "branch_feature_independence": true,
+      "geometric_progress_unchanged": true
+    },
+    "curvature_both_off": {
+      "parameters": 14276,
+      "finite_backward": true,
+      "branch_feature_independence": true,
+      "geometric_progress_unchanged": true
+    }
+  },
+  "full_identity": "bitwise 32-step outputs and all parameter gradients on 16 training windows match inherited QueryFrenet",
+  "model_sha256": "eabae6e581058c823e48f16c48a0fe8c7758b6ef24cb9f6680936e0102888c56",
+  "runner_sha256": "cdef4289bff7503a824c06d11b603850c09f1b59696e69f46fb5cfe25773bfd4"
+}
